@@ -16,9 +16,9 @@ class Post_archived extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_post = trim(intval($this->post('id_post')));
-		$year = trim(intval($this->post('year')));
-		$month = trim(intval($this->post('month')));
+		$id_post = filter($this->post('id_post'));
+		$year = filter(trim(intval($this->post('year'))));
+		$month = filter(trim(intval($this->post('month'))));
 		
 		$data = array();
 		if ($id_post == FALSE)
@@ -80,7 +80,7 @@ class Post_archived extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_post_archived = trim($this->post('id_post_archived'));
+        $id_post_archived = filter($this->post('id_post_archived'));
         
 		$data = array();
         if ($id_post_archived == FALSE)
@@ -133,7 +133,7 @@ class Post_archived extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_post_archived = trim($this->get('id_post_archived'));
+		$id_post_archived = filter($this->get('id_post_archived'));
 		
 		$data = array();
 		if ($id_post_archived == FALSE)
@@ -201,12 +201,12 @@ class Post_archived extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$default_order = array("year", "month", "created_date");
-		$default_sort = array("asc", "desc");
+		$status = filter(intval(trim($this->get('status'))));
+		$type = filter(intval(trim($this->get('type'))));
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -230,7 +230,7 @@ class Post_archived extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_post_archived_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -239,7 +239,7 @@ class Post_archived extends REST_Controller {
 			$order = 'created_date';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -250,6 +250,17 @@ class Post_archived extends REST_Controller {
 		
 		$param = array();
 		$param2 = array();
+		if ($status == TRUE)
+		{
+			$param['status'] = $status;
+			$param2['status'] = $status;
+		}
+		if ($type == TRUE)
+		{
+			$param['type'] = $type;
+			$param2['type'] = $type;
+		}
+		
 		$param['limit'] = $limit;
 		$param['offset'] = $offset;
 		$param['order'] = $order;
@@ -265,11 +276,17 @@ class Post_archived extends REST_Controller {
 			{
 				$data[] = array(
 					'id_post_archived' => $row->id_post_archived,
-					'id_post' => $row->id_post,
 					'year' => intval($row->year),
 					'month' => intval($row->month),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date
+					'updated_date' => $row->updated_date,
+					'post' => array(
+						'id_post' => $row->id_post,
+						'title' => $row->title,
+						'slug' => $row->slug,
+						'type' => intval($row->type),
+						'status' => intval($row->status)
+					)
 				);
 			}
 		}
@@ -292,10 +309,10 @@ class Post_archived extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_post_archived = trim(intval($this->post('id_post_archived')));
-		$id_post = trim(intval($this->post('id_post')));
-		$year = trim(intval($this->post('year')));
-		$month = trim(intval($this->post('month')));
+		$id_post_archived = filter($this->post('id_post_archived'));
+		$id_post = filter($this->post('id_post'));
+		$year = filter(trim(intval($this->post('year'))));
+		$month = filter(trim(intval($this->post('month'))));
 		
 		$data = array();
 		if ($id_post_archived == FALSE)

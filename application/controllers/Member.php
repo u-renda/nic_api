@@ -365,7 +365,7 @@ class Member extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_member = $this->post('id_member');
+        $id_member = filter($this->post('id_member'));
         
 		$data = array();
         if ($id_member == FALSE)
@@ -418,14 +418,14 @@ class Member extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_member = $this->get('id_member');
-		$name = trim(strtolower($this->get('name')));
-		$email = trim(strtolower($this->get('email')));
-		$username = trim(strtolower($this->get('username')));
-		$idcard_number = trim(intval($this->get('idcard_number')));
-		$phone_number = trim(intval($this->get('phone_number')));
-		$member_number = trim(intval($this->get('member_number')));
-		$member_card = trim(strtoupper($this->get('member_card')));
+		$id_member = filter($this->get('id_member'));
+		$name = filter(trim(strtolower($this->get('name'))));
+		$email = filter(trim(strtolower($this->get('email'))));
+		$username = filter(trim(strtolower($this->get('username'))));
+		$idcard_number = filter(trim(intval($this->get('idcard_number'))));
+		$phone_number = filter(trim(intval($this->get('phone_number'))));
+		$member_number = filter(trim(intval($this->get('member_number'))));
+		$member_card = filter(trim(strtoupper($this->get('member_card'))));
 		
 		$data = array();
 		if ($id_member == FALSE && $name == FALSE && $email == FALSE && $username == FALSE
@@ -540,25 +540,17 @@ class Member extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$idcard_type = intval(trim($this->get('idcard_type')));
-		$gender = trim($this->get('gender'));
-		$marital_status = trim($this->get('marital_status'));
-		$religion = intval(trim($this->get('religion')));
-		$shirt_size = trim($this->get('shirt_size'));
-		$status = intval(trim($this->get('status')));
-		$q = trim($this->get('q'));
-		$default_order = array("name", "email", "username", "idcard_number", "birth_date", "member_number", "member_card", "approved_date", "created_date");
-		$default_sort = array("asc", "desc");
-		$default_idcard_type = array("1", "2", "3", "4", "5");
-		$default_religion = array("1", "2", "3", "4", "5", "6", "7");
-		$default_status = array("1", "2", "3", "4", "5", "6");
-		$default_gender = array("0", "1");
-		$default_marital_status = array("0", "1");
-		$default_shirt_size = array("0", "1");
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
+		$idcard_type = filter(intval(trim($this->get('idcard_type'))));
+		$gender = filter(trim($this->get('gender')));
+		$marital_status = filter(trim($this->get('marital_status')));
+		$religion = filter(intval(trim($this->get('religion'))));
+		$shirt_size = filter(trim($this->get('shirt_size')));
+		$status = filter(intval(trim($this->get('status'))));
+		$q = filter(trim($this->get('q')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -582,7 +574,7 @@ class Member extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_member_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -591,7 +583,7 @@ class Member extends REST_Controller {
 			$order = 'created_date';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -600,32 +592,32 @@ class Member extends REST_Controller {
 			$sort = 'desc';
 		}
 		
-		if (in_array($idcard_type, $default_idcard_type) && ($idcard_type == TRUE))
+		if (in_array($idcard_type, $this->config->item('default_member_idcard_type')) && ($idcard_type == TRUE))
 		{
 			$idcard_type = $idcard_type;
 		}
 		
-		if (in_array($religion, $default_religion) && ($religion == TRUE))
+		if (in_array($religion, $this->config->item('default_member_religion')) && ($religion == TRUE))
 		{
 			$religion = $religion;
 		}
 		
-		if (in_array($status, $default_status) && ($status == TRUE))
+		if (in_array($status, $this->config->item('default_member_status')) && ($status == TRUE))
 		{
 			$status = $status;
 		}
 		
-		if (in_array($gender, $default_gender) && ($gender == TRUE))
+		if (in_array($gender, $this->config->item('default_member_gender')) && ($gender == TRUE))
 		{
 			$gender = $gender;
 		}
 		
-		if (in_array($marital_status, $default_marital_status) && ($marital_status == TRUE))
+		if (in_array($marital_status, $this->config->item('default_member_marital_status')) && ($marital_status == TRUE))
 		{
 			$marital_status = $marital_status;
 		}
 		
-		if (in_array($shirt_size, $default_shirt_size) && ($shirt_size == TRUE))
+		if (in_array($shirt_size, $this->config->item('default_member_shirt_size')) && ($shirt_size == TRUE))
 		{
 			$shirt_size = $shirt_size;
 		}
@@ -730,36 +722,30 @@ class Member extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_member = $this->post('id_member');
-		$id_kota = $this->post('id_kota');
-		$name = trim(strtolower($this->post('name')));
-		$email = trim(strtolower($this->post('email')));
-		$username = trim(strtolower($this->post('username')));
-		$password = trim($this->post('password'));
-		$idcard_type = trim(intval($this->post('idcard_type')));
-		$idcard_number = trim(intval($this->post('idcard_number')));
-		$idcard_photo = trim(strtolower($this->post('idcard_photo')));
-		$idcard_address = trim(strtolower($this->post('idcard_address')));
-		$shipment_address = trim(strtolower($this->post('shipment_address')));
-		$postal_code = trim(intval($this->post('postal_code')));
-		$gender = trim($this->post('gender'));
-		$phone_number = trim(intval($this->post('phone_number')));
-		$birth_place = trim(strtolower($this->post('birth_place')));
-		$birth_date = trim($this->post('birth_date'));
-		$marital_status = trim($this->post('marital_status'));
-		$occupation = trim(strtolower($this->post('occupation')));
-		$religion = trim(intval($this->post('religion')));
-		$shirt_size = trim($this->post('shirt_size'));
-		$photo = trim(strtolower($this->post('photo')));
-		$status = trim(intval($this->post('status')));
-		$member_number = trim(intval($this->post('member_number')));
-		$member_card = trim(strtoupper($this->post('member_card')));
-		$default_idcard_type = array("1", "2", "3", "4", "5");
-		$default_religion = array("1", "2", "3", "4", "5", "6", "7");
-		$default_status = array("1", "2", "3", "4", "5", "6");
-		$default_gender = array("0", "1");
-		$default_marital_status = array("0", "1");
-		$default_shirt_size = array("0", "1");
+		$id_member = filter($this->post('id_member'));
+		$id_kota = filter($this->post('id_kota'));
+		$name = filter(trim(strtolower($this->post('name'))));
+		$email = filter(trim(strtolower($this->post('email'))));
+		$username = filter(trim(strtolower($this->post('username'))));
+		$password = filter(trim($this->post('password')));
+		$idcard_type = filter(trim(intval($this->post('idcard_type'))));
+		$idcard_number = filter(trim(intval($this->post('idcard_number'))));
+		$idcard_photo = filter(trim(strtolower($this->post('idcard_photo'))));
+		$idcard_address = filter(trim(strtolower($this->post('idcard_address'))));
+		$shipment_address = filter(trim(strtolower($this->post('shipment_address'))));
+		$postal_code = filter(trim(intval($this->post('postal_code'))));
+		$gender = filter(trim($this->post('gender')));
+		$phone_number = filter(trim(intval($this->post('phone_number'))));
+		$birth_place = filter(trim(strtolower($this->post('birth_place'))));
+		$birth_date = filter(trim($this->post('birth_date')));
+		$marital_status = filter(trim($this->post('marital_status')));
+		$occupation = filter(trim(strtolower($this->post('occupation'))));
+		$religion = filter(trim(intval($this->post('religion'))));
+		$shirt_size = filter(trim($this->post('shirt_size')));
+		$photo = filter(trim(strtolower($this->post('photo'))));
+		$status = filter(trim(intval($this->post('status'))));
+		$member_number = filter(trim(intval($this->post('member_number'))));
+		$member_card = filter(trim(strtoupper($this->post('member_card'))));
 		
 		$data = array();
 		if ($id_member == FALSE)
@@ -776,42 +762,42 @@ class Member extends REST_Controller {
 			$code = 400;
 		}
 		
-		if (in_array($idcard_type, $default_idcard_type) == FALSE && $idcard_type == TRUE)
+		if (in_array($idcard_type, $this->config->item('default_member_idcard_type')) == FALSE && $idcard_type == TRUE)
 		{
 			$data['idcard_type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($gender, $default_gender) == FALSE && $gender == TRUE)
+		if (in_array($gender, $this->config->item('default_member_gender')) == FALSE && $gender == TRUE)
 		{
 			$data['gender'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($marital_status, $default_marital_status) == FALSE && $marital_status == TRUE)
+		if (in_array($marital_status, $this->config->item('default_member_marital_status')) == FALSE && $marital_status == TRUE)
 		{
 			$data['marital_status'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($religion, $default_religion) == FALSE && $religion == TRUE)
+		if (in_array($religion, $this->config->item('default_member_religion')) == FALSE && $religion == TRUE)
 		{
 			$data['religion'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($shirt_size, $default_shirt_size) == FALSE && $shirt_size == TRUE)
+		if (in_array($shirt_size, $this->config->item('default_member_shirt_size')) == FALSE && $shirt_size == TRUE)
 		{
 			$data['shirt_size'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($status, $default_status) == FALSE && $status == TRUE)
+		if (in_array($status, $this->config->item('default_member_status')) == FALSE && $status == TRUE)
 		{
 			$data['status'] = 'wrong value';
 			$validation = 'error';

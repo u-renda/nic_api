@@ -16,9 +16,9 @@ class Member_point extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_events = $this->post('id_events');
-		$id_member = $this->post('id_member');
-		$status = trim(intval($this->post('status')));
+		$id_events = filter($this->post('id_events'));
+		$id_member = filter($this->post('id_member'));
+		$status = filter(trim(intval($this->post('status'))));
 		
 		$data = array();
 		if ($id_events == FALSE)
@@ -73,7 +73,7 @@ class Member_point extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_member_point = $this->post('id_member_point');
+        $id_member_point = filter($this->post('id_member_point'));
         
 		$data = array();
         if ($id_member_poin == FALSE)
@@ -126,9 +126,9 @@ class Member_point extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_member_point = $this->get('id_member_point');
-		$id_events = $this->get('id_events');
-		$id_member = $this->get('id_member');
+		$id_member_point = filter($this->get('id_member_point'));
+		$id_events = filter($this->get('id_events'));
+		$id_member = filter($this->get('id_member'));
 		
 		$data = array();
 		if ($id_member_point == FALSE && $id_events == FALSE && $id_member == FALSE)
@@ -225,14 +225,12 @@ class Member_point extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$id_events = $this->get('id_events');
-		$id_member = $this->get('id_member');
-		$default_order = array("id_events", "id_member", "created_date");
-		$default_sort = array("asc", "desc");
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
+		$id_events = filter($this->get('id_events'));
+		$id_member = filter($this->get('id_member'));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -256,7 +254,7 @@ class Member_point extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_member_point_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -265,7 +263,7 @@ class Member_point extends REST_Controller {
 			$order = 'created_date';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -329,9 +327,8 @@ class Member_point extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_member_poin = $this->post('id_member_poin');
-		$poin = trim(intval($this->post('poin')));
-		$default_poin = array("0", "1");
+		$id_member_poin = filter($this->post('id_member_poin'));
+		$poin = filter(trim(intval($this->post('poin'))));
 		
 		$data = array();
 		if ($id_member_poin == FALSE)

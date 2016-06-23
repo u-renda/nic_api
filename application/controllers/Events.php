@@ -16,7 +16,7 @@ class Events extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_post = filter($this->post('id_post')));
+		$id_post = filter($this->post('id_post'));
 		$title = filter(trim($this->post('title')));
 		$date = filter(trim($this->post('date')));
 		$status = filter(trim($this->post('status')));

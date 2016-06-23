@@ -17,9 +17,9 @@ class Preferences extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$key = trim(strtolower($this->post('key')));
-		$value = trim($this->post('value'));
-		$description = trim(strtolower($this->post('description')));
+		$key = filter(trim(strtolower($this->post('key'))));
+		$value = filter(trim($this->post('value')));
+		$description = filter(trim(strtolower($this->post('description'))));
 
 		$data = array();
 		if ($key == FALSE)
@@ -80,7 +80,7 @@ class Preferences extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_preferences = trim($this->post('id_preferences'));
+        $id_preferences = filter($this->post('id_preferences'));
         
 		$data = array();
         if ($id_preferences == FALSE)
@@ -133,8 +133,8 @@ class Preferences extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_preferences = trim($this->get('id_preferences'));
-		$key = trim(strtolower($this->get('key')));
+		$id_preferences = filter($this->get('id_preferences'));
+		$key = filter(trim(strtolower($this->get('key'))));
 		
 		$data = array();
 		if ($id_preferences == FALSE && $key == FALSE)
@@ -196,13 +196,11 @@ class Preferences extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$type = trim($this->get('type'));
-		$default_order = array("key", "created_date");
-		$default_sort = array("asc", "desc");
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
+		$type = filter(trim($this->get('type')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -226,7 +224,7 @@ class Preferences extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_preferences_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -235,7 +233,7 @@ class Preferences extends REST_Controller {
 			$order = 'key';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}

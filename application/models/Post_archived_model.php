@@ -45,20 +45,47 @@ class Post_archived_model extends CI_Model {
     
     function lists($param)
     {
-        $this->db->select('id_post_archived, id_post, year, month, created_date, updated_date');
+		$where = array();
+        if (isset($param['type']))
+        {
+            $where += array('post.type' => $param['type']);
+        }
+        if (isset($param['status']))
+        {
+            $where += array('post.status' => $param['status']);
+        }
+		
+        $this->db->select('id_post_archived, '.$this->table.'.id_post, year, month,
+						  '.$this->table.'.created_date, '.$this->table.'.updated_date, title, slug,
+						  type, status');
         $this->db->from($this->table);
-        $this->db->order_by($param['order'], $param['sort']);
+		$this->db->join('post', $this->table.'.id_post = post.id_post', 'left');
+        $this->db->where($where);
+		$this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
         $query = $this->db->get();
+		
         return $query;
     }
     
     function lists_count($param)
     {
+        $where = array();
+        if (isset($param['type']))
+        {
+            $where += array('post.type' => $param['type']);
+        }
+        if (isset($param['status']))
+        {
+            $where += array('post.status' => $param['status']);
+        }
+		
         $this->db->select('id_post_archived');
         $this->db->from($this->table);
+		$this->db->join('post', $this->table.'.id_post = post.id_post', 'left');
+		$this->db->where($where);
         $query = $this->db->count_all_results();
-        return $query;
+		return $query;
     }
     
     function update($id, $param)

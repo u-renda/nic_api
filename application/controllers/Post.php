@@ -17,18 +17,14 @@ class Post extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$title = trim(strtolower($this->post('title')));
-		$content = trim($this->post('content'));
-		$media = trim($this->post('media'));
-		$media_type = trim(intval($this->post('media_type')));
-		$type = trim(intval($this->post('type')));
-		$status = trim(intval($this->post('status')));
-		$is_event = trim($this->post('is_event'));
-		$created_date = trim($this->post('created_date'));
-		$default_media_type = array("1", "2");
-		$default_type = array("1", "2");
-		$default_status = array("1", "2", "3");
-		$default_is_event = array("0", "1");
+		$title = filter(trim(strtolower($this->post('title'))));
+		$content = filter(trim($this->post('content')));
+		$media = filter(trim($this->post('media')));
+		$media_type = filter(trim(intval($this->post('media_type'))));
+		$type = filter(trim(intval($this->post('type'))));
+		$status = filter(trim(intval($this->post('status'))));
+		$is_event = filter(trim($this->post('is_event')));
+		$created_date = filter(trim($this->post('created_date')));
 		
 		$data = array();
 		if ($title == FALSE)
@@ -66,28 +62,28 @@ class Post extends REST_Controller {
 			$code = 400;
 		}
 		
-		if (in_array($media_type, $default_media_type) == FALSE && $media_type == TRUE)
+		if (in_array($media_type, $this->config->item('default_post_media_type')) == FALSE && $media_type == TRUE)
 		{
 			$data['media_type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($type, $default_type) == FALSE && $type == TRUE)
+		if (in_array($type, $this->config->item('default_post_type')) == FALSE && $type == TRUE)
 		{
 			$data['type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($status, $default_status) == FALSE && $status == TRUE)
+		if (in_array($status, $this->config->item('default_post_status')) == FALSE && $status == TRUE)
 		{
 			$data['status'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($is_event, $default_is_event) == FALSE && $is_event == TRUE)
+		if (in_array($is_event, $this->config->item('default_post_is_event')) == FALSE && $is_event == TRUE)
 		{
 			$data['is_event'] = 'wrong value';
 			$validation = 'error';
@@ -159,7 +155,7 @@ class Post extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_post = trim($this->post('id_post'));
+        $id_post = filter($this->post('id_post'));
         
 		$data = array();
         if ($id_post == FALSE)
@@ -212,9 +208,9 @@ class Post extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_post = trim($this->get('id_post'));
-		$title = trim(strtolower($this->get('title')));
-		$slug = trim(strtolower($this->get('slug')));
+		$id_post = filter($this->get('id_post'));
+		$title = filter(trim(strtolower($this->get('title'))));
+		$slug = filter(trim(strtolower($this->get('slug'))));
 		
 		$data = array();
 		if ($id_post == FALSE && $title == FALSE && $slug == FALSE)
@@ -283,21 +279,15 @@ class Post extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$media_type = intval(trim($this->get('media_type')));
-		$type = intval(trim($this->get('type')));
-		$status = intval(trim($this->get('status')));
-		$is_event = trim($this->get('is_event'));
-		$media_not = trim($this->get('media_not'));
-		$default_order = array("title", "created_date");
-		$default_sort = array("asc", "desc");
-		$default_media_type = array("1", "2");
-		$default_type = array("1", "2");
-		$default_status = array("1", "2", "3");
-		$default_is_event = array("0", "1");
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
+		$media_type = filter(intval(trim($this->get('media_type'))));
+		$type = filter(intval(trim($this->get('type'))));
+		$status = filter(intval(trim($this->get('status'))));
+		$is_event = filter(trim($this->get('is_event')));
+		$media_not = filter(trim($this->get('media_not')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -321,7 +311,7 @@ class Post extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_post_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -330,7 +320,7 @@ class Post extends REST_Controller {
 			$order = 'created_date';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -339,22 +329,22 @@ class Post extends REST_Controller {
 			$sort = 'desc';
 		}
 		
-		if (in_array($media_type, $default_media_type) && ($media_type == TRUE))
+		if (in_array($media_type, $this->config->item('default_post_media_type')) && ($media_type == TRUE))
 		{
 			$media_type = $media_type;
 		}
 		
-		if (in_array($type, $default_type) && ($type == TRUE))
+		if (in_array($type, $this->config->item('default_post_type')) && ($type == TRUE))
 		{
 			$type = $type;
 		}
 		
-		if (in_array($status, $default_status) && ($status == TRUE))
+		if (in_array($status, $this->config->item('default_post_status')) && ($status == TRUE))
 		{
 			$status = $status;
 		}
 		
-		if (in_array($is_event, $default_is_event) && ($is_event == TRUE))
+		if (in_array($is_event, $this->config->item('default_post_is_event')) && ($is_event == TRUE))
 		{
 			$is_event = $is_event;
 		}
@@ -434,19 +424,15 @@ class Post extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_post = trim(intval($this->post('id_post')));
-		$title = trim(strtolower($this->post('title')));
-		$content = trim($this->post('content'));
-		$media = trim($this->post('media'));
-		$media_type = trim(intval($this->post('media_type')));
-		$type = trim(intval($this->post('type')));
-		$status = trim(intval($this->post('status')));
-		$is_event = trim($this->post('is_event'));
-		$created_date = trim($this->post('created_date'));
-		$default_media_type = array("1", "2");
-		$default_type = array("1", "2");
-		$default_status = array("1", "2", "3");
-		$default_is_event = array("0", "1");
+		$id_post = filter($this->post('id_post'));
+		$title = filter(trim(strtolower($this->post('title'))));
+		$content = filter(trim($this->post('content')));
+		$media = filter(trim($this->post('media')));
+		$media_type = filter(trim(intval($this->post('media_type'))));
+		$type = filter(trim(intval($this->post('type'))));
+		$status = filter(trim(intval($this->post('status'))));
+		$is_event = filter(trim($this->post('is_event')));
+		$created_date = filter(trim($this->post('created_date')));
 		
 		$data = array();
 		if ($id_post == FALSE)
@@ -456,28 +442,28 @@ class Post extends REST_Controller {
 			$code = 400;
 		}
 		
-		if (in_array($media_type, $default_media_type) == FALSE && $media_type == TRUE)
+		if (in_array($media_type, $this->config->item('default_post_media_type')) == FALSE && $media_type == TRUE)
 		{
 			$data['media_type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($type, $default_type) == FALSE && $type == TRUE)
+		if (in_array($type, $this->config->item('default_post_type')) == FALSE && $type == TRUE)
 		{
 			$data['type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($status, $default_status) == FALSE && $status == TRUE)
+		if (in_array($status, $this->config->item('default_post_status')) == FALSE && $status == TRUE)
 		{
 			$data['status'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($is_event, $default_is_event) == FALSE && $is_event == TRUE)
+		if (in_array($is_event, $this->config->item('default_post_is_event')) == FALSE && $is_event == TRUE)
 		{
 			$data['is_event'] = 'wrong value';
 			$validation = 'error';

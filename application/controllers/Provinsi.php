@@ -17,7 +17,7 @@ class Provinsi extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$provinsi = trim(strtolower($this->post('provinsi')));
+		$provinsi = filter(trim(strtolower($this->post('provinsi'))));
 		
 		$data = array();
 		if ($provinsi == FALSE)
@@ -70,7 +70,7 @@ class Provinsi extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_provinsi = trim($this->post('id_provinsi'));
+        $id_provinsi = filter($this->post('id_provinsi'));
         
 		$data = array();
         if ($id_provinsi == FALSE)
@@ -123,8 +123,8 @@ class Provinsi extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_provinsi = trim($this->get('id_provinsi'));
-		$provinsi = trim(strtolower($this->get('provinsi')));
+		$id_provinsi = filter($this->get('id_provinsi'));
+		$provinsi = filter(trim(strtolower($this->get('provinsi'))));
 		
 		$data = array();
 		if ($id_provinsi == FALSE && $provinsi == FALSE)
@@ -175,13 +175,11 @@ class Provinsi extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$q = trim($this->get('q'));
-		$default_order = array("provinsi", "created_date");
-		$default_sort = array("asc", "desc");
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
+		$q = filter(trim($this->get('q')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -205,7 +203,7 @@ class Provinsi extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_provinsi_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -214,7 +212,7 @@ class Provinsi extends REST_Controller {
 			$order = 'provinsi';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -271,8 +269,8 @@ class Provinsi extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_provinsi = trim(intval($this->post('id_provinsi')));
-		$provinsi = trim(strtolower($this->post('provinsi')));
+		$id_provinsi = filter($this->post('id_provinsi'));
+		$provinsi = filter(trim($this->post('provinsi')));
 		
 		$data = array();
 		if ($id_provinsi == FALSE)

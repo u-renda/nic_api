@@ -16,7 +16,7 @@ class Secret_santa extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$name = trim(strtolower($this->post('name')));
+		$name = filter(trim(strtolower($this->post('name'))));
 		
 		$data = array();
 		if ($name == FALSE)
@@ -64,7 +64,7 @@ class Secret_santa extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_secret_santa = trim($this->post('id_secret_santa'));
+        $id_secret_santa = filter($this->post('id_secret_santa'));
         
 		$data = array();
         if ($id_secret_santa == FALSE)
@@ -117,8 +117,8 @@ class Secret_santa extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$id_secret_santa = intval($this->get('id_secret_santa'));
-		$name = trim(strtolower($this->get('name')));
+		$id_secret_santa = filter($this->get('id_secret_santa'));
+		$name = filter(trim(strtolower($this->get('name'))));
 		$status = filter($this->get('status'));
 
 		$data = array();
@@ -175,14 +175,12 @@ class Secret_santa extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim(strtolower($this->get('order')));
-		$sort = trim(strtolower($this->get('sort')));
-		$not_id_secret_santa = trim($this->get('not_id_secret_santa'));
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim(strtolower($this->get('order'))));
+		$sort = filter(trim(strtolower($this->get('sort'))));
+		$not_id_secret_santa = filter($this->get('not_id_secret_santa'));
 		$chosen = filter($this->get('chosen'));
-		$default_order = array("name", "created_date");
-		$default_sort = array("asc", "desc");
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -206,7 +204,7 @@ class Secret_santa extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_secret_santa_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -215,7 +213,7 @@ class Secret_santa extends REST_Controller {
 			$order = 'name';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -274,77 +272,13 @@ class Secret_santa extends REST_Controller {
 		$this->response($rv, $rv['code']);
 	}
 	
-/*
-	function random_post()
-	{
-		$this->benchmark->mark('code_start');
-		$validation = 'ok';
-		
-        $id_secret_santa = trim($this->post('id_secret_santa'));
-        
-		$data = array();
-        if ($id_secret_santa == FALSE)
-		{
-			$data['id_secret_santa'] = 'required';
-			$validation = "error";
-			$code = 400;
-		}
-        
-        if ($validation == "ok")
-		{
-            $query = $this->secret_santa_model->info(array('id_secret_santa' => $id_secret_santa, 'status' => 0));
-			
-			if ($query->num_rows() > 0)
-			{
-				// Get data other users
-				$query2 = $this->secret_santa_model->lists(array('not_id_secret_santa' => $id_secret_santa, 'status' => 0, 'order' => 'name', 'sort' => 'asc', 'limit' => 20, 'offset' => 0));
-				
-				if ($query2->num_rows() > 0)
-				{
-					$temp = array();
-					foreach ($query2->result() as $row)
-					{
-						$temp['id_secret_santa'][] = $row->id_secret_santa;
-					}
-
-					$random = array_rand($temp['id_secret_santa'], 2);
-					
-					$data['result'] = $random;
-					$validation = "ok";
-					$code = 200;
-				}
-				else
-				{
-					$data['delete'] = 'failed';
-					$validation = "error";
-					$code = 400;
-				}
-			}
-			else
-			{
-				$data['id_secret_santa'] = 'not found';
-				$validation = "error";
-				$code = 400;
-			}
-		}
-		
-		$rv = array();
-		$rv['message'] = $validation;
-		$rv['code'] = $code;
-		$rv['result'] = $data;
-		$this->benchmark->mark('code_end');
-		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
-		$this->response($rv, $code);
-	}
-*/
-	
 	function update_post()
 	{
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_secret_santa = trim($this->post('id_secret_santa'));
-        $chosen_id = trim($this->post('chosen_id'));
+        $id_secret_santa = filter($this->post('id_secret_santa'));
+        $chosen_id = filter($this->post('chosen_id'));
         $status = filter($this->post('status'));
         $chosen = filter($this->post('chosen'));
         

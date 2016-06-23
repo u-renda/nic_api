@@ -24,8 +24,6 @@ class Member_transfer extends REST_Controller {
 		$other_information = filter(trim(strtolower($this->post('other_information'))));
 		$type = filter(trim($this->post('type')));
 		$status = filter(trim($this->post('status')));
-		$default_type = array("1", "2");
-		$default_status = array("1", "2");
 		
 		$data = array();
 		if ($id_member == FALSE)
@@ -70,14 +68,14 @@ class Member_transfer extends REST_Controller {
 			$code = 400;
 		}
 		
-		if (in_array($type, $default_type) == FALSE && $type == TRUE)
+		if (in_array($type, $this->config->item('default_member_transfer_type')) == FALSE && $type == TRUE)
 		{
 			$data['type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
 		
-		if (in_array($status, $default_status) == FALSE && $status == TRUE)
+		if (in_array($status, $this->config->item('default_member_transfer_status')) == FALSE && $status == TRUE)
 		{
 			$data['status'] = 'wrong value';
 			$validation = 'error';
@@ -127,7 +125,7 @@ class Member_transfer extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-        $id_member_transfer = trim($this->post('id_member_transfer'));
+        $id_member_transfer = filter($this->post('id_member_transfer'));
         
 		$data = array();
         if ($id_member_transfer == FALSE)
@@ -279,15 +277,12 @@ class Member_transfer extends REST_Controller {
 	{
 		$this->benchmark->mark('code_start');
 		
-		$offset = intval(trim($this->get('offset')));
-		$limit = intval(trim($this->get('limit')));
-		$order = trim($this->get('order'));
-		$sort = trim($this->get('sort'));
-		$type = intval(trim($this->get('type')));
-		$q = trim($this->get('q'));
-		$default_order = array("total", "date", "created_date");
-		$default_sort = array("asc", "desc");
-		$default_type = array("1", "2");
+		$offset = filter(intval(trim($this->get('offset'))));
+		$limit = filter(intval(trim($this->get('limit'))));
+		$order = filter(trim($this->get('order')));
+		$sort = filter(trim($this->get('sort')));
+		$type = filter(intval(trim($this->get('type'))));
+		$q = filter(trim($this->get('q')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -311,7 +306,7 @@ class Member_transfer extends REST_Controller {
 			$offset = 0;
 		}
 		
-		if (in_array($order, $default_order) && ($order == TRUE))
+		if (in_array($order, $this->config->item('default_member_transfer_order')) && ($order == TRUE))
 		{
 			$order = $order;
 		}
@@ -320,7 +315,7 @@ class Member_transfer extends REST_Controller {
 			$order = 'created_date';
 		}
 		
-		if (in_array($sort, $default_sort) && ($sort == TRUE))
+		if (in_array($sort, $this->config->item('default_sort')) && ($sort == TRUE))
 		{
 			$sort = $sort;
 		}
@@ -329,7 +324,7 @@ class Member_transfer extends REST_Controller {
 			$sort = 'desc';
 		}
 		
-		if (in_array($type, $default_type) && ($type == TRUE))
+		if (in_array($type, $this->config->item('default_member_transfer_type')) && ($type == TRUE))
 		{
 			$type = $type;
 		}
@@ -401,7 +396,6 @@ class Member_transfer extends REST_Controller {
 		$account_name = filter(trim(strtolower($this->post('account_name'))));
 		$other_information = filter(trim(strtolower($this->post('other_information'))));
 		$type = filter(trim($this->post('type')));
-		$default_type = array("1", "2");
 		
 		$data = array();
 		if ($id_member_transfer == FALSE)
@@ -411,7 +405,7 @@ class Member_transfer extends REST_Controller {
 			$code = 400;
 		}
 		
-		if (in_array($type, $default_type) == FALSE && $type == TRUE)
+		if (in_array($type, $this->config->item('default_member_transfer_type')) == FALSE && $type == TRUE)
 		{
 			$data['type'] = 'wrong value';
 			$validation = 'error';
