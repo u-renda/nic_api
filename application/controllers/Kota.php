@@ -282,11 +282,14 @@ class Kota extends REST_Controller {
 			{
 				$data[] = array(
 					'id_kota' => $row->id_kota,
-					'id_provinsi' => $row->id_provinsi,
 					'kota' => $row->kota,
 					'price' => intval($row->price),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date
+					'updated_date' => $row->updated_date,
+					'provinsi' => array(
+						'id_provinsi' => $row->id_provinsi,
+						'name' => $row->provinsi
+					)
 				);
 			}
 		}

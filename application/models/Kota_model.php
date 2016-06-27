@@ -56,11 +56,13 @@ class Kota_model extends CI_Model {
         }
         if (isset($param['id_provinsi']))
         {
-            $where += array('id_provinsi' => $param['id_provinsi']);
+            $where += array($this->table.'.id_provinsi' => $param['id_provinsi']);
         }
         
-        $this->db->select('id_kota, id_provinsi, kota, price, created_date, updated_date');
+        $this->db->select('id_kota, '.$this->table.'.id_provinsi, kota, price, '.$this->table.'.created_date,
+						  '.$this->table.'.updated_date, provinsi');
         $this->db->from($this->table);
+        $this->db->join('provinsi', $this->table.'.id_provinsi = provinsi.id_provinsi');
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);

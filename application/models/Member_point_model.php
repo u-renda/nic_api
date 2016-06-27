@@ -11,14 +11,14 @@ class Member_point_model extends CI_Model {
     
     function create($param)
     {
-        $this->db->set('id_member_poin', 'UUID_SHORT()', FALSE);
+        $this->db->set('id_member_point', 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
 		return $query;
     }
     
     function delete($id)
     {
-        $this->db->where('id_member_poin', $id);
+        $this->db->where('id_member_point', $id);
         $query = $this->db->delete($this->table);
         return $query;
     }
@@ -26,9 +26,9 @@ class Member_point_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_member_poin']))
+        if (isset($param['id_member_point']))
         {
-            $where += array('id_member_poin' => $param['id_member_poin']);
+            $where += array('id_member_point' => $param['id_member_point']);
         }
         if (isset($param['id_member']))
         {
@@ -39,7 +39,7 @@ class Member_point_model extends CI_Model {
             $where += array($this->table.'.id_events' => $param['id_events']);
         }
         
-        $this->db->select('id_member_poin, '.$this->table.'.id_member,
+        $this->db->select('id_member_point, '.$this->table.'.id_member,
 						  '.$this->table.'.id_events, poin, '.$this->table.'.created_date,
 						  '.$this->table.'.updated_date, name, email, username, idcard_type,
 						  idcard_number, idcard_photo, idcard_address, shipment_address,
@@ -70,9 +70,11 @@ class Member_point_model extends CI_Model {
             $where += array('id_member' => $param['id_member']);
         }
         
-        $this->db->select('id_member_poin, id_member, id_events, poin, created_date,
-						  updated_date');
+        $this->db->select('id_member_point, id_member, '.$this->table.'.id_events,
+						  '.$this->table.'.status, '.$this->table.'.created_date,
+						  '.$this->table.'.updated_date, title, date');
         $this->db->from($this->table);
+		$this->db->join('events', $this->table.'.id_events = events.id_events', 'left');
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
@@ -92,7 +94,7 @@ class Member_point_model extends CI_Model {
             $where += array('id_member' => $param['id_member']);
         }
         
-        $this->db->select('id_member_poin');
+        $this->db->select('id_member_point');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->count_all_results();

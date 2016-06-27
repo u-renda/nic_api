@@ -9,6 +9,7 @@ class Member extends REST_Controller {
     {
         parent::__construct();
 		$this->load->model('member_model');
+		$this->load->model('member_point_model');
     }
 	
 	function chart_registered_get()
@@ -125,13 +126,6 @@ class Member extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ($idcard_photo == FALSE)
-		{
-			$data['idcard_photo'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
 		if ($shipment_address == FALSE)
 		{
 			$data['shipment_address'] = 'required';
@@ -198,13 +192,6 @@ class Member extends REST_Controller {
 		if ($shirt_size == '')
 		{
 			$data['shirt_size'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($photo == FALSE)
-		{
-			$data['photo'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -432,8 +419,7 @@ class Member extends REST_Controller {
 			&& $idcard_number == FALSE && $phone_number == FALSE && $member_number == FALSE
 			&& $member_card == FALSE)
 		{
-			$data['id_member'] = 'required (name, email, username, idcard_number, phone_number,
-									member_number, member_card)';
+			$data['id_member'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -480,6 +466,9 @@ class Member extends REST_Controller {
 			{
 				$row = $query->row();
 				
+				// hitung point
+				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member));
+				
 				$data = array(
 					'id_member' => $row->id_member,
 					'id_kota' => $row->id_kota,
@@ -501,6 +490,7 @@ class Member extends REST_Controller {
 					'religion' => intval($row->religion),
 					'shirt_size' => intval($row->shirt_size),
 					'photo' => $row->photo,
+					'point' => intval($point),
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
@@ -520,8 +510,7 @@ class Member extends REST_Controller {
 			}
 			else
 			{
-				$data['id_member'] = 'not found (name, email, username, idcard_number, phone_number,
-									member_number, member_card)';
+				$data['id_member'] = 'not found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -673,6 +662,9 @@ class Member extends REST_Controller {
 		{
 			foreach ($query->result() as $row)
 			{
+				// hitung point
+				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member));
+				
 				$data[] = array(
 					'id_member' => $row->id_member,
 					'id_kota' => $row->id_kota,
@@ -694,6 +686,7 @@ class Member extends REST_Controller {
 					'religion' => intval($row->religion),
 					'shirt_size' => intval($row->shirt_size),
 					'photo' => $row->photo,
+					'point' => intval($point),
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
@@ -735,7 +728,7 @@ class Member extends REST_Controller {
 		$shipment_address = filter(trim(strtolower($this->post('shipment_address'))));
 		$postal_code = filter(trim(intval($this->post('postal_code'))));
 		$gender = filter(trim($this->post('gender')));
-		$phone_number = filter(trim(intval($this->post('phone_number'))));
+		$phone_number = filter(trim($this->post('phone_number')));
 		$birth_place = filter(trim(strtolower($this->post('birth_place'))));
 		$birth_date = filter(trim($this->post('birth_date')));
 		$marital_status = filter(trim($this->post('marital_status')));
@@ -997,11 +990,11 @@ class Member extends REST_Controller {
 			if ($query->num_rows() > 0)
 			{
 				$check_pass = $query->row()->password;
-				$pass = $password;
+				$pass = md5($password);
 				
 				if ($check_pass == $pass)
 				{
-					$data['valid'] = 'yes!';
+					$data = $query->row();
 					$validation = 'ok';
 					$code = 200;
 				}

@@ -34,6 +34,13 @@ class Member_point extends REST_Controller {
 			$validation = 'error';
 			$code = 400;
 		}
+		
+		if ($status == FALSE)
+		{
+			$data['status'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
 
 		if ($validation == 'ok')
 		{
@@ -162,7 +169,7 @@ class Member_point extends REST_Controller {
 				
 				$data = array(
 					'id_member_point' => $row->id_member_point,
-					'status' => $row->status,
+					'status' => intval($row->status),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
 					'member' => array(
@@ -290,8 +297,8 @@ class Member_point extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->member_poin_model->lists($param);
-		$total = $this->member_poin_model->lists_count($param2);
+		$query = $this->member_point_model->lists($param);
+		$total = $this->member_point_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -299,12 +306,16 @@ class Member_point extends REST_Controller {
 			foreach ($query->result() as $row)
 			{
 				$data[] = array(
-					'id_member_poin' => $row->id_member_poin,
-					'id_events' => $row->id_events,
+					'id_member_point' => $row->id_member_point,
 					'id_member' => $row->id_member,
-					'poin' => $row->poin,
+					'status' => intval($row->status),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date
+					'updated_date' => $row->updated_date,
+					'events' => array(
+						'id_events' => $row->id_events,
+						'title' => $row->title,
+						'date' => $row->date
+					)
 				);
 			}
 		}
