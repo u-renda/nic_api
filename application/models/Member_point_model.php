@@ -69,6 +69,10 @@ class Member_point_model extends CI_Model {
         {
             $where += array('id_member' => $param['id_member']);
         }
+        if (isset($param['status']))
+        {
+            $where += array('status' => $param['status']);
+        }
         
         $this->db->select('id_member_point, id_member, '.$this->table.'.id_events,
 						  '.$this->table.'.status, '.$this->table.'.created_date,
@@ -92,6 +96,10 @@ class Member_point_model extends CI_Model {
         if (isset($param['id_member']))
         {
             $where += array('id_member' => $param['id_member']);
+        }
+        if (isset($param['status']))
+        {
+            $where += array('status' => $param['status']);
         }
         
         $this->db->select('id_member_point');

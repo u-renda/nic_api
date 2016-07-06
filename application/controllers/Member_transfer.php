@@ -179,13 +179,11 @@ class Member_transfer extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_member_transfer = filter($this->get('id_member_transfer'));
-		$id_member = filter($this->get('id_member'));
-		$type = filter(trim($this->get('type')));
 		
 		$data = array();
-		if ($id_member_transfer == FALSE && $id_member == FALSE)
+		if ($id_member_transfer == FALSE)
 		{
-			$data['id_member_transfer'] = 'required (id_member)';
+			$data['id_member_transfer'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -196,15 +194,6 @@ class Member_transfer extends REST_Controller {
 			if ($id_member_transfer)
 			{
 				$param['id_member_transfer'] = $id_member_transfer;
-			}
-			else
-			{
-				$param['id_member'] = $id_member;
-			}
-			
-			if ($type == TRUE)
-			{
-				$param['type'] = $type;
 			}
 			
 			$query = $this->member_transfer_model->info($param);
@@ -281,6 +270,7 @@ class Member_transfer extends REST_Controller {
 		$limit = filter(intval(trim($this->get('limit'))));
 		$order = filter(trim($this->get('order')));
 		$sort = filter(trim($this->get('sort')));
+		$id_member = filter($this->get('id_member'));
 		$type = filter(intval(trim($this->get('type'))));
 		$q = filter(trim($this->get('q')));
 		
@@ -336,6 +326,11 @@ class Member_transfer extends REST_Controller {
 			$param['q'] = $q;
 			$param2['q'] = $q;
 		}
+		if ($id_member == TRUE)
+		{
+			$param['id_member'] = $id_member;
+			$param2['id_member'] = $id_member;
+		}
 		if ($type == TRUE)
 		{
 			$param['type'] = $type;
@@ -357,15 +352,20 @@ class Member_transfer extends REST_Controller {
 			{
 				$data[] = array(
 					'id_member_transfer' => $row->id_member_transfer,
-					'id_member' => $row->id_member,
 					'total' => intval($row->total),
 					'date' => $row->date,
 					'photo' => $row->photo,
 					'account_name' => $row->account_name,
 					'other_information' => $row->other_information,
 					'type' => intval($row->type),
+					'resi' => $row->resi,
+					'status' => intval($row->status),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date
+					'updated_date' => $row->updated_date,
+					'member' => array(
+						'id_member' => $row->id_member,
+						'name' => $row->name
+					)
 				);
 			}
 		}

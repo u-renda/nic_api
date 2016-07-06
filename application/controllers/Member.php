@@ -10,6 +10,7 @@ class Member extends REST_Controller {
         parent::__construct();
 		$this->load->model('member_model');
 		$this->load->model('member_point_model');
+		$this->load->model('member_transfer_model');
     }
 	
 	function chart_registered_get()
@@ -63,7 +64,7 @@ class Member extends REST_Controller {
 		$email = filter(trim(strtolower($this->post('email'))));
 		$username = filter(trim(strtolower($this->post('username'))));
 		$password = filter(trim($this->post('password')));
-		$idcard_type = filter(trim($this->post('idcard_type')));
+		$idcard_type = filter(trim(intval($this->post('idcard_type'))));
 		$idcard_number = filter(trim($this->post('idcard_number')));
 		$idcard_photo = filter(trim(strtolower($this->post('idcard_photo'))));
 		$idcard_address = filter(trim($this->post('idcard_address')));
@@ -75,10 +76,10 @@ class Member extends REST_Controller {
 		$birth_date = filter(trim($this->post('birth_date')));
 		$marital_status = filter(trim($this->post('marital_status')));
 		$occupation = filter(trim($this->post('occupation')));
-		$religion = filter(trim($this->post('religion')));
+		$religion = filter(trim(intval($this->post('religion'))));
 		$shirt_size = filter(trim($this->post('shirt_size')));
 		$photo = filter(trim(strtolower($this->post('photo'))));
-		$status = filter(trim($this->post('status')));
+		$status = filter(trim(intval($this->post('status'))));
 		$member_number = filter(trim($this->post('member_number')));
 		$member_card = filter(trim($this->post('member_card')));
 		$approved_date = filter(trim($this->post('approved_date')));
@@ -409,9 +410,9 @@ class Member extends REST_Controller {
 		$name = filter(trim(strtolower($this->get('name'))));
 		$email = filter(trim(strtolower($this->get('email'))));
 		$username = filter(trim(strtolower($this->get('username'))));
-		$idcard_number = filter(trim(intval($this->get('idcard_number'))));
-		$phone_number = filter(trim(intval($this->get('phone_number'))));
-		$member_number = filter(trim(intval($this->get('member_number'))));
+		$idcard_number = filter(trim($this->get('idcard_number')));
+		$phone_number = filter(trim($this->get('phone_number')));
+		$member_number = filter(trim($this->get('member_number')));
 		$member_card = filter(trim(strtoupper($this->get('member_card'))));
 		
 		$data = array();
@@ -467,7 +468,19 @@ class Member extends REST_Controller {
 				$row = $query->row();
 				
 				// hitung point
-				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member));
+				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member, 'status' => 2));
+				
+				// dapetin no resi
+				$query2 = $this->member_transfer_model->info(array('id_member' => $row->id_member, 'type' => 1));
+				
+				if ($query2->num_rows() > 0)
+				{
+					$resi = $query2->row()->resi;
+				}
+				else
+				{
+					$resi = '-';
+				}
 				
 				$data = array(
 					'id_member' => $row->id_member,
@@ -491,6 +504,7 @@ class Member extends REST_Controller {
 					'shirt_size' => intval($row->shirt_size),
 					'photo' => $row->photo,
 					'point' => intval($point),
+					'resi' => $resi,
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
@@ -665,6 +679,18 @@ class Member extends REST_Controller {
 				// hitung point
 				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member));
 				
+				// dapetin no resi
+				$query2 = $this->member_transfer_model->info(array('id_member' => $row->id_member, 'type' => 1));
+				
+				if ($query2->num_rows() > 0)
+				{
+					$resi = $query2->row()->resi;
+				}
+				else
+				{
+					$resi = '-';
+				}
+				
 				$data[] = array(
 					'id_member' => $row->id_member,
 					'id_kota' => $row->id_kota,
@@ -687,6 +713,7 @@ class Member extends REST_Controller {
 					'shirt_size' => intval($row->shirt_size),
 					'photo' => $row->photo,
 					'point' => intval($point),
+					'resi' => $resi,
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
@@ -722,11 +749,11 @@ class Member extends REST_Controller {
 		$username = filter(trim(strtolower($this->post('username'))));
 		$password = filter(trim($this->post('password')));
 		$idcard_type = filter(trim(intval($this->post('idcard_type'))));
-		$idcard_number = filter(trim(intval($this->post('idcard_number'))));
+		$idcard_number = filter(trim($this->post('idcard_number')));
 		$idcard_photo = filter(trim(strtolower($this->post('idcard_photo'))));
-		$idcard_address = filter(trim(strtolower($this->post('idcard_address'))));
-		$shipment_address = filter(trim(strtolower($this->post('shipment_address'))));
-		$postal_code = filter(trim(intval($this->post('postal_code'))));
+		$idcard_address = filter(trim($this->post('idcard_address')));
+		$shipment_address = filter(trim($this->post('shipment_address')));
+		$postal_code = filter(trim($this->post('postal_code')));
 		$gender = filter(trim($this->post('gender')));
 		$phone_number = filter(trim($this->post('phone_number')));
 		$birth_place = filter(trim(strtolower($this->post('birth_place'))));
@@ -736,8 +763,9 @@ class Member extends REST_Controller {
 		$religion = filter(trim(intval($this->post('religion'))));
 		$shirt_size = filter(trim($this->post('shirt_size')));
 		$photo = filter(trim(strtolower($this->post('photo'))));
+		$resi = filter(trim($this->post('resi')));
 		$status = filter(trim(intval($this->post('status'))));
-		$member_number = filter(trim(intval($this->post('member_number'))));
+		$member_number = filter(trim($this->post('member_number')));
 		$member_card = filter(trim(strtoupper($this->post('member_card'))));
 		
 		$data = array();
@@ -863,7 +891,7 @@ class Member extends REST_Controller {
 					$param['postal_code'] = $postal_code;
 				}
 				
-				if (isset($gender))
+				if ($gender != '')
 				{
 					$param['gender'] = $gender;
 				}
@@ -883,7 +911,7 @@ class Member extends REST_Controller {
 					$param['birth_date'] = $birth_date;
 				}
 				
-				if (isset($marital_status))
+				if ($marital_status != '')
 				{
 					$param['marital_status'] = $marital_status;
 				}
@@ -898,7 +926,7 @@ class Member extends REST_Controller {
 					$param['religion'] = $religion;
 				}
 				
-				if (isset($shirt_size))
+				if ($shirt_size != '')
 				{
 					$param['shirt_size'] = $shirt_size;
 				}
@@ -921,6 +949,11 @@ class Member extends REST_Controller {
 				if ($member_card == TRUE)
 				{
 					$param['member_card'] = $member_card;
+				}
+				
+				if ($resi == TRUE)
+				{
+					$param['resi'] = $resi;
 				}
 				
 				if ($param == TRUE)

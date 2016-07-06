@@ -30,14 +30,6 @@ class Member_transfer_model extends CI_Model {
         {
             $where += array('id_member_transfer' => $param['id_member_transfer']);
         }
-        if (isset($param['id_member']))
-        {
-            $where += array($this->table.'.id_member' => $param['id_member']);
-        }
-        if (isset($param['type']))
-        {
-            $where += array($this->table.'.type' => $param['type']);
-        }
         
         $this->db->select('id_member_transfer, '.$this->table.'.id_member, total, date,
 						  '.$this->table.'.photo, account_name, other_information, type,
@@ -48,7 +40,7 @@ class Member_transfer_model extends CI_Model {
 						  shirt_size, member.photo as member_photo,
 						  member.status AS member_status, member_number, member_card,
 						  approved_date, member.created_date AS member_created_date,
-						  member.updated_date AS member_updated_date, '.$this->table.'.status');
+						  member.updated_date AS member_updated_date, '.$this->table.'.status, resi');
         $this->db->from($this->table);
 		$this->db->join('member', $this->table.'.id_member = member.id_member', 'left');
         $this->db->where($where);
@@ -67,10 +59,17 @@ class Member_transfer_model extends CI_Model {
         {
             $where += array('type' => $param['type']);
         }
+        if (isset($param['id_member']))
+        {
+            $where += array($this->table.'.id_member' => $param['id_member']);
+        }
         
-        $this->db->select('id_member_transfer, id_member, total, date, photo, account_name,
-						  other_information, type, created_date, updated_date');
+        $this->db->select('id_member_transfer, '.$this->table.'.id_member, total, date,
+						  '.$this->table.'.photo, account_name, other_information, type,
+						  '.$this->table.'.created_date, '.$this->table.'.updated_date, name, resi,
+						  '.$this->table.'.status');
         $this->db->from($this->table);
+		$this->db->join('member', $this->table.'.id_member = member.id_member', 'left');
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
@@ -88,6 +87,10 @@ class Member_transfer_model extends CI_Model {
         if (isset($param['type']))
         {
             $where += array('type' => $param['type']);
+        }
+        if (isset($param['id_member']))
+        {
+            $where += array('id_member' => $param['id_member']);
         }
         
         $this->db->select('id_member_transfer');
