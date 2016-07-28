@@ -18,10 +18,6 @@ class Member_transfer extends REST_Controller {
 		
 		$id_member = filter($this->post('id_member'));
 		$total = filter(trim($this->post('total')));
-		$date = filter(trim($this->post('date')));
-		$photo = filter(trim(strtolower($this->post('photo'))));
-		$account_name = filter(trim(strtolower($this->post('account_name'))));
-		$other_information = filter(trim(strtolower($this->post('other_information'))));
 		$type = filter(trim($this->post('type')));
 		$status = filter(trim($this->post('status')));
 		
@@ -40,30 +36,16 @@ class Member_transfer extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ($date == FALSE)
-		{
-			$data['date'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($photo == FALSE)
-		{
-			$data['photo'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($account_name == FALSE)
-		{
-			$data['account_name'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
 		if ($type == FALSE)
 		{
 			$data['type'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($status == FALSE)
+		{
+			$data['status'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -87,10 +69,6 @@ class Member_transfer extends REST_Controller {
 			$param = array();
 			$param['id_member'] = $id_member;
 			$param['total'] = $total;
-			$param['date'] = $date;
-			$param['photo'] = $photo;
-			$param['account_name'] = $account_name;
-			$param['other_information'] = $other_information;
 			$param['type'] = $type;
 			$param['status'] = $status;
 			$param['created_date'] = date('Y-m-d H:i:s');
@@ -396,6 +374,7 @@ class Member_transfer extends REST_Controller {
 		$account_name = filter(trim(strtolower($this->post('account_name'))));
 		$other_information = filter(trim(strtolower($this->post('other_information'))));
 		$type = filter(trim($this->post('type')));
+		$status = filter(trim($this->post('status')));
 		
 		$data = array();
 		if ($id_member_transfer == FALSE)
@@ -452,6 +431,11 @@ class Member_transfer extends REST_Controller {
 				if ($type == TRUE)
 				{
 					$param['type'] = $type;
+				}
+				
+				if ($status == TRUE)
+				{
+					$param['status'] = $status;
 				}
 				
 				if ($param == TRUE)

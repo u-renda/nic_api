@@ -88,6 +88,7 @@ class Member_model extends CI_Model {
     
     function lists($param)
     {
+		//print_r($param);die();
         $where = array();
         $or_where = array();
         if (isset($param['q']))
@@ -96,7 +97,7 @@ class Member_model extends CI_Model {
             $or_where += array('email LIKE ' => '%'.$param['q'].'%');
             $or_where += array('member_card LIKE ' => '%'.$param['q'].'%');
         }
-        if ($param['shirt_size'] != '')
+        if (isset($param['shirt_size']))
         {
             $where += array('shirt_size' => $param['shirt_size']);
         }
@@ -104,7 +105,7 @@ class Member_model extends CI_Model {
         {
             $where += array('religion' => $param['religion']);
         }
-        if ($param['marital_status'] != '')
+        if (isset($param['marital_status']))
         {
             $where += array('marital_status' => $param['marital_status']);
         }
@@ -112,7 +113,7 @@ class Member_model extends CI_Model {
         {
             $where += array('status' => $param['status']);
         }
-        if ($param['gender'] != '')
+        if (isset($param['gender']))
         {
             $where += array('gender' => $param['gender']);
         }
@@ -147,7 +148,7 @@ class Member_model extends CI_Model {
             $or_where += array('idcard_number LIKE ' => '%'.$param['q'].'%');
             $or_where += array('member_card LIKE ' => '%'.$param['q'].'%');
         }
-        if ($param['shirt_size'] != '')
+        if (isset($param['shirt_size']))
         {
             $where += array('shirt_size' => $param['shirt_size']);
         }
@@ -155,7 +156,7 @@ class Member_model extends CI_Model {
         {
             $where += array('religion' => $param['religion']);
         }
-        if ($param['marital_status'] != '')
+        if (isset($param['marital_status']))
         {
             $where += array('marital_status' => $param['marital_status']);
         }
@@ -163,7 +164,7 @@ class Member_model extends CI_Model {
         {
             $where += array('status' => $param['status']);
         }
-        if ($param['gender'] != '')
+        if (isset($param['gender']))
         {
             $where += array('gender' => $param['gender']);
         }

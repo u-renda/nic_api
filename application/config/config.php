@@ -509,11 +509,23 @@ if(is_bool(LOCALHOST) || LOCALHOST == 'localhost')
 {
     $config['link_member_photo'] = 'http://localhost/upload_nic/member/';
     $config['link_post_photo'] = 'http://localhost/upload_nic/post/';
+    
+    define('WEB_HOST', 'http://localhost/nic_web/');
 }
 else
 {
     $config['link_member_photo'] = 'upload.nezindaclub.com/member/';
 }
+
+$config['title'] = 'NEZindaCLUB';
+$config['registration_fee'] = 150000;
+$config['link_web_transfer'] = WEB_HOST.'transfer_confirmation';
+$config['email_admin'] = 'nezindaclub.official@gmail.com';
+
+$config['code_member_gender'] = array(
+    0 => 'M',
+    1 => 'F'
+);
 
 // Default Filters
 $config['default_admin_group'] = array("1", "2", "3");
