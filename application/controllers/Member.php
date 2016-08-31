@@ -65,7 +65,6 @@ class Member extends REST_Controller {
 		$name = filter(trim(strtolower($this->post('name'))));
 		$email = filter(trim(strtolower($this->post('email'))));
 		$username = filter(trim(strtolower($this->post('username'))));
-		$password = filter(trim($this->post('password')));
 		$idcard_type = filter(trim(intval($this->post('idcard_type'))));
 		$idcard_number = filter(trim($this->post('idcard_number')));
 		$idcard_photo = filter(trim(strtolower($this->post('idcard_photo'))));
@@ -85,6 +84,7 @@ class Member extends REST_Controller {
 		$member_number = filter(trim($this->post('member_number')));
 		$member_card = filter(trim($this->post('member_card')));
 		$approved_date = filter(trim($this->post('approved_date')));
+		$notes = filter(trim($this->post('notes')));
 		
 		$data = array();
 		if ($id_kota == FALSE)
@@ -292,17 +292,11 @@ class Member extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			if ($password == TRUE)
-			{
-				$password = md5($password);
-			}
-			
 			$param = array();
 			$param['id_kota'] = $id_kota;
 			$param['name'] = $name;
 			$param['email'] = $email;
 			$param['username'] = $username;
-			$param['password'] = $password;
 			$param['idcard_type'] = $idcard_type;
 			$param['idcard_number'] = $idcard_number;
 			$param['idcard_photo'] = $idcard_photo;
@@ -321,6 +315,7 @@ class Member extends REST_Controller {
 			$param['status'] = $status;
 			$param['member_card'] = $member_card;
 			$param['member_number'] = $member_number;
+			$param['notes'] = $notes;
 			$param['approved_date'] = $approved_date;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
@@ -334,14 +329,12 @@ class Member extends REST_Controller {
 				$param2['gender'] = $gender;
 				
 				$generate_username = generate_username((object) $param2);
-				$generate_password = random_string('alnum', 8);
 				$get_member_number = get_member_number();
 				$get_member_card = get_member_card((object) $param2, $id_admin);
 				
 				if ($get_member_card != FALSE)
 				{
 					$param['username'] = $generate_username;
-					$param['password'] = md5($generate_password);
 					$param['member_number'] = $get_member_number;
 					$param['member_card'] = $get_member_card;
 					$param['approved_date'] = date('Y-m-d H:i:s');
@@ -542,6 +535,7 @@ class Member extends REST_Controller {
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
+					'notes' => $row->notes,
 					'approved_date' => $row->approved_date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
@@ -752,6 +746,7 @@ class Member extends REST_Controller {
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
+					'notes' => $row->notes,
 					'approved_date' => $row->approved_date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
@@ -803,7 +798,12 @@ class Member extends REST_Controller {
 		$status = filter(trim(intval($this->post('status'))));
 		$member_number = filter(trim($this->post('member_number')));
 		$member_card = filter(trim(strtoupper($this->post('member_card'))));
+		$notes = filter(trim($this->post('notes')));
 		$approved_date = filter(trim($this->post('approved_date')));
+		$transfer_date = filter(trim($this->post('transfer_date')));
+		$transfer_photo = filter(trim(strtolower($this->post('transfer_photo'))));
+		$account_name = filter(trim(strtolower($this->post('account_name'))));
+		$other_information = filter(trim($this->post('other_information')));
 		
 		$data = array();
 		if ($id_member == FALSE)
@@ -990,10 +990,15 @@ class Member extends REST_Controller {
 					$param['resi'] = $resi;
 				}
 				
+				if ($notes == TRUE)
+				{
+					$param['notes'] = $notes;
+				}
+				
 				if ($status == TRUE)
 				{
 					// Jika status diubah manual, maka ada beberapa info yang harus diubah
-					if ($status == 1) // awaiting review
+					if ($status == 1 || $status == 5) // awaiting review / invalid
 					{
 						// kosongin username, password, member number, member card
 						$param['username'] = '-';
@@ -1019,9 +1024,6 @@ class Member extends REST_Controller {
 						$param['member_number'] = 0;
 						$param['member_card'] = '-';
 						$param['approved_date'] = '';
-						
-						// ambil unique code dan update valuenya (+1)
-						$unique_code = get_update_unique_code();
 							
 						// update member transfer
 						if ($query2 != FALSE)
@@ -1041,17 +1043,19 @@ class Member extends REST_Controller {
 						}
 						else
 						{
+							// ambil unique code dan update valuenya (+1)
+							$unique_code = get_update_unique_code();
+							
 							// create member transfer
 							$param3 = array();
 							$param3['id_member'] = $query->row()->id_member;
 							$param3['total'] = $this->config->item('registration_fee') + $unique_code + $query->row()->price;
 							$param3['type'] = 1;
 							$param3['status'] = 1;
+							$param3['created_date'] = date('Y-m-d H:i:s');
+							$param3['updated_date'] = date('Y-m-d H:i:s');
 							$this->member_transfer_model->create($param3);
 						}
-						
-						// send email
-						$send_email = email_req_transfer($query->row_array(), $unique_code);
 					}
 					elseif ($status == 3) // awaiting approval
 					{
@@ -1062,56 +1066,56 @@ class Member extends REST_Controller {
 						$param['member_card'] = '-';
 						$param['approved_date'] = '';
 						
-						// ambil unique code dan update valuenya (+1)
-						$unique_code = get_update_unique_code();
-							
-						// update member transfer
 						if ($query2 != FALSE)
 						{
 							foreach ($query2 as $row)
 							{
-								$param3 = array();
-								$param3['date'] = '0000-00-00';
-								$param3['photo'] = '-';
-								$param3['account_name'] = '-';
-								$param3['other_information'] = '-';
-								$param3['resi'] = '-';
-								$param3['status'] = 1;
-								$param3['updated_date'] = date('Y-m-d H:i:s');
-								$this->member_transfer_model->update($row->id_member_transfer, $param3);
+								$param4 = array();
+								$param4['date'] = $transfer_date;
+								$param4['photo'] = $transfer_photo;
+								$param4['account_name'] = $account_name;
+								$param4['other_information'] = $other_information;
+								$param4['status'] = 2;
+								$param4['updated_date'] = date('Y-m-d H:i:s');
+								$this->member_transfer_model->update($row->id_member_transfer, $param4);
 							}
 						}
 						else
 						{
+							// ambil unique code dan update valuenya (+1)
+							$unique_code = get_update_unique_code();
+							
 							// create member transfer
 							$param3 = array();
 							$param3['id_member'] = $query->row()->id_member;
 							$param3['total'] = $this->config->item('registration_fee') + $unique_code + $query->row()->price;
 							$param3['type'] = 1;
-							$param3['status'] = 1;
+							$param3['status'] = 2;
+							$param4['created_date'] = date('Y-m-d H:i:s');
+							$param4['updated_date'] = date('Y-m-d H:i:s');
 							$this->member_transfer_model->create($param3);
 						}
 						
-						// send email
-						$send_email = email_req_transfer($query->row_array(), $unique_code);
 					}
 					elseif ($status == 4) // approved
 					{
-						$generate_username = generate_username($query->row());
-						$generate_password = random_string('alnum', 8);
-						$get_member_number = get_member_number();
-						$get_member_card = get_member_card($query->row(), $id_admin);
-						
-						if ($get_member_card != FALSE)
-						{
-							$param['username'] = $generate_username;
-							$param['password'] = md5($generate_password);
-							$param['member_number'] = $get_member_number;
-							$param['member_card'] = $get_member_card;
+						// isi username, password, member number, member card
+						//$param2 = array();
+						//$param2['name'] = $name;
+						//$param2['birth_date'] = $birth_date;
+						//$param2['gender'] = $gender;
+						//
+						//$generate_username = generate_username((object) $param2);
+						//$get_member_number = get_member_number();
+						//$get_member_card = get_member_card((object) $param2, $id_admin);
+						//
+						//if ($get_member_card != FALSE)
+						//{
+							$param['username'] = $username;
+							$param['member_number'] = $member_number;
+							$param['member_card'] = $member_card;
 							$param['approved_date'] = date('Y-m-d H:i:s');
-							
-							// send email
-						}
+						//}
 					}
 					
 					$param['status'] = $status;

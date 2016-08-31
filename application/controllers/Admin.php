@@ -228,7 +228,7 @@ class Admin extends REST_Controller {
 		$data = array();
 		if ($id_admin == FALSE && $username == FALSE && $email == FALSE && $name == FALSE)
 		{
-			$data['id_admin'] = 'required (username/email/name)';
+			$data['id_admin'] = 'required (username/email/name/twitter)';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -284,7 +284,7 @@ class Admin extends REST_Controller {
 			}
 			else
 			{
-				$data['id_admin'] = 'not found (username/email/name/initial)';
+				$data['id_admin'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}

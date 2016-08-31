@@ -245,6 +245,7 @@ class Post extends REST_Controller {
 				$data = array(
 					'id_post' => $row->id_post,
 					'title' => $row->title,
+					'slug' => $row->slug,
 					'content' => $row->content,
 					'media' => $row->media,
 					'media_type' => intval($row->media_type),
@@ -288,6 +289,7 @@ class Post extends REST_Controller {
 		$status = filter(intval(trim($this->get('status'))));
 		$is_event = filter(trim($this->get('is_event')));
 		$media_not = filter(trim($this->get('media_not')));
+		$q = filter(trim($this->get('q')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -351,6 +353,11 @@ class Post extends REST_Controller {
 		
 		$param = array();
 		$param2 = array();
+		if ($q == TRUE)
+		{
+			$param['q'] = $q;
+			$param2['q'] = $q;
+		}
 		if ($media_type == TRUE)
 		{
 			$param['media_type'] = $media_type;
@@ -366,7 +373,7 @@ class Post extends REST_Controller {
 			$param['status'] = $status;
 			$param2['status'] = $status;
 		}
-		if (isset($is_event))
+		if ($is_event != '')
 		{
 			$param['is_event'] = $is_event;
 			$param2['is_event'] = $is_event;

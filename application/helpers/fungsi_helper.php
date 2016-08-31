@@ -387,23 +387,14 @@ if ( ! function_exists('get_member_card'))
 		
 		if ($query->num_rows() > 0)
 		{
-			$query2 = $CI->member_model->lists(array('order' => 'member_number', 'sort' => 'desc', 'limit' => 1, 'offset' => 0));
+			$birth_date = date('my', strtotime($param->birth_date));
+			$gender = $code_member_gender[$param->gender];
+			$initial = $query->row()->admin_initial;
+			$year = date('y');
+			$get_member_number = get_member_number();
 			
-			if ($query2->num_rows() > 0)
-			{
-				$birth_date = date('my', strtotime($param->birth_date));
-				$gender = $code_member_gender[$param->gender];
-				$initial = $query->row()->admin_initial;
-				$year = date('y');
-				$get_member_number = get_member_number();
-				
-				$data = $birth_date.$gender.'W'.$initial.$year.$get_member_number;
-				return $data;
-			}
-			else
-			{
-				return FALSE;
-			}
+			$data = $birth_date.$gender.'W'.$initial.$year.$get_member_number;
+			return $data;
 		}
 		else
 		{

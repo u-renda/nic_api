@@ -52,12 +52,15 @@ class Reindex extends REST_Controller {
 				{
 					$param2 = array();
 					$param2['username'] = trim(strtolower($row->username));
-					$param2['password'] = trim($row->password);
-					$param2['name'] = trim(strtolower($row->firstname));
 					$param2['email'] = trim(strtolower($row->email));
+					$param2['admin_initial'] = trim(strtoupper($row->admin_initial));
+					$param2['name'] = trim(strtolower($row->firstname));
+					$param2['password'] = trim($row->password);
 					$param2['photo'] = '';
 					$param2['admin_role'] = 1;
-					$param2['admin_initial'] = trim(strtoupper($row->admin_initial));
+					$param2['position'] = '';
+					$param2['twitter'] = '';
+					$param2['admin_group'] = 1;
 					$param2['created_date'] = $row->create_date;
 					$param2['updated_date'] = $row->update_date;
 					$create = $this->reindex_model->admin($param2);
@@ -985,6 +988,7 @@ class Reindex extends REST_Controller {
 						$type = 1;
 					}
 					
+					// Status delete gak diperluin lagi, jadi gak usah dimasukkin
 					if ($row->status == 'P')
 					{
 						$status = 1;

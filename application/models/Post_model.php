@@ -40,7 +40,7 @@ class Post_model extends CI_Model {
             $where += array('slug' => $param['slug']);
         }
         
-        $this->db->select('id_post, title, content, media, media_type, type, status, is_event,
+        $this->db->select('id_post, title, slug, content, media, media_type, type, status, is_event,
 						  created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
@@ -71,7 +71,7 @@ class Post_model extends CI_Model {
         {
             $where += array('media != ' => '');
         }
-        if ($param['is_event'] != '')
+        if (isset($param['is_event']))
         {
             $where += array('is_event' => $param['is_event']);
         }
@@ -105,7 +105,7 @@ class Post_model extends CI_Model {
         {
             $where += array('media_type' => $param['media_type']);
         }
-        if ($param['is_event'] != '')
+        if (isset($param['is_event']))
         {
             $where += array('is_event' => $param['is_event']);
         }
