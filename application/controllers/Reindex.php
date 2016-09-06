@@ -397,7 +397,7 @@ class Reindex extends REST_Controller {
 					}
 					elseif ($row->status == 'D')
 					{
-						$status = 2;
+						$status = 0;
 					}
 					else
 					{
