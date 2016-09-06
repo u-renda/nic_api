@@ -591,20 +591,10 @@ class Reindex extends REST_Controller {
 						$get_post = $this->reindex_model->provinsi_info(array('provinsi' => $name));
 						$id_provinsi = $get_post->row()->id_provinsi;
 						
-						if ($row->status == 'X')
-						{
-							$status = 0;
-						}
-						else
-						{
-							$status = 1;
-						}
-						
 						$param2 = array();
 						$param2['id_provinsi'] = $id_provinsi;
 						$param2['kota'] = trim(strtolower($row->city_name));
 						$param2['price'] = trim($row->delivery_cost);
-						$param2['status'] = $status;
 						$param2['created_date'] = date('Y-m-d H:i:s');
 						$param2['updated_date'] = date('Y-m-d H:i:s');
 						$create = $this->reindex_model->kota($param2);
