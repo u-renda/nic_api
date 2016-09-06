@@ -1087,25 +1087,28 @@ class Reindex extends REST_Controller {
 				foreach ($get->result() as $row)
 				{
 					$get_nic_post = $this->reindex_model->old_post_info(array('post_id' => $row->post_id));
-				
+					
 					if ($get_nic_post->num_rows() > 0)
 					{
 						$title = trim(strtolower($get_nic_post->row()->post_title));
-					
 						$get_post = $this->reindex_model->post_info(array('title' => $title));
-						$id_post = $get_post->row()->id_post;
-					
-						$param2 = array();
-						$param2['id_post'] = $id_post;
-						$param2['year'] = $row->year;
-						$param2['month'] = $row->month;
-						$param2['created_date'] = date('Y-m-d H:i:s');
-						$param2['updated_date'] = date('Y-m-d H:i:s');
-						$create = $this->reindex_model->post_archived($param2);
-						$i++;
 						
-						// Update Nic_archive
-						$update = $this->reindex_model->old_post_archived_update($row->post_id, array('cron' => 'bot'));
+						if ($get_post->num_rows() > 0)
+						{
+							$id_post = $get_post->row()->id_post;
+					
+							$param2 = array();
+							$param2['id_post'] = $id_post;
+							$param2['year'] = $row->year;
+							$param2['month'] = $row->month;
+							$param2['created_date'] = date('Y-m-d H:i:s');
+							$param2['updated_date'] = date('Y-m-d H:i:s');
+							$create = $this->reindex_model->post_archived($param2);
+							$i++;
+							
+							// Update Nic_archive
+							$update = $this->reindex_model->old_post_archived_update($row->post_id, array('cron' => 'bot'));
+						}
 					}
 				}
 				
