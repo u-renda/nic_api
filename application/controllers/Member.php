@@ -75,9 +75,6 @@ class Member extends REST_Controller {
 		$phone_number = filter(trim($this->post('phone_number')));
 		$birth_place = filter(trim($this->post('birth_place')));
 		$birth_date = filter(trim($this->post('birth_date')));
-		$marital_status = filter(trim($this->post('marital_status')));
-		$occupation = filter(trim($this->post('occupation')));
-		$religion = filter(trim(intval($this->post('religion'))));
 		$shirt_size = filter(trim($this->post('shirt_size')));
 		$photo = filter(trim(strtolower($this->post('photo'))));
 		$status = filter(trim(intval($this->post('status'))));
@@ -171,27 +168,6 @@ class Member extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ($marital_status == '')
-		{
-			$data['marital_status'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($occupation == FALSE)
-		{
-			$data['occupation'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($religion == FALSE)
-		{
-			$data['religion'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
 		if ($shirt_size == '')
 		{
 			$data['shirt_size'] = 'required';
@@ -262,20 +238,6 @@ class Member extends REST_Controller {
 			$code = 400;
 		}
 		
-		if (in_array($marital_status, $this->config->item('default_member_marital_status')) == FALSE && $marital_status == TRUE)
-		{
-			$data['marital_status'] = 'wrong value';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if (in_array($religion, $this->config->item('default_member_religion')) == FALSE && $religion == TRUE)
-		{
-			$data['religion'] = 'wrong value';
-			$validation = 'error';
-			$code = 400;
-		}
-		
 		if (in_array($shirt_size, $this->config->item('default_member_shirt_size')) == FALSE && $shirt_size == TRUE)
 		{
 			$data['shirt_size'] = 'wrong value';
@@ -307,9 +269,6 @@ class Member extends REST_Controller {
 			$param['phone_number'] = str_replace(' ', '', $phone_number);
 			$param['birth_place'] = $birth_place;
 			$param['birth_date'] = $birth_date;
-			$param['marital_status'] = $marital_status;
-			$param['occupation'] = $occupation;
-			$param['religion'] = $religion;
 			$param['shirt_size'] = $shirt_size;
 			$param['photo'] = $photo;
 			$param['status'] = $status;
