@@ -88,7 +88,6 @@ class Member_model extends CI_Model {
     
     function lists($param)
     {
-		//print_r($param);die();
         $where = array();
         $or_where = array();
         if (isset($param['q']))

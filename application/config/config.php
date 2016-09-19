@@ -515,6 +515,9 @@ if(is_bool(LOCALHOST) || LOCALHOST == 'localhost')
 else
 {
     $config['link_member_photo'] = 'upload.nezindaclub.com/member/';
+    $config['link_post_photo'] = 'upload.nezindaclub.com/post/';
+    
+    define('WEB_HOST', 'http://nezindaclub.com/');
 }
 
 $config['title'] = 'NEZindaCLUB';

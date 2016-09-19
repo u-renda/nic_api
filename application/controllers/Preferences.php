@@ -167,7 +167,6 @@ class Preferences extends REST_Controller {
 					'key' => $row->key,
 					'value' => $row->value,
 					'description' => $row->description,
-					'type' => intval($row->type),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
 				);
@@ -200,7 +199,6 @@ class Preferences extends REST_Controller {
 		$limit = filter(intval(trim($this->get('limit'))));
 		$order = filter(trim($this->get('order')));
 		$sort = filter(trim($this->get('sort')));
-		$type = filter(trim($this->get('type')));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -248,12 +246,6 @@ class Preferences extends REST_Controller {
 		$param['offset'] = $offset;
 		$param['order'] = $order;
 		$param['sort'] = $sort;
-
-        if ($type == TRUE)
-        {
-            $param['type'] = $type;
-            $param2['type'] = $type;
-        }
 		
 		$query = $this->preferences_model->lists($param);
 		$total = $this->preferences_model->lists_count($param2);
@@ -268,7 +260,6 @@ class Preferences extends REST_Controller {
 					'key' => $row->key,
 					'value' => $row->value,
 					'description' => $row->description,
-					'type' => intval($row->type),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
 				);

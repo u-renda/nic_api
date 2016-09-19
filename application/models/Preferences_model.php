@@ -35,7 +35,7 @@ class Preferences_model extends CI_Model {
             $where += array('key' => $param['key']);
         }
         
-        $this->db->select('id_preferences, key, value, description, type, created_date, updated_date');
+        $this->db->select('id_preferences, key, value, description, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->get();
@@ -50,7 +50,7 @@ class Preferences_model extends CI_Model {
             $where += array('type' => $param['type']);
         }
 
-        $this->db->select('id_preferences, key, value, description, type, created_date, updated_date');
+        $this->db->select('id_preferences, key, value, description, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);

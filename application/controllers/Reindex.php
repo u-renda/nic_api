@@ -121,9 +121,6 @@ class Reindex extends REST_Controller {
 			$param = array();
 			$param['limit'] = $limit;
 			$param['offset'] = $offset;
-			$param['shirt_size'] = '';
-			$param['marital_status'] = '';
-			$param['gender'] = '';
 			$param['order'] = 'created_date';
 			$param['sort'] = 'asc';
 			
@@ -143,21 +140,44 @@ class Reindex extends REST_Controller {
 					$new_photo = '';
 					if ($idcard_photo != '')
 					{
-						$explode = explode('../ext/upload/register/', $idcard_photo);
-						
-						if (count($explode) > 1)
+						// Delete foto dengan tulisan aneh
+						if ($idcard_photo == 'Ok (passpor)' || $idcard_photo == 'Ok'
+							|| $idcard_photo == 'Menyusul' || $idcard_photo == 'Ktm'
+							|| $idcard_photo == 'Kartu Pelajar' || $idcard_photo == 'Ga Jelas'
+							|| $idcard_photo == 'Ga Berlaku Lg' || $idcard_photo == 'Ftcp'
+							|| $idcard_photo == 'Expired' || $idcard_photo == 'Burem'
+							|| $idcard_photo == 'Blur')
 						{
-							$new_idcard_photo = $this->config->item('link_member_photo').$explode[1];
+							$new_idcard_photo = '';
+						}
+						else
+						{
+							$explode = explode('../ext/upload/register/', $idcard_photo);
+						
+							if (count($explode) > 1)
+							{
+								$new_idcard_photo = $this->config->item('link_member_photo').$explode[1];
+							}
 						}
 					}
 					
 					if ($photo != '')
 					{
-						$explode = explode('../ext/upload/register/', $photo);
-						
-						if (count($explode) > 1)
+						// Delete foto dengan tulisan aneh
+						if ($photo == 'Tdk Close Up' || $photo == 'Ok' || $photo == 'Jauh'
+							|| $photo == 'Ga Dr Depan' || $photo == 'Ga Close Up' || $photo == 'Burem'
+							|| $photo == 'Berkacamata Item')
 						{
-							$new_photo = $this->config->item('link_member_photo').$explode[1];
+							$new_photo = '';
+						}
+						else
+						{
+							$explode = explode('../ext/upload/register/', $photo);
+							
+							if (count($explode) > 1)
+							{
+								$new_photo = $this->config->item('link_member_photo').$explode[1];
+							}
 						}
 					}					
 					
@@ -302,7 +322,6 @@ class Reindex extends REST_Controller {
 			$param['order'] = 'created_date';
 			$param['sort'] = 'asc';
 			$param['media_type'] = 2;
-			$param['is_event'] = '';
 			
 			$get = $this->post_model->lists($param);
 			
