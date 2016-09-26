@@ -466,9 +466,18 @@ class Member extends REST_Controller {
 			if ($query->num_rows() > 0)
 			{
 				$row = $query->row();
+				$resi = '-';
 				
 				// hitung point
 				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member, 'status' => 2));
+				
+				// dapetin no resi
+				$query2 = $this->member_transfer_model->info(array('id_member' => $row->id_member, 'type' => 1));
+				
+				if ($query2->num_rows() > 0)
+				{
+					$resi = $query2->row()->resi;
+				}
 				
 				$data = array(
 					'id_member' => $row->id_member,
@@ -495,6 +504,7 @@ class Member extends REST_Controller {
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
 					'notes' => $row->notes,
+					'resi' => $resi,
 					'approved_date' => $row->approved_date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
