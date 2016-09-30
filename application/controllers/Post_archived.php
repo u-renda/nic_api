@@ -8,7 +8,7 @@ class Post_archived extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('post_archived_model');
+		$this->load->model('post_archived_model', 'the_model');
     }
 	
 	function create_post()
@@ -50,7 +50,7 @@ class Post_archived extends REST_Controller {
 			$param['month'] = $month;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->post_archived_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -92,11 +92,11 @@ class Post_archived extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->post_archived_model->info(array('id_post_archived' => $id_post_archived));
+            $query = $this->the_model->info(array('id_post_archived' => $id_post_archived));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->post_archived_model->delete($id_post_archived);
+                $delete = $this->the_model->delete($id_post_archived);
 				
 				if ($delete)
 				{
@@ -146,12 +146,12 @@ class Post_archived extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_post_archived)
+			if ($id_post_archived != '')
 			{
 				$param['id_post_archived'] = $id_post_archived;
 			}
 			
-			$query = $this->post_archived_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -159,21 +159,14 @@ class Post_archived extends REST_Controller {
 				
 				$data = array(
 					'id_post_archived' => $row->id_post_archived,
-					'id_post' => $row->id_post,
 					'year' => intval($row->year),
+					'month' => intval($row->month),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
 					'post' => array(
+						'id_post' => $row->id_post,
 						'title' => $row->title,
-						'slug' => $row->slug,
-						'content' => $row->content,
-						'media' => $row->media,
-						'media_type' => intval($row->media_type),
-						'type' => intval($row->type),
-						'status' => intval($row->status),
-						'is_event' => intval($row->is_event),
-						'created_date' => $row->post_created_date,
-						'updated_date' => $row->post_updated_date
+						'slug' => $row->slug
 					)
 				);
 				
@@ -266,8 +259,8 @@ class Post_archived extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->post_archived_model->lists($param);
-		$total = $this->post_archived_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -276,17 +269,11 @@ class Post_archived extends REST_Controller {
 			{
 				$data[] = array(
 					'id_post_archived' => $row->id_post_archived,
+					'id_post' => $row->id_post,
 					'year' => intval($row->year),
 					'month' => intval($row->month),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
-					'post' => array(
-						'id_post' => $row->id_post,
-						'title' => $row->title,
-						'slug' => $row->slug,
-						'type' => intval($row->type),
-						'status' => intval($row->status)
-					)
+					'updated_date' => $row->updated_date
 				);
 			}
 		}
@@ -324,7 +311,7 @@ class Post_archived extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->post_archived_model->info(array('id_post_archived' => $id_post_archived));
+			$query = $this->the_model->info(array('id_post_archived' => $id_post_archived));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -347,7 +334,7 @@ class Post_archived extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->post_archived_model->update($id_post_archived, $param);
+					$update = $this->the_model->update($id_post_archived, $param);
 					
 					if ($update)
 					{

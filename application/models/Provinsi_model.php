@@ -3,6 +3,7 @@
 class Provinsi_model extends CI_Model {
 
     var $table = 'provinsi';
+	var $table_id = 'id_provinsi';
     
     public function __construct()
     {
@@ -11,14 +12,14 @@ class Provinsi_model extends CI_Model {
     
     function create($param)
     {
-        $this->db->set('id_provinsi', 'UUID_SHORT()', FALSE);
+        $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
 		return $query;
     }
     
     function delete($id)
     {
-        $this->db->where('id_provinsi', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->delete($this->table);
         return $query;
     }
@@ -67,7 +68,7 @@ class Provinsi_model extends CI_Model {
             $where += array('provinsi LIKE ' => '%'.$param['q'].'%');
         }
         
-        $this->db->select('id_provinsi');
+        $this->db->select($this->table_id);
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->count_all_results();
@@ -76,7 +77,7 @@ class Provinsi_model extends CI_Model {
     
     function update($id, $param)
     {
-        $this->db->where('id_provinsi', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->update($this->table, $param);
         return $query;
     }

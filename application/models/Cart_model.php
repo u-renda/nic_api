@@ -1,9 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Member_point_model extends CI_Model {
+class Cart_model extends CI_Model {
 
-    var $table = 'member_point';
-	var $table_id = 'id_member_point';
+    var $table = 'cart';
+	var $table_id = 'id_cart';
     
     public function __construct()
     {
@@ -27,17 +27,16 @@ class Member_point_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_member_point']))
+        if (isset($param['id_cart']))
         {
-            $where += array('id_member_point' => $param['id_member_point']);
+            $where += array('id_cart' => $param['id_cart']);
         }
         
-        $this->db->select('id_member_point, '.$this->table.'.id_member, '.$this->table.'.id_events,
-						  '.$this->table.'.status, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, name, title');
+        $this->db->select('id_cart, '.$this->table.'.id_product, '.$this->table.'.quantity,
+						  unique_code, total, '.$this->table.'.status, '.$this->table.'.created_date,
+						  '.$this->table.'.updated_date, name');
         $this->db->from($this->table);
-		$this->db->join('member', $this->table.'.id_member = member.id_member', 'left');
-		$this->db->join('events', $this->table.'.id_events = events.id_events', 'left');
+        $this->db->join('product', $this->table.'.id_product = product.id_product', 'left');
         $this->db->where($where);
         $query = $this->db->get();
         return $query;
@@ -46,39 +45,24 @@ class Member_point_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['id_events']))
-        {
-            $where += array('id_events' => $param['id_events']);
-        }
-        if (isset($param['id_member']))
-        {
-            $where += array('id_member' => $param['id_member']);
-        }
         if (isset($param['status']))
         {
             $where += array('status' => $param['status']);
         }
         
-        $this->db->select('id_member_point, id_member, id_events, status, created_date, updated_date');
+        $this->db->select('id_cart, id_product, quantity, unique_code, total, status, created_date,
+						  updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
         $query = $this->db->get();
-		return $query;
+        return $query;
     }
     
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['id_events']))
-        {
-            $where += array('id_events' => $param['id_events']);
-        }
-        if (isset($param['id_member']))
-        {
-            $where += array('id_member' => $param['id_member']);
-        }
         if (isset($param['status']))
         {
             $where += array('status' => $param['status']);

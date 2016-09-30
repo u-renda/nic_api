@@ -9,7 +9,7 @@ class Post extends REST_Controller {
     {
         parent::__construct();
 		$this->load->helper('fungsi');
-		$this->load->model('post_model');
+		$this->load->model('post_model', 'the_model');
     }
 	
 	function create_post()
@@ -124,7 +124,7 @@ class Post extends REST_Controller {
 			$param['is_event'] = $is_event;
 			$param['created_date'] = $created_date;
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->post_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -167,11 +167,11 @@ class Post extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->post_model->info(array('id_post' => $id_post));
+            $query = $this->the_model->info(array('id_post' => $id_post));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->post_model->delete($id_post);
+                $delete = $this->the_model->delete($id_post);
 				
 				if ($delete)
 				{
@@ -215,7 +215,7 @@ class Post extends REST_Controller {
 		$data = array();
 		if ($id_post == FALSE && $title == FALSE && $slug == FALSE)
 		{
-			$data['id_post'] = 'required (title/slug)';
+			$data['id_post'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -223,11 +223,11 @@ class Post extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_post)
+			if ($id_post != '')
 			{
 				$param['id_post'] = $id_post;
 			}
-			elseif ($title)
+			elseif ($title != '')
 			{
 				$param['title'] = $title;
 			}
@@ -236,7 +236,7 @@ class Post extends REST_Controller {
 				$param['slug'] = $slug;
 			}
 			
-			$query = $this->post_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -253,7 +253,7 @@ class Post extends REST_Controller {
 					'status' => intval($row->status),
 					'is_event' => intval($row->is_event),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
+					'updated_date' => $row->updated_date
 				);
 				
 				$validation = 'ok';
@@ -389,8 +389,8 @@ class Post extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->post_model->lists($param);
-		$total = $this->post_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -479,7 +479,7 @@ class Post extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->post_model->info(array('id_post' => $id_post));
+			$query = $this->the_model->info(array('id_post' => $id_post));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -527,7 +527,7 @@ class Post extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->post_model->update($id_post, $param);
+					$update = $this->the_model->update($id_post, $param);
 					
 					if ($update)
 					{

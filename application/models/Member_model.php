@@ -3,6 +3,7 @@
 class Member_model extends CI_Model {
 
     var $table = 'member';
+	var $table_id = 'id_member';
     
     public function __construct()
     {
@@ -22,7 +23,7 @@ class Member_model extends CI_Model {
     
     function create($param)
     {
-        $this->db->set('id_member', 'UUID_SHORT()', FALSE);
+        $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
 		$id = $this->db->insert_id();
 		return $id;
@@ -30,7 +31,7 @@ class Member_model extends CI_Model {
     
     function delete($id)
     {
-        $this->db->where('id_member', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->delete($this->table);
         return $query;
     }
@@ -77,8 +78,7 @@ class Member_model extends CI_Model {
 						  birth_date, marital_status, occupation, religion, shirt_size, photo,
 						  '.$this->table.'.status, member_number, member_card, approved_date,
 						  '.$this->table.'.created_date, '.$this->table.'.updated_date,
-						  kota, price, kota.created_date AS kota_created_date,
-						  kota.updated_date AS kota_updated_date, notes');
+						  kota, price, notes');
         $this->db->from($this->table);
 		$this->db->join('kota', $this->table.'.id_kota = kota.id_kota', 'left');
         $this->db->where($where);
@@ -172,7 +172,7 @@ class Member_model extends CI_Model {
             $where += array('idcard_type' => $param['idcard_type']);
         }
         
-        $this->db->select('id_member');
+        $this->db->select($this->table_id);
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->or_where($or_where);
@@ -182,7 +182,7 @@ class Member_model extends CI_Model {
     
     function update($id, $param)
     {
-        $this->db->where('id_member', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->update($this->table, $param);
         return $query;
     }

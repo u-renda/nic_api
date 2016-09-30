@@ -9,7 +9,7 @@ class Preferences extends REST_Controller {
     {
         parent::__construct();
 		$this->load->helper('fungsi');
-		$this->load->model('preferences_model');
+		$this->load->model('preferences_model', 'the_model');
     }
 	
 	function create_post()
@@ -50,7 +50,7 @@ class Preferences extends REST_Controller {
 			$param['description'] = $description;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->preferences_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -92,11 +92,11 @@ class Preferences extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->preferences_model->info(array('id_preferences' => $id_preferences));
+            $query = $this->the_model->info(array('id_preferences' => $id_preferences));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->preferences_model->delete($id_preferences);
+                $delete = $this->the_model->delete($id_preferences);
 				
 				if ($delete)
 				{
@@ -139,7 +139,7 @@ class Preferences extends REST_Controller {
 		$data = array();
 		if ($id_preferences == FALSE && $key == FALSE)
 		{
-			$data['id_preferences'] = 'required (key)';
+			$data['id_preferences'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -147,7 +147,7 @@ class Preferences extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_preferences)
+			if ($id_preferences != '')
 			{
 				$param['id_preferences'] = $id_preferences;
 			}
@@ -156,7 +156,7 @@ class Preferences extends REST_Controller {
 				$param['key'] = $key;
 			}
 			
-			$query = $this->preferences_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -168,7 +168,7 @@ class Preferences extends REST_Controller {
 					'value' => $row->value,
 					'description' => $row->description,
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
+					'updated_date' => $row->updated_date
 				);
 				
                 $validation = 'ok';
@@ -242,13 +242,14 @@ class Preferences extends REST_Controller {
 		
 		$param = array();
 		$param2 = array();
+		
 		$param['limit'] = $limit;
 		$param['offset'] = $offset;
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->preferences_model->lists($param);
-		$total = $this->preferences_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -299,7 +300,7 @@ class Preferences extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->preferences_model->info(array('id_preferences' => $id_preferences));
+			$query = $this->the_model->info(array('id_preferences' => $id_preferences));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -320,7 +321,7 @@ class Preferences extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->preferences_model->update($id_preferences, $param);
+					$update = $this->the_model->update($id_preferences, $param);
 					
 					if ($update)
 					{

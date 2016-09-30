@@ -8,7 +8,7 @@ class Kota extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('kota_model');
+		$this->load->model('kota_model', 'the_model');
     }
 	
 	function create_post()
@@ -57,7 +57,7 @@ class Kota extends REST_Controller {
 			$param['price'] = intval($price);
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->kota_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -99,11 +99,11 @@ class Kota extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->kota_model->info(array('id_kota' => $id_kota));
+            $query = $this->the_model->info(array('id_kota' => $id_kota));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->kota_model->delete($id_kota);
+                $delete = $this->the_model->delete($id_kota);
 				
 				if ($delete > 0)
 				{
@@ -146,7 +146,7 @@ class Kota extends REST_Controller {
 		$data = array();
 		if ($id_kota == FALSE && $kota == FALSE)
 		{
-			$data['id_kota'] = 'required (kota)';
+			$data['id_kota'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -163,7 +163,7 @@ class Kota extends REST_Controller {
 				$param['kota'] = $kota;
 			}
 			
-			$query = $this->kota_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -171,15 +171,13 @@ class Kota extends REST_Controller {
 				
 				$data = array(
 					'id_kota' => $row->id_kota,
-					'id_provinsi' => $row->id_provinsi,
 					'kota' => $row->kota,
 					'price' => intval($row->price),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
 					'provinsi' => array(
-						'provinsi' => $row->provinsi,
-						'created_date' => $row->provinsi_created_date,
-						'updated_date' => $row->provinsi_updated_date
+						'id_provinsi' => $row->id_provinsi,
+						'provinsi' => $row->provinsi
 					)
 				);
 				
@@ -188,7 +186,7 @@ class Kota extends REST_Controller {
 			}
 			else
 			{
-				$data['id_kota'] = 'not found (kota)';
+				$data['id_kota'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -272,8 +270,8 @@ class Kota extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->kota_model->lists($param);
-		$total = $this->kota_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -282,14 +280,11 @@ class Kota extends REST_Controller {
 			{
 				$data[] = array(
 					'id_kota' => $row->id_kota,
+					'id_provinsi' => $row->id_provinsi,
 					'kota' => $row->kota,
 					'price' => intval($row->price),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
-					'provinsi' => array(
-						'id_provinsi' => $row->id_provinsi,
-						'name' => $row->provinsi
-					)
+					'updated_date' => $row->updated_date
 				);
 			}
 		}
@@ -327,7 +322,7 @@ class Kota extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->kota_model->info(array('id_kota' => $id_kota));
+			$query = $this->the_model->info(array('id_kota' => $id_kota));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -350,7 +345,7 @@ class Kota extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->kota_model->update($id_kota, $param);
+					$update = $this->the_model->update($id_kota, $param);
 					
 					if ($update > 0)
 					{

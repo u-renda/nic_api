@@ -8,7 +8,7 @@ class Faq extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('faq_model');
+		$this->load->model('faq_model', 'the_model');
     }
 	
 	function create_post()
@@ -57,7 +57,7 @@ class Faq extends REST_Controller {
 			$param['answer'] = $answer;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->faq_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -99,11 +99,11 @@ class Faq extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->faq_model->info(array('id_faq' => $id_faq));
+            $query = $this->the_model->info(array('id_faq' => $id_faq));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->faq_model->delete($id_faq);
+                $delete = $this->the_model->delete($id_faq);
 				
 				if ($delete > 0)
 				{
@@ -158,7 +158,7 @@ class Faq extends REST_Controller {
 				$param['id_faq'] = $id_faq;
 			}
 			
-			$query = $this->faq_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -178,7 +178,7 @@ class Faq extends REST_Controller {
 			}
 			else
 			{
-				$data['id_faq'] = 'not found';
+				$data['id_faq'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -267,8 +267,8 @@ class Faq extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->faq_model->lists($param);
-		$total = $this->faq_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -326,7 +326,7 @@ class Faq extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->faq_model->info(array('id_faq' => $id_faq));
+			$query = $this->the_model->info(array('id_faq' => $id_faq));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -349,7 +349,7 @@ class Faq extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->faq_model->update($id_faq, $param);
+					$update = $this->the_model->update($id_faq, $param);
 					
 					if ($update > 0)
 					{

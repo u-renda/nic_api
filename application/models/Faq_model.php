@@ -46,7 +46,7 @@ class Faq_model extends CI_Model {
         if (isset($param['q']))
         {
             $where += array('question LIKE ' => '%'.$param['q'].'%');
-            $where += array('answer LIKE ' => '%'.$param['q'].'%');
+            $or_where += array('answer LIKE ' => '%'.$param['q'].'%');
         }
         if (isset($param['category']))
         {
@@ -56,6 +56,7 @@ class Faq_model extends CI_Model {
         $this->db->select('id_faq, category, question, answer, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
+        $this->db->or_where($or_where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
         $query = $this->db->get();

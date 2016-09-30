@@ -1,9 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Post_model extends CI_Model {
+class Product_model extends CI_Model {
 
-    var $table = 'post';
-	var $table_id = 'id_post';
+    var $table = 'product';
+	var $table_id = 'id_product';
     
     public function __construct()
     {
@@ -14,8 +14,7 @@ class Post_model extends CI_Model {
     {
         $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
-		$id_post = $this->db->insert_id();
-		return $id_post;
+		return $query;
     }
     
     function delete($id)
@@ -28,21 +27,13 @@ class Post_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_post']))
+        if (isset($param['id_product']))
         {
-            $where += array('id_post' => $param['id_post']);
-        }
-        if (isset($param['title']))
-        {
-            $where += array('title' => $param['title']);
-        }
-        if (isset($param['slug']))
-        {
-            $where += array('slug' => $param['slug']);
+            $where += array('id_product' => $param['id_product']);
         }
         
-        $this->db->select('id_post, title, slug, content, media, media_type, type, status, is_event,
-						  created_date, updated_date');
+        $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
+						  status, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->get();
@@ -54,31 +45,15 @@ class Post_model extends CI_Model {
         $where = array();
         if (isset($param['q']))
         {
-            $where += array('title LIKE ' => '%'.$param['q'].'%');
-        }
-        if (isset($param['type']))
-        {
-            $where += array('type' => $param['type']);
+            $where += array('name' => $param['name']);
         }
         if (isset($param['status']))
         {
             $where += array('status' => $param['status']);
         }
-        if (isset($param['media_type']))
-        {
-            $where += array('media_type' => $param['media_type']);
-        }
-        if (isset($param['media_not']))
-        {
-            $where += array('media != ' => '');
-        }
-        if (isset($param['is_event']))
-        {
-            $where += array('is_event' => $param['is_event']);
-        }
         
-        $this->db->select('id_post, title, slug, content, media, media_type, type, status, is_event,
-						  created_date, updated_date');
+        $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
+						  status, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
@@ -92,23 +67,11 @@ class Post_model extends CI_Model {
         $where = array();
         if (isset($param['q']))
         {
-            $where += array('title LIKE ' => '%'.$param['q'].'%');
-        }
-        if (isset($param['type']))
-        {
-            $where += array('type' => $param['type']);
+            $where += array('name' => $param['name']);
         }
         if (isset($param['status']))
         {
             $where += array('status' => $param['status']);
-        }
-        if (isset($param['media_type']))
-        {
-            $where += array('media_type' => $param['media_type']);
-        }
-        if (isset($param['is_event']))
-        {
-            $where += array('is_event' => $param['is_event']);
         }
         
         $this->db->select($this->table_id);

@@ -3,6 +3,7 @@
 class Preferences_model extends CI_Model {
 
     var $table = 'preferences';
+	var $table_id = 'id_preferences';
     
     public function __construct()
     {
@@ -11,14 +12,14 @@ class Preferences_model extends CI_Model {
     
     function create($param)
     {
-        $this->db->set('id_preferences', 'UUID_SHORT()', FALSE);
+        $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
 		return $query;
     }
     
     function delete($id)
     {
-        $this->db->where('id_preferences', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->delete($this->table);
         return $query;
     }
@@ -45,10 +46,6 @@ class Preferences_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['type']))
-        {
-            $where += array('type' => $param['type']);
-        }
 
         $this->db->select('id_preferences, key, value, description, created_date, updated_date');
         $this->db->from($this->table);
@@ -62,12 +59,8 @@ class Preferences_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['type']))
-        {
-            $where += array('type' => $param['type']);
-        }
 
-        $this->db->select('id_preferences');
+        $this->db->select($this->table_id);
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->count_all_results();
@@ -76,7 +69,7 @@ class Preferences_model extends CI_Model {
     
     function update($id, $param)
     {
-        $this->db->where('id_preferences', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->update($this->table, $param);
         return $query;
     }

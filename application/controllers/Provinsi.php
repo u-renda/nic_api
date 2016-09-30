@@ -9,7 +9,7 @@ class Provinsi extends REST_Controller {
     {
         parent::__construct();
 		$this->load->helper('fungsi');
-		$this->load->model('provinsi_model');
+		$this->load->model('provinsi_model', 'the_model');
     }
 	
 	function create_post()
@@ -40,7 +40,7 @@ class Provinsi extends REST_Controller {
 			$param['provinsi'] = $provinsi;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->provinsi_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -82,11 +82,11 @@ class Provinsi extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->provinsi_model->info(array('id_provinsi' => $id_provinsi));
+            $query = $this->the_model->info(array('id_provinsi' => $id_provinsi));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->provinsi_model->delete($id_provinsi);
+                $delete = $this->the_model->delete($id_provinsi);
 				
 				if ($delete)
 				{
@@ -129,7 +129,7 @@ class Provinsi extends REST_Controller {
 		$data = array();
 		if ($id_provinsi == FALSE && $provinsi == FALSE)
 		{
-			$data['id_provinsi'] = 'required (provinsi)';
+			$data['id_provinsi'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -137,7 +137,7 @@ class Provinsi extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_provinsi)
+			if ($id_provinsi != '')
 			{
 				$param['id_provinsi'] = $id_provinsi;
 			}
@@ -146,17 +146,25 @@ class Provinsi extends REST_Controller {
 				$param['provinsi'] = $provinsi;
 			}
 			
-			$query = $this->provinsi_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
-				$data = $query->row();
-				$validation = 'ok';
+				$row = $query->row();
+				
+				$data = array(
+					'id_provinsi' => $row->id_provinsi,
+					'provinsi' => $row->provinsi,
+					'created_date' => $row->created_date,
+					'updated_date' => $row->updated_date
+				);
+				
+                $validation = 'ok';
 				$code = 200;
 			}
 			else
 			{
-				$data['id_provinsi'] = 'not found (provinsi)';
+				$data['id_provinsi'] = 'not found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -234,8 +242,8 @@ class Provinsi extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->provinsi_model->lists($param);
-		$total = $this->provinsi_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -282,7 +290,7 @@ class Provinsi extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->provinsi_model->info(array('id_provinsi' => $id_provinsi));
+			$query = $this->the_model->info(array('id_provinsi' => $id_provinsi));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -295,7 +303,7 @@ class Provinsi extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->provinsi_model->update($id_provinsi, $param);
+					$update = $this->the_model->update($id_provinsi, $param);
 					
 					if ($update)
 					{

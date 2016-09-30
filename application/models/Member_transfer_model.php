@@ -3,6 +3,7 @@
 class Member_transfer_model extends CI_Model {
 
     var $table = 'member_transfer';
+	var $table_id = 'id_member_transfer';
     
     public function __construct()
     {
@@ -11,14 +12,14 @@ class Member_transfer_model extends CI_Model {
     
     function create($param)
     {
-        $this->db->set('id_member_transfer', 'UUID_SHORT()', FALSE);
+        $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
 		return $query;
     }
     
     function delete($id)
     {
-        $this->db->where('id_member_transfer', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->delete($this->table);
         return $query;
     }
@@ -32,15 +33,9 @@ class Member_transfer_model extends CI_Model {
         }
         
         $this->db->select('id_member_transfer, '.$this->table.'.id_member, total, date,
-						  '.$this->table.'.photo, account_name, other_information, type,
-						  '.$this->table.'.created_date, '.$this->table.'.updated_date, name,
-						  email, username, idcard_type, idcard_number, idcard_photo,
-						  idcard_address, shipment_address, postal_code, gender, phone_number,
-						  birth_place, birth_date, marital_status, occupation, religion,
-						  shirt_size, member.photo as member_photo,
-						  member.status AS member_status, member_number, member_card,
-						  approved_date, member.created_date AS member_created_date,
-						  member.updated_date AS member_updated_date, '.$this->table.'.status, resi');
+						  '.$this->table.'.photo, account_name, other_information, type, resi,
+						  '.$this->table.'.status, '.$this->table.'.created_date,
+						  '.$this->table.'.updated_date, name');
         $this->db->from($this->table);
 		$this->db->join('member', $this->table.'.id_member = member.id_member', 'left');
         $this->db->where($where);
@@ -64,12 +59,9 @@ class Member_transfer_model extends CI_Model {
             $where += array($this->table.'.id_member' => $param['id_member']);
         }
         
-        $this->db->select('id_member_transfer, '.$this->table.'.id_member, total, date,
-						  '.$this->table.'.photo, account_name, other_information, type,
-						  '.$this->table.'.created_date, '.$this->table.'.updated_date, name, resi,
-						  '.$this->table.'.status');
+        $this->db->select('id_member_transfer, id_member, total, date, photo, account_name,
+						  other_information, type, created_date, updated_date, resi, status');
         $this->db->from($this->table);
-		$this->db->join('member', $this->table.'.id_member = member.id_member', 'left');
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
@@ -93,7 +85,7 @@ class Member_transfer_model extends CI_Model {
             $where += array('id_member' => $param['id_member']);
         }
         
-        $this->db->select('id_member_transfer');
+        $this->db->select($this->table_id);
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->count_all_results();
@@ -102,7 +94,7 @@ class Member_transfer_model extends CI_Model {
     
     function update($id, $param)
     {
-        $this->db->where('id_member_transfer', $id);
+        $this->db->where($this->table_id, $id);
         $query = $this->db->update($this->table, $param);
         return $query;
     }

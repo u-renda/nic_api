@@ -8,7 +8,7 @@ class Admin extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('admin_model');
+		$this->load->model('admin_model', 'the_model');
     }
 	
 	function create_post()
@@ -134,7 +134,7 @@ class Admin extends REST_Controller {
 			$param['twitter'] = $twitter;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->admin_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -178,11 +178,11 @@ class Admin extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->admin_model->info(array('id_admin' => $id_admin));
+            $query = $this->the_model->info(array('id_admin' => $id_admin));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->admin_model->delete($id_admin);
+                $delete = $this->the_model->delete($id_admin);
 				
 				if ($delete > 0)
 				{
@@ -226,9 +226,10 @@ class Admin extends REST_Controller {
 		$twitter = filter(trim($this->get('twitter')));
 		
 		$data = array();
-		if ($id_admin == FALSE && $username == FALSE && $email == FALSE && $name == FALSE)
+		if ($id_admin == FALSE && $username == FALSE && $email == FALSE && $name == FALSE
+			&& $twitter == FALSE)
 		{
-			$data['id_admin'] = 'required (username/email/name/twitter)';
+			$data['id_admin'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -257,7 +258,7 @@ class Admin extends REST_Controller {
 				$param['email'] = $email;
 			}
 			
-			$query = $this->admin_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -269,14 +270,13 @@ class Admin extends REST_Controller {
 					'email' => $row->email,
 					'admin_initial' => $row->admin_initial,
 					'name' => $row->name,
-					'password' => $row->password,
 					'photo' => $row->photo,
 					'position' => $row->position,
 					'twitter' => $row->twitter,
 					'admin_role' => intval($row->admin_role),
 					'admin_group' => intval($row->admin_group),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
+					'updated_date' => $row->updated_date
 				);
 				
 				$validation = 'ok';
@@ -374,8 +374,8 @@ class Admin extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->admin_model->lists($param);
-		$total = $this->admin_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -461,7 +461,7 @@ class Admin extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->admin_model->info(array('id_admin' => $id_admin));
+			$query = $this->the_model->info(array('id_admin' => $id_admin));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -523,7 +523,7 @@ class Admin extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->admin_model->update($id_admin, $param);
+					$update = $this->the_model->update($id_admin, $param);
 					
 					if ($update > 0)
 					{
@@ -582,7 +582,7 @@ class Admin extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->admin_model->info(array('username' => $username));
+			$query = $this->the_model->info(array('username' => $username));
 			
 			if ($query->num_rows() > 0)
 			{

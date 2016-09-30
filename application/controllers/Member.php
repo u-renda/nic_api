@@ -9,7 +9,7 @@ class Member extends REST_Controller {
     {
         parent::__construct();
 		$this->load->model('kota_model');
-		$this->load->model('member_model');
+		$this->load->model('member_model', 'the_model');
 		$this->load->model('member_point_model');
 		$this->load->model('member_transfer_model');
     }
@@ -28,7 +28,7 @@ class Member extends REST_Controller {
 		}
 		
 		$data = array();
-		$query = $this->member_model->chart_registered(array('year' => $year, 'status' => 4));
+		$query = $this->the_model->chart_registered(array('year' => $year, 'status' => 4));
 		
 		if ($query->num_rows() > 0)
 		{
@@ -300,7 +300,7 @@ class Member extends REST_Controller {
 				}
 			}
 			
-			$query = $this->member_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query != 0 || $query != '')
 			{
@@ -365,11 +365,11 @@ class Member extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->member_model->info(array('id_member' => $id_member));
+            $query = $this->the_model->info(array('id_member' => $id_member));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->member_model->delete($id_member);
+                $delete = $this->the_model->delete($id_member);
 				
 				if ($delete)
 				{
@@ -428,31 +428,31 @@ class Member extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_member)
+			if ($id_member != '')
 			{
 				$param['id_member'] = $id_member;
 			}
-			elseif ($name)
+			elseif ($name != '')
 			{
 				$param['name'] = $name;
 			}
-			elseif ($email)
+			elseif ($email != '')
 			{
 				$param['email'] = $email;
 			}
-			elseif ($username)
+			elseif ($username != '')
 			{
 				$param['username'] = $username;
 			}
-			elseif ($idcard_number)
+			elseif ($idcard_number != '')
 			{
 				$param['idcard_number'] = $idcard_number;
 			}
-			elseif ($phone_number)
+			elseif ($phone_number != '')
 			{
 				$param['phone_number'] = $phone_number;
 			}
-			elseif ($member_number)
+			elseif ($member_number != '')
 			{
 				$param['member_number'] = $member_number;
 			}
@@ -461,7 +461,7 @@ class Member extends REST_Controller {
 				$param['member_card'] = $member_card;
 			}
 			
-			$query = $this->member_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -511,9 +511,7 @@ class Member extends REST_Controller {
 					'kota' => array(
 						'id_kota' => $row->id_kota,
 						'kota' => $row->kota,
-						'price' => intval($row->price),
-						'created_date' => $row->kota_created_date,
-						'updated_date' => $row->kota_updated_date
+						'price' => intval($row->price)
 					)
 				);
 				
@@ -522,7 +520,7 @@ class Member extends REST_Controller {
 			}
 			else
 			{
-				$data['id_member'] = 'not found';
+				$data['id_member'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -666,8 +664,8 @@ class Member extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->member_model->lists($param);
-		$total = $this->member_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -676,18 +674,6 @@ class Member extends REST_Controller {
 			{
 				// hitung point
 				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member));
-				
-				// dapetin no resi
-				$query2 = $this->member_transfer_model->info(array('id_member' => $row->id_member, 'type' => 1));
-				
-				if ($query2->num_rows() > 0)
-				{
-					$resi = $query2->row()->resi;
-				}
-				else
-				{
-					$resi = '-';
-				}
 				
 				$data[] = array(
 					'id_member' => $row->id_member,
@@ -711,11 +697,10 @@ class Member extends REST_Controller {
 					'shirt_size' => intval($row->shirt_size),
 					'photo' => $row->photo,
 					'point' => intval($point),
-					'resi' => $resi,
 					'status' => intval($row->status),
+					'notes' => $row->notes,
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
-					'notes' => $row->notes,
 					'approved_date' => $row->approved_date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
@@ -833,7 +818,7 @@ class Member extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->member_model->info(array('id_member' => $id_member));
+			$query = $this->the_model->info(array('id_member' => $id_member));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -1093,7 +1078,7 @@ class Member extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->member_model->update($id_member, $param);
+					$update = $this->the_model->update($id_member, $param);
 					
 					if ($update == TRUE)
 					{
@@ -1152,7 +1137,7 @@ class Member extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->member_model->info(array('username' => $username));
+			$query = $this->the_model->info(array('username' => $username));
 			
 			if ($query->num_rows() > 0)
 			{

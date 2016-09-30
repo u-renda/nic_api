@@ -38,8 +38,7 @@ class Kota_model extends CI_Model {
         
         $this->db->select('id_kota, '.$this->table.'.id_provinsi, kota, price,
 						  '.$this->table.'.created_date, '.$this->table.'.updated_date,
-						  provinsi, provinsi.created_date AS provinsi_created_date,
-						  provinsi.updated_date AS provinsi_updated_date');
+						  provinsi');
         $this->db->from($this->table);
 		$this->db->join('provinsi', $this->table.'.id_provinsi = provinsi.id_provinsi', 'left');
         $this->db->where($where);
@@ -59,10 +58,8 @@ class Kota_model extends CI_Model {
             $where += array($this->table.'.id_provinsi' => $param['id_provinsi']);
         }
         
-        $this->db->select('id_kota, '.$this->table.'.id_provinsi, kota, price, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, provinsi');
+        $this->db->select('id_kota, id_provinsi, kota, price, created_date, updated_date');
         $this->db->from($this->table);
-        $this->db->join('provinsi', $this->table.'.id_provinsi = provinsi.id_provinsi');
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);

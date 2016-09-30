@@ -8,7 +8,7 @@ class Member_point extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('member_point_model');
+		$this->load->model('member_point_model', 'the_model');
     }
 	
 	function create_post()
@@ -50,7 +50,7 @@ class Member_point extends REST_Controller {
 			$param['status'] = $status;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->member_point_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -92,11 +92,11 @@ class Member_point extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->member_point_model->info(array('id_member_point' => $id_member_point));
+            $query = $this->the_model->info(array('id_member_point' => $id_member_point));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->member_point_model->delete($id_member_point);
+                $delete = $this->the_model->delete($id_member_point);
 				
 				if ($delete)
 				{
@@ -138,9 +138,9 @@ class Member_point extends REST_Controller {
 		$id_member = filter($this->get('id_member'));
 		
 		$data = array();
-		if ($id_member_point == FALSE && $id_events == FALSE && $id_member == FALSE)
+		if ($id_member_point == FALSE)
 		{
-			$data['id_member_point'] = 'required (id_events, id_member)';
+			$data['id_member_point'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -148,20 +148,12 @@ class Member_point extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_member_point)
+			if ($id_member_point != '')
 			{
 				$param['id_member_point'] = $id_member_point;
 			}
-			elseif ($id_events)
-			{
-				$param['id_events'] = $id_events;
-			}
-			else
-			{
-				$param['id_member'] = $id_member;
-			}
 			
-			$query = $this->member_point_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -174,37 +166,11 @@ class Member_point extends REST_Controller {
 					'updated_date' => $row->updated_date,
 					'member' => array(
 						'id_member' => $row->id_member,
-						'name' => $row->name,
-						'email' => $row->email,
-						'username' => $query->row()->username,
-						'idcard_type' => $query->row()->idcard_type,
-						'idcard_number' => $query->row()->idcard_number,
-						'idcard_photo' => $query->row()->idcard_photo,
-						'idcard_address' => $query->row()->idcard_address,
-						'shipment_address' => $query->row()->shipment_address,
-						'postal_code' => $query->row()->postal_code,
-						'gender' => $query->row()->gender,
-						'phone_number' => $query->row()->phone_number,
-						'birth_place' => $query->row()->birth_place,
-						'birth_date' => $query->row()->birth_date,
-						'marital_status' => $query->row()->marital_status,
-						'occupation' => $query->row()->occupation,
-						'religion' => $query->row()->religion,
-						'shirt_size' => $query->row()->shirt_size,
-						'photo' => $query->row()->photo,
-						'status' => $query->row()->status,
-						'member_number' => $query->row()->member_number,
-						'member_card' => $query->row()->member_card,
-						'approved_date' => $query->row()->approved_date,
-						'created_date' => $query->row()->member_created_date,
-						'updated_date' => $query->row()->member_updated_date,
+						'name' => $row->name
 					),
 					'events' => array(
 						'id_events' => $query->row()->id_events,
-						'title' => $query->row()->title,
-						'date' => $query->row()->date,
-						'created_date' => $query->row()->events_created_date,
-						'updated_date' => $query->row()->events_updated_date
+						'title' => $query->row()->title
 					)
 				);
 				
@@ -213,7 +179,7 @@ class Member_point extends REST_Controller {
 			}
 			else
 			{
-				$data['id_member_poin'] = 'not found (id_events, id_member)';
+				$data['id_member_poin'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -297,8 +263,8 @@ class Member_point extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->member_point_model->lists($param);
-		$total = $this->member_point_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -308,14 +274,10 @@ class Member_point extends REST_Controller {
 				$data[] = array(
 					'id_member_point' => $row->id_member_point,
 					'id_member' => $row->id_member,
+					'id_events' => $row->id_events,
 					'status' => intval($row->status),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
-					'events' => array(
-						'id_events' => $row->id_events,
-						'title' => $row->title,
-						'date' => $row->date
-					)
+					'updated_date' => $row->updated_date
 				);
 			}
 		}

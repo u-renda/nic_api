@@ -8,7 +8,7 @@ class Member_transfer extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('member_transfer_model');
+		$this->load->model('member_transfer_model', 'the_model');
     }
 	
 	function create_post()
@@ -73,7 +73,7 @@ class Member_transfer extends REST_Controller {
 			$param['status'] = $status;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->member_transfer_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -115,11 +115,11 @@ class Member_transfer extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->member_transfer_model->info(array('id_member_transfer' => $id_member_transfer));
+            $query = $this->the_model->info(array('id_member_transfer' => $id_member_transfer));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->member_transfer_model->delete($id_member_transfer);
+                $delete = $this->the_model->delete($id_member_transfer);
 				
 				if ($delete)
 				{
@@ -169,12 +169,12 @@ class Member_transfer extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_member_transfer)
+			if ($id_member_transfer != '')
 			{
 				$param['id_member_transfer'] = $id_member_transfer;
 			}
 			
-			$query = $this->member_transfer_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -182,41 +182,19 @@ class Member_transfer extends REST_Controller {
 				
 				$data = array(
 					'id_member_transfer' => $row->id_member_transfer,
-					'id_member' => $row->id_member,
 					'total' => intval($row->total),
 					'date' => $row->date,
 					'photo' => $row->photo,
 					'account_name' => $row->account_name,
 					'other_information' => $row->other_information,
 					'type' => intval($row->type),
+					'resi' => $row->resi,
 					'status' => intval($row->status),
-					'created_date' => $query->row()->created_date,
-					'updated_date' => $query->row()->updated_date,
+					'created_date' => $row->created_date,
+					'updated_date' => $row->updated_date,
 					'member' => array(
-						'name' => $row->name,
-						'email' => $row->email,
-						'username' => $row->username,
-						'idcard_type' => intval($row->idcard_type),
-						'idcard_number' => $row->idcard_number,
-						'idcard_photo' => $row->idcard_photo,
-						'idcard_address' => $row->idcard_address,
-						'shipment_address' => $row->shipment_address,
-						'postal_code' => $row->postal_code,
-						'gender' => intval($row->gender),
-						'phone_number' => $row->phone_number,
-						'birth_place' => $row->birth_place,
-						'birth_date' => $row->birth_date,
-						'marital_status' => intval($row->marital_status),
-						'occupation' => $row->occupation,
-						'religion' => intval($row->religion),
-						'shirt_size' => intval($row->shirt_size),
-						'photo' => $row->member_photo,
-						'status' => intval($row->member_status),
-						'member_number' => $row->member_number,
-						'member_card' => $row->member_card,
-						'approved_date' => $row->approved_date,
-						'created_date' => $row->member_created_date,
-						'updated_date' => $row->member_updated_date,
+						'id_member' => $row->id_member,
+						'name' => $row->name
 					)
 				);
 				
@@ -225,7 +203,7 @@ class Member_transfer extends REST_Controller {
 			}
 			else
 			{
-				$data['id_member_transfer'] = 'not found';
+				$data['id_member_transfer'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -320,8 +298,8 @@ class Member_transfer extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->member_transfer_model->lists($param);
-		$total = $this->member_transfer_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -330,6 +308,7 @@ class Member_transfer extends REST_Controller {
 			{
 				$data[] = array(
 					'id_member_transfer' => $row->id_member_transfer,
+					'id_member' => $row->id_member,
 					'total' => intval($row->total),
 					'date' => $row->date,
 					'photo' => $row->photo,
@@ -339,11 +318,7 @@ class Member_transfer extends REST_Controller {
 					'resi' => $row->resi,
 					'status' => intval($row->status),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date,
-					'member' => array(
-						'id_member' => $row->id_member,
-						'name' => $row->name
-					)
+					'updated_date' => $row->updated_date
 				);
 			}
 		}
@@ -393,7 +368,7 @@ class Member_transfer extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->member_transfer_model->info(array('id_member_transfer' => $id_member_transfer));
+			$query = $this->the_model->info(array('id_member_transfer' => $id_member_transfer));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -441,7 +416,7 @@ class Member_transfer extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->member_transfer_model->update($id_member_transfer, $param);
+					$update = $this->the_model->update($id_member_transfer, $param);
 					
 					if ($update)
 					{

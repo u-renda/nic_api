@@ -8,7 +8,7 @@ class Events extends REST_Controller {
     function __construct()
     {
         parent::__construct();
-		$this->load->model('events_model');
+		$this->load->model('events_model', 'the_model');
     }
 	
 	function create_post()
@@ -63,7 +63,7 @@ class Events extends REST_Controller {
 			$param['status'] = intval($status);
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
-			$query = $this->events_model->create($param);
+			$query = $this->the_model->create($param);
 			
 			if ($query > 0)
 			{
@@ -105,11 +105,11 @@ class Events extends REST_Controller {
         
         if ($validation == "ok")
 		{
-            $query = $this->events_model->info(array('id_events' => $id_events));
+            $query = $this->the_model->info(array('id_events' => $id_events));
 			
 			if ($query->num_rows() > 0)
 			{
-                $delete = $this->events_model->delete($id_events);
+                $delete = $this->the_model->delete($id_events);
 				
 				if ($delete > 0)
 				{
@@ -154,7 +154,7 @@ class Events extends REST_Controller {
 		$data = array();
 		if ($id_events == FALSE && $id_post == FALSE && $title == FALSE && $date == FALSE)
 		{
-			$data['id_events'] = 'required (id_post/title/date)';
+			$data['id_events'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -179,7 +179,7 @@ class Events extends REST_Controller {
 				$param['date'] = $date;
 			}
 			
-			$query = $this->events_model->info($param);
+			$query = $this->the_model->info($param);
 			
 			if ($query->num_rows() > 0)
 			{
@@ -211,7 +211,7 @@ class Events extends REST_Controller {
 			}
 			else
 			{
-				$data['id_events'] = 'not found (id_post/title/date)';
+				$data['id_events'] = 'Not Found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -289,8 +289,8 @@ class Events extends REST_Controller {
 		$param['order'] = $order;
 		$param['sort'] = $sort;
 		
-		$query = $this->events_model->lists($param);
-		$total = $this->events_model->lists_count($param2);
+		$query = $this->the_model->lists($param);
+		$total = $this->the_model->lists_count($param2);
 		
 		$data = array();
 		if ($query->num_rows() > 0)
@@ -350,7 +350,7 @@ class Events extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->events_model->info(array('id_events' => $id_events));
+			$query = $this->the_model->info(array('id_events' => $id_events));
 			
 			if ($query->num_rows() > 0)
 			{
@@ -378,7 +378,7 @@ class Events extends REST_Controller {
 				if ($param == TRUE)
 				{
 					$param['updated_date'] = date('Y-m-d H:i:s');
-					$update = $this->events_model->update($id_events, $param);
+					$update = $this->the_model->update($id_events, $param);
 					
 					if ($update > 0)
 					{
