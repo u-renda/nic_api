@@ -79,6 +79,7 @@ class Image extends REST_Controller {
 		$limit = filter(trim(intval($this->get('limit'))));
 		$order = filter(trim(strtolower($this->get('order'))));
 		$sort = filter(trim(strtolower($this->get('sort'))));
+		$id_image_album = filter($this->get('id_image_album'));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -122,6 +123,11 @@ class Image extends REST_Controller {
 		
 		$param = array();
 		$param2 = array();
+		if ($id_image_album != '')
+        {
+            $param['id_image_album'] = $id_image_album;
+            $param2['id_image_album'] = $id_image_album;
+        }
 		
 		$param['limit'] = $limit;
 		$param['offset'] = $offset;

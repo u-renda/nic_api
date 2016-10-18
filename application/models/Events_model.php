@@ -63,6 +63,10 @@ class Events_model extends CI_Model {
         {
             $where += array('title LIKE ' => '%'.$param['q'].'%');
         }
+        if (isset($param['status']))
+        {
+            $where += array('status' => $param['status']);
+        }
         
         $this->db->select('id_events, id_post, date, title, status, created_date, updated_date');
         $this->db->from($this->table);
@@ -79,6 +83,10 @@ class Events_model extends CI_Model {
         if (isset($param['q']))
         {
             $where += array('title LIKE ' => '%'.$param['q'].'%');
+        }
+        if (isset($param['status']))
+        {
+            $where += array('status' => $param['status']);
         }
         
         $this->db->select($this->table_id);

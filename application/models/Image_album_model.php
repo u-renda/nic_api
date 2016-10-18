@@ -14,7 +14,8 @@ class Image_album_model extends CI_Model {
     {
         $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
-		return $query;
+		$id = $this->db->insert_id();
+		return $id;
     }
     
     function delete($id)

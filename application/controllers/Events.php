@@ -234,6 +234,7 @@ class Events extends REST_Controller {
 		$limit = filter(intval(trim($this->get('limit'))));
 		$order = filter(trim($this->get('order')));
 		$sort = filter(trim($this->get('sort')));
+		$status = filter(trim($this->get('status')));
 		$q = filter(trim($this->get('q')));
 		
 		if ($limit == TRUE && $limit < 20)
@@ -282,6 +283,11 @@ class Events extends REST_Controller {
 		{
 			$param['q'] = $q;
 			$param2['q'] = $q;
+		}
+		if ($status != '')
+		{
+			$param['status'] = $status;
+			$param2['status'] = $status;
 		}
 		
 		$param['limit'] = $limit;

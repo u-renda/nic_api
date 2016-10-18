@@ -21,7 +21,7 @@ class Admin extends REST_Controller {
 		$name = filter(trim(strtolower($this->post('name'))));
 		$email = filter(trim(strtolower($this->post('email'))));
 		$admin_role = filter(trim($this->post('admin_role')));
-		$photo = filter(trim(strtolower($this->post('photo'))));
+		$photo = filter($this->post('photo'));
 		$admin_initial = filter(trim(strtoupper($this->post('admin_initial'))));
 		$admin_group = filter(trim($this->post('admin_group')));
 		$position = filter(trim(strtolower($this->post('position'))));
@@ -73,6 +73,13 @@ class Admin extends REST_Controller {
 		if ($position == FALSE)
 		{
 			$data['position'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($admin_initial == FALSE)
+		{
+			$data['admin_initial'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -224,10 +231,11 @@ class Admin extends REST_Controller {
 		$email = filter(trim(strtolower($this->get('email'))));
 		$name = filter(trim(strtolower($this->get('name'))));
 		$twitter = filter(trim($this->get('twitter')));
+		$admin_initial = filter(trim($this->get('admin_initial')));
 		
 		$data = array();
 		if ($id_admin == FALSE && $username == FALSE && $email == FALSE && $name == FALSE
-			&& $twitter == FALSE)
+			&& $twitter == FALSE && $admin_initial == FALSE)
 		{
 			$data['id_admin'] = 'required';
 			$validation = 'error';
@@ -252,6 +260,10 @@ class Admin extends REST_Controller {
 			elseif ($twitter != '')
 			{
 				$param['twitter'] = $twitter;
+			}
+			elseif ($admin_initial != '')
+			{
+				$param['admin_initial'] = $admin_initial;
 			}
 			else
 			{

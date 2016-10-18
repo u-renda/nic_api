@@ -8,8 +8,143 @@ class Product extends REST_Controller {
     function __construct()
     {
         parent::__construct();
+		$this->load->model('product_image_model');
 		$this->load->model('product_model', 'the_model');
     }
+	
+	function create_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$name = filter(trim($this->post('name')));
+		$image = filter(trim($this->post('image')));
+		$price_public = filter(trim($this->post('price_public')));
+		$price_member = filter(trim($this->post('price_member')));
+		$description = filter(trim($this->post('description')));
+		$quantity = filter(trim($this->post('quantity')));
+		$status = filter(trim($this->post('status')));
+		$other_photo = $this->post('other_photo');
+		
+		$data = array();
+		if ($name == FALSE)
+		{
+			$data['name'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($image == FALSE)
+		{
+			$data['image'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($price_public == FALSE)
+		{
+			$data['price_public'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($price_member == FALSE)
+		{
+			$data['price_member'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($description == FALSE)
+		{
+			$data['description'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($quantity == FALSE)
+		{
+			$data['quantity'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($status == '')
+		{
+			$data['status'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (check_product_name($name) == FALSE && $name == TRUE)
+		{
+			$data['name'] = 'already exist';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (in_array($status, $this->config->item('default_product_status')) == FALSE && $status == TRUE)
+		{
+			$data['status'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ( ! is_array($other_photo) && $other_photo != '')
+		{
+			$data['other_photo'] = 'use other_photo[]';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$param = array();
+			$param['name'] = $name;
+			$param['image'] = $image;
+			$param['price_public'] = intval($price_public);
+			$param['price_member'] = intval($price_member);
+			$param['description'] = $description;
+			$param['quantity'] = intval($quantity);
+			$param['status'] = intval($status);
+			$param['created_date'] = date('Y-m-d H:i:s');
+			$param['updated_date'] = date('Y-m-d H:i:s');
+			$query = $this->the_model->create($param);
+			
+			if ($query > 0)
+			{
+				foreach ($other_photo as $key => $val)
+				{
+					// insert image ke product image
+					$param2 = array();
+					$param2['id_product'] = $query;
+					$param2['image'] = $val;
+					$param2['status'] = 1;
+					$param2['created_date'] = date('Y-m-d H:i:s');
+					$param2['updated_date'] = date('Y-m-d H:i:s');
+					$query2 = $this->product_image_model->create($param2);
+				}
+				
+				$data['create'] = 'success';
+				$validation = 'ok';
+				$code = 200;
+			}
+			else
+			{
+				$data['create'] = 'failed';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
 	
 	function info_get()
 	{
@@ -131,15 +266,15 @@ class Product extends REST_Controller {
 		
 		$param = array();
 		$param2 = array();
-		if ($status == TRUE)
+		if ($status != '')
 		{
 			$param['status'] = intval($status);
 			$param2['status'] = intval($status);
 		}
 		if ($q == TRUE)
 		{
-			$param['q'] = intval($q);
-			$param2['q'] = intval($q);
+			$param['q'] = $q;
+			$param2['q'] = $q;
 		}
 		
 		$param['limit'] = $limit;

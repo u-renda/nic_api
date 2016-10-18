@@ -9,7 +9,89 @@ class Image_album extends REST_Controller {
     {
         parent::__construct();
 		$this->load->model('image_album_model', 'the_model');
+		$this->load->model('image_model');
     }
+	
+	function create_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$name = filter(trim($this->post('name')));
+		$date = filter(trim($this->post('date')));
+		$url = $this->post('url');
+		
+		$data = array();
+		if ($name == FALSE)
+		{
+			$data['name'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($date == FALSE)
+		{
+			$data['date'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($url == FALSE)
+		{
+			$data['url[]'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ( ! is_array($url) && $url != '')
+		{
+			$data['url'] = 'use url[]';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$param = array();
+			$param['name'] = $name;
+			$param['date'] = $date;
+			$param['created_date'] = date('Y-m-d H:i:s');
+			$param['updated_date'] = date('Y-m-d H:i:s');
+			$query = $this->the_model->create($param);
+			
+			if ($query > 0)
+			{
+				foreach ($url as $key => $val)
+				{
+					// insert image
+					$param2 = array();
+					$param2['id_image_album'] = $query;
+					$param2['url'] = $val;
+					$param2['created_date'] = date('Y-m-d H:i:s');
+					$param2['updated_date'] = date('Y-m-d H:i:s');
+					$query2 = $this->image_model->create($param2);
+				}
+				
+				$data['create'] = 'success';
+				$validation = 'ok';
+				$code = 200;
+			}
+			else
+			{
+				$data['create'] = 'failed';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
 	
 	function info_get()
 	{

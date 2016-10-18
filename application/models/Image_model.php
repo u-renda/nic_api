@@ -44,6 +44,10 @@ class Image_model extends CI_Model {
     function lists($param)
     {
         $where = array();
+        if (isset($param['id_image_album']))
+        {
+            $where += array('id_image_album' => $param['id_image_album']);
+        }
         
         $this->db->select('id_image, id_image_album, url, created_date, updated_date');
         $this->db->from($this->table);
@@ -57,6 +61,10 @@ class Image_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
+        if (isset($param['id_image_album']))
+        {
+            $where += array('id_image_album' => $param['id_image_album']);
+        }
         
         $this->db->select($this->table_id);
         $this->db->from($this->table);

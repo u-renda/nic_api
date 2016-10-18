@@ -51,6 +51,10 @@ class Admin_model extends CI_Model {
         {
             $where += array('twitter' => $param['twitter']);
         }
+        if (isset($param['admin_initial']))
+        {
+            $where += array('admin_initial' => $param['admin_initial']);
+        }
         
         $this->db->select('id_admin, username, email, admin_initial, name, password, photo, admin_role,
                           admin_group, position, twitter, created_date, updated_date');

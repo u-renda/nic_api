@@ -260,6 +260,26 @@ if ( ! function_exists('check_preferences_key'))
     }
 }
 
+if ( ! function_exists('check_product_name'))
+{
+    function check_product_name($name)
+	{
+        $CI =& get_instance();
+        $CI->load->model('product_model');
+        
+		$query = $CI->product_model->info(array('name' => $name));
+		
+		if ($query->num_rows() > 0)
+		{
+			return FALSE;
+		}
+		else
+		{
+			return TRUE;
+		}
+    }
+}
+
 if ( ! function_exists('check_provinsi_name'))
 {
     function check_provinsi_name($provinsi)

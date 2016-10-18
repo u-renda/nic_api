@@ -11,6 +11,110 @@ class Order extends REST_Controller {
 		$this->load->model('order_model', 'the_model');
     }
 	
+	function create_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$id_cart_total = filter($this->post('id_cart_total'));
+		$id_member = filter($this->post('id_member'));
+		$name = filter(trim($this->post('name')));
+		$phone = filter(trim($this->post('phone')));
+		$email = filter(trim($this->post('email')));
+		$status = filter(trim($this->post('status')));
+		
+		$data = array();
+		if ($id_cart_total == FALSE)
+		{
+			$data['id_cart_total'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($name == FALSE)
+		{
+			$data['name'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($phone == FALSE)
+		{
+			$data['phone'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($email == FALSE)
+		{
+			$data['email'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($status == FALSE)
+		{
+			$data['status'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (in_array($status, $this->config->item('default_order_status')) == FALSE && $status == TRUE)
+		{
+			$data['status'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$param = array();
+			$param['name'] = $name;
+			$param['image'] = $image;
+			$param['price_public'] = intval($price_public);
+			$param['price_member'] = intval($price_member);
+			$param['description'] = $description;
+			$param['quantity'] = intval($quantity);
+			$param['status'] = intval($status);
+			$param['created_date'] = date('Y-m-d H:i:s');
+			$param['updated_date'] = date('Y-m-d H:i:s');
+			$query = $this->the_model->create($param);
+			
+			if ($query > 0)
+			{
+				// insert image ke product image
+				$param2 = array();
+				$param2['id_product'] = $query;
+				$param2['image'] = $image;
+				$param2['status'] = 1;
+				$param2['created_date'] = date('Y-m-d H:i:s');
+				$param2['updated_date'] = date('Y-m-d H:i:s');
+				$query2 = $this->product_image_model->create($param2);
+				
+				if ($query2 > 0)
+				{
+					$data['create'] = 'success';
+					$validation = 'ok';
+					$code = 200;
+				}
+			}
+			else
+			{
+				$data['create'] = 'failed';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
 	function info_get()
 	{
 		$this->benchmark->mark('code_start');

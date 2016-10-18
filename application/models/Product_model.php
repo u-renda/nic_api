@@ -14,7 +14,8 @@ class Product_model extends CI_Model {
     {
         $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
-		return $query;
+		$id = $this->db->insert_id();
+		return $id;
     }
     
     function delete($id)
@@ -31,6 +32,10 @@ class Product_model extends CI_Model {
         {
             $where += array('id_product' => $param['id_product']);
         }
+        if (isset($param['name']))
+        {
+            $where += array('name' => $param['name']);
+        }
         
         $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
 						  status, created_date, updated_date');
@@ -45,7 +50,7 @@ class Product_model extends CI_Model {
         $where = array();
         if (isset($param['q']))
         {
-            $where += array('name' => $param['name']);
+            $where += array('name LIKE ' => '%'.$param['name'].'%');
         }
         if (isset($param['status']))
         {
@@ -67,7 +72,7 @@ class Product_model extends CI_Model {
         $where = array();
         if (isset($param['q']))
         {
-            $where += array('name' => $param['name']);
+            $where += array('name LIKE ' => '%'.$param['name'].'%');
         }
         if (isset($param['status']))
         {
