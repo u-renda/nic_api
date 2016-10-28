@@ -31,6 +31,10 @@ class Product_detail_model extends CI_Model {
         {
             $where += array('id_product_detail' => $param['id_product_detail']);
         }
+        if (isset($param['id_product']))
+        {
+            $where += array($this->table.'.id_product' => $param['id_product']);
+        }
         
         $this->db->select('id_product_detail, '.$this->table.'.id_product, size, colors, material,
 						  '.$this->table.'.created_date, '.$this->table.'.updated_date, name');

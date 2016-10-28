@@ -31,6 +31,10 @@ class Kota_model extends CI_Model {
         {
             $where += array('id_kota' => $param['id_kota']);
         }
+        if (isset($param['id_provinsi']))
+        {
+            $where += array($this->table.'.id_provinsi' => $param['id_provinsi']);
+        }
         if (isset($param['kota']))
         {
             $where += array('kota' => $param['kota']);

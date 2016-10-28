@@ -285,7 +285,7 @@ if ( ! function_exists('check_provinsi_name'))
     function check_provinsi_name($provinsi)
 	{
         $CI =& get_instance();
-        $CI->load->model('post_model');
+        $CI->load->model('provinsi_model');
 
 		$query = $CI->provinsi_model->info(array('provinsi' => $provinsi));
 

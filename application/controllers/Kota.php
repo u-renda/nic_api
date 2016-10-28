@@ -35,7 +35,7 @@ class Kota extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ( ! isset($price))
+		if ($price == FALSE)
 		{
 			$data['price'] = 'required';
 			$validation = 'error';

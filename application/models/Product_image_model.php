@@ -49,6 +49,10 @@ class Product_image_model extends CI_Model {
         {
             $where += array('status' => $param['status']);
         }
+        if (isset($param['id_product']))
+        {
+            $where += array('id_product' => $param['id_product']);
+        }
         
         $this->db->select('id_product_image, id_product, image, status, created_date, updated_date');
         $this->db->from($this->table);

@@ -8,6 +8,7 @@ class Product extends REST_Controller {
     function __construct()
     {
         parent::__construct();
+		$this->load->model('product_detail_model');
 		$this->load->model('product_image_model');
 		$this->load->model('product_model', 'the_model');
     }
@@ -25,6 +26,9 @@ class Product extends REST_Controller {
 		$quantity = filter(trim($this->post('quantity')));
 		$status = filter(trim($this->post('status')));
 		$other_photo = $this->post('other_photo');
+		$size = filter(trim($this->post('size')));
+		$colors = filter(trim($this->post('colors')));
+		$material = filter(trim($this->post('material')));
 		
 		$data = array();
 		if ($name == FALSE)
@@ -111,20 +115,36 @@ class Product extends REST_Controller {
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);
 			
-			if ($query > 0)
+			if ($query != 0 || $query != '')
 			{
-				foreach ($other_photo as $key => $val)
+				if ($other_photo != '')
 				{
-					// insert image ke product image
-					$param2 = array();
-					$param2['id_product'] = $query;
-					$param2['image'] = $val;
-					$param2['status'] = 1;
-					$param2['created_date'] = date('Y-m-d H:i:s');
-					$param2['updated_date'] = date('Y-m-d H:i:s');
-					$query2 = $this->product_image_model->create($param2);
+					foreach ($other_photo as $key => $val)
+					{
+						// insert image ke product image
+						$param2 = array();
+						$param2['id_product'] = $query;
+						$param2['image'] = $val;
+						$param2['status'] = 1;
+						$param2['created_date'] = date('Y-m-d H:i:s');
+						$param2['updated_date'] = date('Y-m-d H:i:s');
+						$query2 = $this->product_image_model->create($param2);
+					}
 				}
 				
+				if ($size == TRUE || $colors == TRUE || $material == TRUE)
+				{
+					// insert detail ke product detail
+					$param3 = array();
+					$param3['id_product'] = $query;
+					$param3['size'] = $size;
+					$param3['colors'] = $colors;
+					$param3['material'] = $material;
+					$param3['created_date'] = date('Y-m-d H:i:s');
+					$param3['updated_date'] = date('Y-m-d H:i:s');
+					$query3 = $this->product_detail_model->create($param3);
+				}
+					
 				$data['create'] = 'success';
 				$validation = 'ok';
 				$code = 200;
@@ -133,6 +153,59 @@ class Product extends REST_Controller {
 			{
 				$data['create'] = 'failed';
 				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
+	function delete_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+        $id = filter($this->post('id_product'));
+        
+		$data = array();
+        if ($id == FALSE)
+		{
+			$data['id_product'] = 'required';
+			$validation = "error";
+			$code = 400;
+		}
+        
+        if ($validation == "ok")
+		{
+            $query = $this->the_model->info(array('id_product' => $id));
+			
+			if ($query->num_rows() > 0)
+			{
+                $delete = $this->the_model->delete($id);
+				
+				if ($delete)
+				{
+					$data['delete'] = 'success';
+					$validation = "ok";
+					$code = 200;
+				}
+				else
+				{
+					$data['delete'] = 'failed';
+					$validation = "error";
+					$code = 400;
+				}
+			}
+			else
+			{
+				$data['id_product'] = 'not found';
+				$validation = "error";
 				$code = 400;
 			}
 		}
@@ -187,6 +260,49 @@ class Product extends REST_Controller {
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
 				);
+				
+				$query2 = $this->product_detail_model->info(array('id_product' => $id_product));
+				
+				if ($query2->num_rows() > 0)
+				{
+					$row2 = $query2->row();
+					$data['detail'] = array(
+						'id_product_detail' => $row2->id_product_detail,
+						'size' => $row2->size,
+						'colors' => $row2->colors,
+						'material' => $row2->material
+					);
+				}
+				else
+				{
+					$data['detail'] = array(
+						'id_product_detail' => '-',
+						'size' => '-',
+						'colors' => '-',
+						'material' => '-'
+					);
+				}
+				
+				// Get images
+				$param2 = array();
+				$param2['order'] = 'created_date';
+				$param2['sort'] = 'desc';
+				$param2['limit'] = 20;
+				$param2['offset'] = 0;
+				$param2['id_product'] = $id_product;
+				$query3 = $this->product_image_model->lists($param2);
+				
+				$data['other_image'] = array();
+				if ($query3->num_rows() > 0)
+				{
+					foreach ($query3->result() as $row3)
+					{
+						$temp = array();
+						$temp['id_product_image'] = $row3->id_product_image;
+						$temp['image'] = $row3->image;
+						$data['other_image'][] = $temp;
+					}
+				}
 				
                 $validation = 'ok';
 				$code = 200;
