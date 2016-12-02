@@ -103,8 +103,21 @@ class Product extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
+			$url_title = url_title($name);
+			
+			if (check_post_slug($url_title) == FALSE)
+			{
+				$counter = random_string('numeric',5);
+				$slug = url_title(strtolower(''.$name.'-'.$counter.''));
+			}
+			else
+			{
+				$slug = url_title($name);
+			}
+			
 			$param = array();
 			$param['name'] = $name;
+			$param['slug'] = $slug;
 			$param['image'] = $image;
 			$param['price_public'] = intval($price_public);
 			$param['price_member'] = intval($price_member);
@@ -251,6 +264,7 @@ class Product extends REST_Controller {
 				$data = array(
 					'id_product' => $row->id_product,
 					'name' => $row->name,
+					'slug' => $row->slug,
 					'image' => $row->image,
 					'price_public' => intval($row->price_public),
 					'price_member' => intval($row->price_member),
@@ -409,6 +423,7 @@ class Product extends REST_Controller {
 				$data[] = array(
 					'id_product' => $row->id_product,
 					'name' => $row->name,
+					'slug' => $row->slug,
 					'image' => $row->image,
 					'price_public' => intval($row->price_public),
 					'price_member' => intval($row->price_member),
