@@ -67,7 +67,7 @@ class Member extends REST_Controller {
 		$username = filter(trim(strtolower($this->post('username'))));
 		$idcard_type = filter(trim(intval($this->post('idcard_type'))));
 		$idcard_number = filter(trim($this->post('idcard_number')));
-		$idcard_photo = filter(trim(strtolower($this->post('idcard_photo'))));
+		$idcard_photo = filter(trim($this->post('idcard_photo')));
 		$idcard_address = filter(trim($this->post('idcard_address')));
 		$shipment_address = filter(trim($this->post('shipment_address')));
 		$postal_code = filter(trim($this->post('postal_code')));
@@ -76,7 +76,7 @@ class Member extends REST_Controller {
 		$birth_place = filter(trim($this->post('birth_place')));
 		$birth_date = filter(trim($this->post('birth_date')));
 		$shirt_size = filter(trim($this->post('shirt_size')));
-		$photo = filter(trim(strtolower($this->post('photo'))));
+		$photo = filter(trim($this->post('photo')));
 		$status = filter(trim(intval($this->post('status'))));
 		$member_number = filter(trim($this->post('member_number')));
 		$member_card = filter(trim($this->post('member_card')));
@@ -178,6 +178,20 @@ class Member extends REST_Controller {
 		if ($status == FALSE)
 		{
 			$data['status'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($idcard_photo == FALSE)
+		{
+			$data['idcard_photo'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($photo == FALSE)
+		{
+			$data['photo'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -323,6 +337,22 @@ class Member extends REST_Controller {
 						$param3['created_date'] = date('Y-m-d H:i:s');
 						$param3['updated_date'] = date('Y-m-d H:i:s');
 						$this->member_transfer_model->create($param3);
+					}
+				}
+				else
+				{
+					// send email
+					$content = array();
+					$content['email'] = $email;
+					$send_email = email_member_create($content);
+					
+					if ($send_email)
+					{
+						$data['send_email'] = 'success';
+					}
+					else
+					{
+						$data['send_email'] = 'failed';
 					}
 				}
 				

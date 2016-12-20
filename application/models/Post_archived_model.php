@@ -53,8 +53,10 @@ class Post_archived_model extends CI_Model {
             $where += array('post.status' => $param['status']);
         }
 		
-        $this->db->select('id_post_archived, id_post, year, month, created_date, updated_date');
+        $this->db->select('id_post_archived, '.$this->table.'.id_post, year, month,
+						  '.$this->table.'.created_date, '.$this->table.'.updated_date, title, slug');
         $this->db->from($this->table);
+		$this->db->join('post', $this->table.'.id_post = post.id_post', 'left');
         $this->db->where($where);
 		$this->db->order_by($param['order'], $param['sort']);
         $this->db->limit($param['limit'], $param['offset']);
@@ -77,6 +79,7 @@ class Post_archived_model extends CI_Model {
 		
         $this->db->select($this->table_id);
         $this->db->from($this->table);
+		$this->db->join('post', $this->table.'.id_post = post.id_post', 'left');
 		$this->db->where($where);
         $query = $this->db->count_all_results();
 		return $query;

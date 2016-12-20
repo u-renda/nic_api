@@ -269,11 +269,15 @@ class Post_archived extends REST_Controller {
 			{
 				$data[] = array(
 					'id_post_archived' => $row->id_post_archived,
-					'id_post' => $row->id_post,
 					'year' => intval($row->year),
 					'month' => intval($row->month),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date
+					'updated_date' => $row->updated_date,
+					'post' => array(
+						'id_post' => $row->id_post,
+						'title' => $row->title,
+						'slug' => $row->slug
+					)
 				);
 			}
 		}
