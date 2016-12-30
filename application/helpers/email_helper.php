@@ -35,6 +35,8 @@ if( ! function_exists('requirement'))
 		$config['mailtype'] = 'html';
 		$CI->email->initialize($config);
 		
+		$param = array();
+		
 		return $param;
 	}
 }

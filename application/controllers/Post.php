@@ -9,6 +9,7 @@ class Post extends REST_Controller {
     {
         parent::__construct();
 		$this->load->helper('fungsi');
+		$this->load->model('post_archived_model');
 		$this->load->model('post_model', 'the_model');
     }
 	
@@ -17,8 +18,8 @@ class Post extends REST_Controller {
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$title = filter(trim(strtolower($this->post('title'))));
-		$content = filter(trim($this->post('content')));
+		$title = filter(trim($this->post('title')));
+		$content = trim($this->post('content', FALSE));
 		$media = filter(trim($this->post('media')));
 		$media_type = filter(trim(intval($this->post('media_type'))));
 		$type = filter(trim(intval($this->post('type'))));
@@ -92,7 +93,7 @@ class Post extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$url_title = url_title($title);
+			$url_title = url_title(strtolower($title));
 			
 			if (check_post_slug($url_title) == FALSE)
 			{
@@ -112,7 +113,7 @@ class Post extends REST_Controller {
             {
                 $created_date = date('Y-m-d H:i:s');
             }
-		
+			
 			$param = array();
 			$param['title'] = $title;
 			$param['slug'] = $slug;
@@ -128,6 +129,15 @@ class Post extends REST_Controller {
 			
 			if ($query > 0)
 			{
+				// save to archived
+				$param2 = array();
+				$param2['id_post'] = $query;
+				$param2['year'] = date('Y');
+				$param2['month'] = date('m');
+				$param2['created_date'] = date('Y-m-d H:i:s');
+				$param2['updated_date'] = date('Y-m-d H:i:s');
+				$query2 = $this->post_archived_model->create($param2);
+				
 				$data['id_post'] = $query;
 				$data['create'] = 'success';
 				$validation = 'ok';
@@ -433,7 +443,7 @@ class Post extends REST_Controller {
 		
 		$id_post = filter($this->post('id_post'));
 		$title = filter(trim(strtolower($this->post('title'))));
-		$content = filter(trim($this->post('content')));
+		$content = trim($this->post('content', FALSE));
 		$media = filter(trim($this->post('media')));
 		$media_type = filter(trim(intval($this->post('media_type'))));
 		$type = filter(trim(intval($this->post('type'))));
