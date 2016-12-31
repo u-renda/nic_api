@@ -520,10 +520,11 @@ else
     define('WEB_HOST', 'http://nezindaclub.com/');
 }
 
-$config['title'] = 'NEZindaCLUB';
-$config['registration_fee'] = 150000;
-$config['link_web_transfer'] = WEB_HOST.'transfer_confirmation';
 $config['email_admin'] = 'nezindaclub.official@gmail.com';
+$config['link_logo_nic'] = WEB_HOST.'assets/images/logo.png';
+$config['link_web_transfer'] = WEB_HOST.'transfer_confirmation';
+$config['registration_fee'] = 150000;
+$config['title'] = 'NEZindaCLUB';
 
 $config['code_member_gender'] = array(
     0 => 'M',

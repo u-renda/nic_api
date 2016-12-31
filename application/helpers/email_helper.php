@@ -11,11 +11,19 @@ if ( ! function_exists('email_member_create'))
 	function email_member_create($param)
 	{
 		$CI =& get_instance();
+		$CI->load->model('preferences_model');;
 		$param += requirement();
 		
-		$param['subject'] = 'Aktivasi Email';
+		$param['subject'] = 'NEZindaCLUB - Registrasi Berhasil';
 		
-		$email_content = $CI->config->item('email_member_create');
+		// content email
+		$query = $CI->preferences_model->info(array('key' => 'email_register_success'));
+		
+		$email_content = '';
+		if ($query->num_rows() > 0)
+		{
+			$email_content = $query->row()->value;
+		}
 		
 		$send = send_email($param, $email_content);
 		return $send;
@@ -53,7 +61,7 @@ if ( ! function_exists('send_email'))
 			$email_content = str_replace($k, $value, $email_content);
 		}
 		
-		$CI->email->from('admin@nezindaclub.com', 'NIC');
+		$CI->email->from('admin@nezindaclub.com', 'NEZindaCLUB');
 		$CI->email->to($param['email']);
 		$CI->email->subject($param['subject']);
 		$CI->email->message($email_content);

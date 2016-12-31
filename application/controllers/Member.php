@@ -343,6 +343,7 @@ class Member extends REST_Controller {
 				{
 					// send email
 					$content = array();
+					$content['member_name'] = ucwords($name);
 					$content['email'] = $email;
 					$send_email = email_member_create($content);
 					
