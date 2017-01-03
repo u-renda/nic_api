@@ -102,7 +102,7 @@ class Post extends REST_Controller {
 			}
 			else
 			{
-				$slug = url_title($title);
+				$slug = url_title(strtolower($title));
 			}
 
             if ($created_date != FALSE)
@@ -442,7 +442,7 @@ class Post extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_post = filter($this->post('id_post'));
-		$title = filter(trim(strtolower($this->post('title'))));
+		$title = filter(trim($this->post('title')));
 		$content = trim($this->post('content', FALSE));
 		$media = filter(trim($this->post('media')));
 		$media_type = filter(trim(intval($this->post('media_type'))));
