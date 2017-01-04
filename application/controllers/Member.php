@@ -752,6 +752,78 @@ class Member extends REST_Controller {
 		$this->response($rv, $rv['code']);
 	}
 	
+	function send_recovery_password_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$email = filter(trim(strtolower($this->post('email'))));
+		$member_card = filter(trim(strtoupper($this->post('member_card'))));
+		
+		$data = array();
+		if ($email == FALSE)
+		{
+			$data['email'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($member_card == FALSE)
+		{
+			$data['member_card'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (valid_email($email) == FALSE && $email == TRUE)
+		{
+			$data['email'] = 'wrong format';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$query = $this->the_model->info(array('member_card' => $member_card, 'email' => $email));
+			
+			if ($query->num_rows() > 0)
+			{
+				// send email
+				$content = array();
+				$content['member_name'] = ucwords($query->row()->name);
+				$content['email'] = $email;
+				$send_email = email_recovery_password($content);
+				
+				if ($send_email)
+				{
+					$data['send_email'] = 'success';
+					$validation = 'ok';
+					$code = 200;
+				}
+				else
+				{
+					$data['send_email'] = 'failed';
+					$validation = 'error';
+					$code = 400;
+				}
+			}
+			else
+			{
+				$data['member_card'] = 'not found';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
 	function update_post()
 	{
 		$this->benchmark->mark('code_start');
@@ -1191,6 +1263,69 @@ class Member extends REST_Controller {
 			else
 			{
 				$data['username'] = 'not found';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
+	// Dipakai untuk recovery password butuh email, no member & status(required) 
+	function valid_recovery_password_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$email = filter(trim(strtolower($this->post('email'))));
+		$member_card = filter(trim(strtoupper($this->post('member_card'))));
+		$status = filter(trim($this->post('status')));
+		
+		$data = array();
+		if ($email == FALSE)
+		{
+			$data['email'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($member_card == FALSE)
+		{
+			$data['member_card'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($status == FALSE)
+		{
+			$data['status'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$param = array();
+			$param['email'] = $email;
+			$param['member_card'] = $member_card;
+			$param['status'] = $status;
+			$query = $this->the_model->info($param);
+			
+			if ($query->num_rows() > 0)
+			{
+				$data['valid'] = 'yes!';
+				$validation = 'ok';
+				$code = 200;
+			}
+			else
+			{
+				$data['valid'] = 'no!';
 				$validation = 'error';
 				$code = 400;
 			}

@@ -523,6 +523,7 @@ else
 $config['email_admin'] = 'nezindaclub.official@gmail.com';
 $config['link_logo_nic'] = WEB_HOST.'assets/images/logo.png';
 $config['link_web_transfer'] = WEB_HOST.'transfer_confirmation';
+$config['link_reset_password'] = WEB_HOST.'reset_password';
 $config['registration_fee'] = 150000;
 $config['title'] = 'NEZindaCLUB';
 

@@ -71,6 +71,10 @@ class Member_model extends CI_Model {
         {
             $where += array('member_card' => $param['member_card']);
         }
+        if (isset($param['status']))
+        {
+            $where += array($this->table.'.status' => $param['status']);
+        }
         
         $this->db->select('id_member, '.$this->table.'.id_kota, name, email, username, password,
 						  idcard_type, idcard_number, idcard_photo, idcard_address,
