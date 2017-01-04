@@ -39,7 +39,7 @@ if ( ! function_exists('email_recovery_password'))
 		$param += requirement();
 		
 		$param['subject'] = 'NEZindaCLUB - Recovery Password';
-		$param['link_reset_password'] = $CI->config->item('link_reset_password');
+		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?code='.$param['short_code'];
 		
 		// content email
 		$query = $CI->preferences_model->info(array('key' => 'email_recovery_password'));

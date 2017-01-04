@@ -82,7 +82,7 @@ class Member_model extends CI_Model {
 						  birth_date, marital_status, occupation, religion, shirt_size, photo,
 						  '.$this->table.'.status, member_number, member_card, approved_date,
 						  '.$this->table.'.created_date, '.$this->table.'.updated_date,
-						  kota, price, notes');
+						  kota, price, notes, short_code');
         $this->db->from($this->table);
 		$this->db->join('kota', $this->table.'.id_kota = kota.id_kota', 'left');
         $this->db->where($where);
@@ -129,7 +129,7 @@ class Member_model extends CI_Model {
 						  idcard_photo, idcard_address, shipment_address, postal_code, gender,
 						  birth_place, birth_date, marital_status, occupation, religion, shirt_size,
 						  photo, status, member_number, member_card, approved_date, created_date,
-						  updated_date, password, phone_number, notes');
+						  updated_date, password, phone_number, notes, short_code');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->or_where($or_where);

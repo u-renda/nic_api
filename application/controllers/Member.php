@@ -534,6 +534,7 @@ class Member extends REST_Controller {
 					'status' => intval($row->status),
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
+					'short_code' => $row->short_code,
 					'notes' => $row->notes,
 					'resi' => $resi,
 					'approved_date' => $row->approved_date,
@@ -732,6 +733,7 @@ class Member extends REST_Controller {
 					'notes' => $row->notes,
 					'member_number' => $row->member_number,
 					'member_card' => $row->member_card,
+					'short_code' => $row->short_code,
 					'approved_date' => $row->approved_date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
@@ -792,6 +794,7 @@ class Member extends REST_Controller {
 				$content = array();
 				$content['member_name'] = ucwords($query->row()->name);
 				$content['email'] = $email;
+				$content['short_code'] = $query->row()->short_code;
 				$send_email = email_recovery_password($content);
 				
 				if ($send_email)
