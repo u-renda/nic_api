@@ -27,7 +27,7 @@ class Order_transfer_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_order_transfer']))
+        if (isset($param['id_order_transfer']) == TRUE)
         {
             $where += array('id_order_transfer' => $param['id_order_transfer']);
         }
@@ -45,7 +45,7 @@ class Order_transfer_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -63,7 +63,7 @@ class Order_transfer_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }

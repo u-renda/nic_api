@@ -27,11 +27,11 @@ class Product_detail_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_product_detail']))
+        if (isset($param['id_product_detail']) == TRUE)
         {
             $where += array('id_product_detail' => $param['id_product_detail']);
         }
-        if (isset($param['id_product']))
+        if (isset($param['id_product']) == TRUE)
         {
             $where += array($this->table.'.id_product' => $param['id_product']);
         }

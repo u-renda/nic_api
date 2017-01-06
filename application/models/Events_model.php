@@ -27,19 +27,19 @@ class Events_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_events']))
+        if (isset($param['id_events']) == TRUE)
         {
             $where += array('id_events' => $param['id_events']);
         }
-        if (isset($param['id_post']))
+        if (isset($param['id_post']) == TRUE)
         {
             $where += array($this->table.'.id_post' => $param['id_post']);
         }
-        if (isset($param['title']))
+        if (isset($param['title']) == TRUE)
         {
             $where += array($this->table.'.title' => $param['title']);
         }
-        if (isset($param['date']))
+        if (isset($param['date']) == TRUE)
         {
             $where += array('date' => $param['date']);
         }
@@ -59,11 +59,11 @@ class Events_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('title LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -80,11 +80,11 @@ class Events_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('title LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }

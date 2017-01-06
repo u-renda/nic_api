@@ -28,7 +28,7 @@ class Image_album_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_image_album']))
+        if (isset($param['id_image_album']) == TRUE)
         {
             $where += array('id_image_album' => $param['id_image_album']);
         }
@@ -43,7 +43,7 @@ class Image_album_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('name LIKE ' => '%'.$param['q'].'%');
         }
@@ -60,7 +60,7 @@ class Image_album_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('name LIKE ' => '%'.$param['q'].'%');
         }

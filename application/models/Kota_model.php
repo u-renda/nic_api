@@ -27,15 +27,15 @@ class Kota_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_kota']))
+        if (isset($param['id_kota']) == TRUE)
         {
             $where += array('id_kota' => $param['id_kota']);
         }
-        if (isset($param['id_provinsi']))
+        if (isset($param['id_provinsi']) == TRUE)
         {
             $where += array($this->table.'.id_provinsi' => $param['id_provinsi']);
         }
-        if (isset($param['kota']))
+        if (isset($param['kota']) == TRUE)
         {
             $where += array('kota' => $param['kota']);
         }
@@ -53,11 +53,11 @@ class Kota_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('kota LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['id_provinsi']))
+        if (isset($param['id_provinsi']) == TRUE)
         {
             $where += array($this->table.'.id_provinsi' => $param['id_provinsi']);
         }
@@ -74,11 +74,11 @@ class Kota_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('kota LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['id_provinsi']))
+        if (isset($param['id_provinsi']) == TRUE)
         {
             $where += array('id_provinsi' => $param['id_provinsi']);
         }

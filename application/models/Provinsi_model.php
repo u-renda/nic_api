@@ -27,11 +27,11 @@ class Provinsi_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_provinsi']))
+        if (isset($param['id_provinsi']) == TRUE)
         {
             $where += array('id_provinsi' => $param['id_provinsi']);
         }
-        if (isset($param['provinsi']))
+        if (isset($param['provinsi']) == TRUE)
         {
             $where += array('provinsi' => $param['provinsi']);
         }
@@ -46,7 +46,7 @@ class Provinsi_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('provinsi LIKE ' => '%'.$param['q'].'%');
         }
@@ -63,7 +63,7 @@ class Provinsi_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('provinsi LIKE ' => '%'.$param['q'].'%');
         }

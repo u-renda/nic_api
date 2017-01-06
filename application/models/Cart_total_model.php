@@ -27,7 +27,7 @@ class Cart_total_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_cart_total']))
+        if (isset($param['id_cart_total']) == TRUE)
         {
             $where += array('id_cart_total' => $param['id_cart_total']);
         }

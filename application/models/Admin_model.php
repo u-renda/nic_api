@@ -27,31 +27,31 @@ class Admin_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_admin']))
+        if (isset($param['id_admin']) == TRUE)
         {
             $where += array('id_admin' => $param['id_admin']);
         }
-        if (isset($param['username']))
+        if (isset($param['username']) == TRUE)
         {
             $where += array('username' => $param['username']);
         }
-        if (isset($param['password']))
+        if (isset($param['password']) == TRUE)
         {
             $where += array('password' => $param['password']);
         }
-        if (isset($param['email']))
+        if (isset($param['email']) == TRUE)
         {
             $where += array('email' => $param['email']);
         }
-        if (isset($param['name']))
+        if (isset($param['name']) == TRUE)
         {
             $where += array('name' => $param['name']);
         }
-        if (isset($param['twitter']))
+        if (isset($param['twitter']) == TRUE)
         {
             $where += array('twitter' => $param['twitter']);
         }
-        if (isset($param['admin_initial']))
+        if (isset($param['admin_initial']) == TRUE)
         {
             $where += array('admin_initial' => $param['admin_initial']);
         }
@@ -67,11 +67,11 @@ class Admin_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['admin_role']))
+        if (isset($param['admin_role']) == TRUE)
         {
             $where += array('admin_role' => $param['admin_role']);
         }
-        if (isset($param['admin_group']))
+        if (isset($param['admin_group']) == TRUE)
         {
             $where += array('admin_group' => $param['admin_group']);
         }
@@ -89,11 +89,11 @@ class Admin_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['admin_role']))
+        if (isset($param['admin_role']) == TRUE)
         {
             $where += array('admin_role' => $param['admin_role']);
         }
-        if (isset($param['admin_group']))
+        if (isset($param['admin_group']) == TRUE)
         {
             $where += array('admin_group' => $param['admin_group']);
         }

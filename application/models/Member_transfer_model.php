@@ -27,7 +27,7 @@ class Member_transfer_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_member_transfer']))
+        if (isset($param['id_member_transfer']) == TRUE)
         {
             $where += array('id_member_transfer' => $param['id_member_transfer']);
         }
@@ -46,15 +46,15 @@ class Member_transfer_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('total LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['type']))
+        if (isset($param['type']) == TRUE)
         {
             $where += array('type' => $param['type']);
         }
-        if (isset($param['id_member']))
+        if (isset($param['id_member']) == TRUE)
         {
             $where += array($this->table.'.id_member' => $param['id_member']);
         }
@@ -72,15 +72,15 @@ class Member_transfer_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('total LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['type']))
+        if (isset($param['type']) == TRUE)
         {
             $where += array('type' => $param['type']);
         }
-        if (isset($param['id_member']))
+        if (isset($param['id_member']) == TRUE)
         {
             $where += array('id_member' => $param['id_member']);
         }

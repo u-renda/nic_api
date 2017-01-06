@@ -27,7 +27,7 @@ class Post_archived_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_post_archived']))
+        if (isset($param['id_post_archived']) == TRUE)
         {
             $where += array('id_post_archived' => $param['id_post_archived']);
         }
@@ -44,11 +44,11 @@ class Post_archived_model extends CI_Model {
     function lists($param)
     {
 		$where = array();
-        if (isset($param['type']))
+        if (isset($param['type']) == TRUE)
         {
             $where += array('post.type' => $param['type']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('post.status' => $param['status']);
         }
@@ -68,11 +68,11 @@ class Post_archived_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['type']))
+        if (isset($param['type']) == TRUE)
         {
             $where += array('post.type' => $param['type']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('post.status' => $param['status']);
         }

@@ -27,7 +27,7 @@ class Order_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_order']))
+        if (isset($param['id_order']) == TRUE)
         {
             $where += array('id_order' => $param['id_order']);
         }
@@ -48,7 +48,7 @@ class Order_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -66,7 +66,7 @@ class Order_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }

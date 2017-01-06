@@ -27,7 +27,7 @@ class Product_image_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_product_image']))
+        if (isset($param['id_product_image']) == TRUE)
         {
             $where += array('id_product_image' => $param['id_product_image']);
         }
@@ -45,11 +45,11 @@ class Product_image_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if (isset($param['id_product']))
+        if (isset($param['id_product']) == TRUE)
         {
             $where += array('id_product' => $param['id_product']);
         }
@@ -66,7 +66,7 @@ class Product_image_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }

@@ -39,41 +39,45 @@ class Member_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_member']))
+        if (isset($param['id_member']) == TRUE)
         {
             $where += array('id_member' => $param['id_member']);
         }
-        if (isset($param['name']))
+        if (isset($param['name']) == TRUE)
         {
             $where += array('name' => $param['name']);
         }
-        if (isset($param['email']))
+        if (isset($param['email']) == TRUE)
         {
             $where += array('email' => $param['email']);
         }
-        if (isset($param['username']))
+        if (isset($param['username']) == TRUE)
         {
             $where += array('username' => $param['username']);
         }
-        if (isset($param['idcard_number']))
+        if (isset($param['idcard_number']) == TRUE)
         {
             $where += array('idcard_number' => $param['idcard_number']);
         }
-        if (isset($param['phone_number']))
+        if (isset($param['phone_number']) == TRUE)
         {
             $where += array('phone_number' => $param['phone_number']);
         }
-        if (isset($param['member_number']))
+        if (isset($param['member_number']) == TRUE)
         {
             $where += array('member_number' => $param['member_number']);
         }
-        if (isset($param['member_card']))
+        if (isset($param['member_card']) == TRUE)
         {
             $where += array('member_card' => $param['member_card']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array($this->table.'.status' => $param['status']);
+        }
+        if (isset($param['short_code']) == TRUE)
+        {
+            $where += array('short_code' => $param['short_code']);
         }
         
         $this->db->select('id_member, '.$this->table.'.id_kota, name, email, username, password,
@@ -94,33 +98,33 @@ class Member_model extends CI_Model {
     {
         $where = array();
         $or_where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('name LIKE ' => '%'.$param['q'].'%');
             $or_where += array('email LIKE ' => '%'.$param['q'].'%');
             $or_where += array('member_card LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['shirt_size']))
+        if (isset($param['shirt_size']) == TRUE)
         {
             $where += array('shirt_size' => $param['shirt_size']);
         }
-        if (isset($param['religion']))
+        if (isset($param['religion']) == TRUE)
         {
             $where += array('religion' => $param['religion']);
         }
-        if (isset($param['marital_status']))
+        if (isset($param['marital_status']) == TRUE)
         {
             $where += array('marital_status' => $param['marital_status']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if (isset($param['gender']))
+        if (isset($param['gender']) == TRUE)
         {
             $where += array('gender' => $param['gender']);
         }
-        if (isset($param['idcard_type']))
+        if (isset($param['idcard_type']) == TRUE)
         {
             $where += array('idcard_type' => $param['idcard_type']);
         }
@@ -143,35 +147,33 @@ class Member_model extends CI_Model {
     {
         $where = array();
         $or_where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('name LIKE ' => '%'.$param['q'].'%');
             $or_where += array('email LIKE ' => '%'.$param['q'].'%');
-            $or_where += array('username LIKE ' => '%'.$param['q'].'%');
-            $or_where += array('idcard_number LIKE ' => '%'.$param['q'].'%');
             $or_where += array('member_card LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['shirt_size']))
+        if (isset($param['shirt_size']) == TRUE)
         {
             $where += array('shirt_size' => $param['shirt_size']);
         }
-        if (isset($param['religion']))
+        if (isset($param['religion']) == TRUE)
         {
             $where += array('religion' => $param['religion']);
         }
-        if (isset($param['marital_status']))
+        if (isset($param['marital_status']) == TRUE)
         {
             $where += array('marital_status' => $param['marital_status']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if (isset($param['gender']))
+        if (isset($param['gender']) == TRUE)
         {
             $where += array('gender' => $param['gender']);
         }
-        if (isset($param['idcard_type']))
+        if (isset($param['idcard_type']) == TRUE)
         {
             $where += array('idcard_type' => $param['idcard_type']);
         }

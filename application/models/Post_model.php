@@ -28,15 +28,15 @@ class Post_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_post']))
+        if (isset($param['id_post']) == TRUE)
         {
             $where += array('id_post' => $param['id_post']);
         }
-        if (isset($param['title']))
+        if (isset($param['title']) == TRUE)
         {
             $where += array('title' => $param['title']);
         }
-        if (isset($param['slug']))
+        if (isset($param['slug']) == TRUE)
         {
             $where += array('slug' => $param['slug']);
         }
@@ -52,27 +52,27 @@ class Post_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('title LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['type']))
+        if (isset($param['type']) == TRUE)
         {
             $where += array('type' => $param['type']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if (isset($param['media_type']))
+        if (isset($param['media_type']) == TRUE)
         {
             $where += array('media_type' => $param['media_type']);
         }
-        if (isset($param['media_not']))
+        if (isset($param['media_not']) == TRUE)
         {
             $where += array('media != ' => '');
         }
-        if (isset($param['is_event']))
+        if (isset($param['is_event']) == TRUE)
         {
             $where += array('is_event' => $param['is_event']);
         }
@@ -90,23 +90,27 @@ class Post_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('title LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['type']))
+        if (isset($param['type']) == TRUE)
         {
             $where += array('type' => $param['type']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if (isset($param['media_type']))
+        if (isset($param['media_type']) == TRUE)
         {
             $where += array('media_type' => $param['media_type']);
         }
-        if (isset($param['is_event']))
+        if (isset($param['media_not']) == TRUE)
+        {
+            $where += array('media != ' => '');
+        }
+        if (isset($param['is_event']) == TRUE)
         {
             $where += array('is_event' => $param['is_event']);
         }

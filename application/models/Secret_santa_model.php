@@ -27,15 +27,15 @@ class Secret_santa_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if ( ! empty($param['id_secret_santa']))
+        if ( ! empty($param['id_secret_santa']) == TRUE)
         {
             $where += array('id_secret_santa' => $param['id_secret_santa']);
         }
-        if ( ! empty($param['name']))
+        if ( ! empty($param['name']) == TRUE)
         {
             $where += array('name' => $param['name']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -50,15 +50,15 @@ class Secret_santa_model extends CI_Model {
     function lists($param)
     {
 		$where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if ( ! empty($param['not_id_secret_santa']))
+        if ( ! empty($param['not_id_secret_santa']) == TRUE)
         {
             $where += array('id_secret_santa !=' => $param['not_id_secret_santa']);
         }
-        if (isset($param['chosen']))
+        if (isset($param['chosen']) == TRUE)
         {
             $where += array('chosen' => $param['chosen']);
         }
@@ -75,15 +75,15 @@ class Secret_santa_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
-        if ( ! empty($param['not_id_secret_santa']))
+        if ( ! empty($param['not_id_secret_santa']) == TRUE)
         {
             $where += array('id_secret_santa !=' => $param['not_id_secret_santa']);
         }
-        if (isset($param['chosen']))
+        if (isset($param['chosen']) == TRUE)
         {
             $where += array('chosen' => $param['chosen']);
         }

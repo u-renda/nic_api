@@ -445,11 +445,12 @@ class Member extends REST_Controller {
 		$phone_number = filter(trim($this->get('phone_number')));
 		$member_number = filter(trim($this->get('member_number')));
 		$member_card = filter(trim(strtoupper($this->get('member_card'))));
+		$short_code = filter(trim($this->get('short_code')));
 		
 		$data = array();
 		if ($id_member == FALSE && $name == FALSE && $email == FALSE && $username == FALSE
 			&& $idcard_number == FALSE && $phone_number == FALSE && $member_number == FALSE
-			&& $member_card == FALSE)
+			&& $member_card == FALSE && $short_code == FALSE)
 		{
 			$data['id_member'] = 'required';
 			$validation = 'error';
@@ -487,9 +488,13 @@ class Member extends REST_Controller {
 			{
 				$param['member_number'] = $member_number;
 			}
-			else
+			elseif ($member_card != '')
 			{
 				$param['member_card'] = $member_card;
+			}
+			else
+			{
+				$param['short_code'] = $short_code;
 			}
 			
 			$query = $this->the_model->info($param);
@@ -497,18 +502,12 @@ class Member extends REST_Controller {
 			if ($query->num_rows() > 0)
 			{
 				$row = $query->row();
-				$resi = '-';
 				
 				// hitung point
 				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member, 'status' => 2));
 				
-				// dapetin no resi
-				$query2 = $this->member_transfer_model->info(array('id_member' => $row->id_member, 'type' => 1));
-				
-				if ($query2->num_rows() > 0)
-				{
-					$resi = $query2->row()->resi;
-				}
+				// get provinsi
+				$kota = $this->kota_model->info(array('id_kota' => $row->id_kota));
 				
 				$data = array(
 					'id_member' => $row->id_member,
@@ -536,10 +535,10 @@ class Member extends REST_Controller {
 					'member_card' => $row->member_card,
 					'short_code' => $row->short_code,
 					'notes' => $row->notes,
-					'resi' => $resi,
 					'approved_date' => $row->approved_date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date,
+					'provinsi' => $kota->row()->provinsi,
 					'kota' => array(
 						'id_kota' => $row->id_kota,
 						'kota' => $row->kota,
@@ -704,9 +703,6 @@ class Member extends REST_Controller {
 		{
 			foreach ($query->result() as $row)
 			{
-				// hitung point
-				$point = $this->member_point_model->lists_count(array('id_member' => $row->id_member));
-				
 				$data[] = array(
 					'id_member' => $row->id_member,
 					'id_kota' => $row->id_kota,
@@ -728,7 +724,6 @@ class Member extends REST_Controller {
 					'religion' => intval($row->religion),
 					'shirt_size' => intval($row->shirt_size),
 					'photo' => $row->photo,
-					'point' => intval($point),
 					'status' => intval($row->status),
 					'notes' => $row->notes,
 					'member_number' => $row->member_number,
@@ -790,11 +785,18 @@ class Member extends REST_Controller {
 			
 			if ($query->num_rows() > 0)
 			{
+				// update short code
+				$short_code = md5($member_card.$email);
+				
+				$param = array();
+				$param['short_code'] = $short_code;
+				$query2 = $this->the_model->update($query->row()->id_member, $param);
+				
 				// send email
 				$content = array();
 				$content['member_name'] = ucwords($query->row()->name);
 				$content['email'] = $email;
-				$content['short_code'] = $query->row()->short_code;
+				$content['short_code'] = $short_code;
 				$send_email = email_recovery_password($content);
 				
 				if ($send_email)
@@ -957,7 +959,28 @@ class Member extends REST_Controller {
 				{
 					$param['password'] = md5($password);
 					
-					// bisa ditambah send email
+					// update short code
+					$short_code = md5($password.$email);
+					
+					$param2 = array();
+					$param2['short_code'] = $short_code;
+					$this->the_model->update($query->row()->id_member, $param2);
+					
+					// send email
+					$content = array();
+					$content['member_name'] = ucwords($query->row()->name);
+					$content['email'] = $email;
+					$content['short_code'] = $short_code;
+					$send_email = email_reset_password($content);
+					
+					if ($send_email)
+					{
+						$data['send_reset_password'] = 'success';
+					}
+					else
+					{
+						$data['send_reset_password'] = 'failed';
+					}
 				}
 				
 				if ($idcard_type == TRUE)
@@ -1217,19 +1240,19 @@ class Member extends REST_Controller {
 		$this->response($rv, $code);
 	}
 	
-	// Dipakai untuk login karena butuh username & password (required) 
+	// Dipakai untuk login karena butuh member card & password (required) 
 	function valid_post()
 	{
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
-		$username = filter(trim($this->post('username')));
+		$member_card = filter(trim(strtoupper($this->post('member_card'))));
 		$password = filter(trim($this->post('password')));
 		
 		$data = array();
-		if ($username == FALSE)
+		if ($member_card == FALSE)
 		{
-			$data['username'] = 'required';
+			$data['member_card'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -1243,7 +1266,7 @@ class Member extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$query = $this->the_model->info(array('username' => $username));
+			$query = $this->the_model->info(array('member_card' => $member_card));
 			
 			if ($query->num_rows() > 0)
 			{

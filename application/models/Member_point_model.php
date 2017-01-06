@@ -27,7 +27,7 @@ class Member_point_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_member_point']))
+        if (isset($param['id_member_point']) == TRUE)
         {
             $where += array('id_member_point' => $param['id_member_point']);
         }
@@ -46,15 +46,15 @@ class Member_point_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['id_events']))
+        if (isset($param['id_events']) == TRUE)
         {
             $where += array('id_events' => $param['id_events']);
         }
-        if (isset($param['id_member']))
+        if (isset($param['id_member']) == TRUE)
         {
             $where += array('id_member' => $param['id_member']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -71,15 +71,15 @@ class Member_point_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['id_events']))
+        if (isset($param['id_events']) == TRUE)
         {
             $where += array('id_events' => $param['id_events']);
         }
-        if (isset($param['id_member']))
+        if (isset($param['id_member']) == TRUE)
         {
             $where += array('id_member' => $param['id_member']);
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }

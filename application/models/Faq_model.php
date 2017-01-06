@@ -27,7 +27,7 @@ class Faq_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_faq']))
+        if (isset($param['id_faq']) == TRUE)
         {
             $where += array('id_faq' => $param['id_faq']);
         }
@@ -43,12 +43,12 @@ class Faq_model extends CI_Model {
     {
         $where = array();
         $or_where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('question LIKE ' => '%'.$param['q'].'%');
             $or_where += array('answer LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['category']))
+        if (isset($param['category']) == TRUE)
         {
             $where += array('category' => $param['category']);
         }
@@ -67,12 +67,12 @@ class Faq_model extends CI_Model {
     {
         $where = array();
         $or_where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('question LIKE ' => '%'.$param['q'].'%');
             $where += array('answer LIKE ' => '%'.$param['q'].'%');
         }
-        if (isset($param['category']))
+        if (isset($param['category']) == TRUE)
         {
             $where += array('category' => $param['category']);
         }

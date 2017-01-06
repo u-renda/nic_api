@@ -28,11 +28,11 @@ class Product_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_product']))
+        if (isset($param['id_product']) == TRUE)
         {
             $where += array('id_product' => $param['id_product']);
         }
-        if (isset($param['name']))
+        if (isset($param['name']) == TRUE)
         {
             $where += array('name' => $param['name']);
         }
@@ -48,11 +48,11 @@ class Product_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('name LIKE ' => '%'.$param['name'].'%');
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -70,11 +70,11 @@ class Product_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['q']))
+        if (isset($param['q']) == TRUE)
         {
             $where += array('name LIKE ' => '%'.$param['name'].'%');
         }
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }

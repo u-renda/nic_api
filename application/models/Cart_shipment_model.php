@@ -27,7 +27,7 @@ class Cart_shipment_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_cart_shipment']))
+        if (isset($param['id_cart_shipment']) == TRUE)
         {
             $where += array('id_cart_shipment' => $param['id_cart_shipment']);
         }

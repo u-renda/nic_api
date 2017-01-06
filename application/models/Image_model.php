@@ -27,7 +27,7 @@ class Image_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_image']))
+        if (isset($param['id_image']) == TRUE)
         {
             $where += array('id_image' => $param['id_image']);
         }
@@ -44,7 +44,7 @@ class Image_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['id_image_album']))
+        if (isset($param['id_image_album']) == TRUE)
         {
             $where += array('id_image_album' => $param['id_image_album']);
         }
@@ -61,7 +61,7 @@ class Image_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['id_image_album']))
+        if (isset($param['id_image_album']) == TRUE)
         {
             $where += array('id_image_album' => $param['id_image_album']);
         }

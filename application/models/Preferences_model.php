@@ -27,11 +27,11 @@ class Preferences_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_preferences']))
+        if (isset($param['id_preferences']) == TRUE)
         {
             $where += array('id_preferences' => $param['id_preferences']);
         }
-        if (isset($param['key']))
+        if (isset($param['key']) == TRUE)
         {
             $where += array('key' => $param['key']);
         }

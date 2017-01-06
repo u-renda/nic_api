@@ -27,7 +27,7 @@ class Cart_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_cart']))
+        if (isset($param['id_cart']) == TRUE)
         {
             $where += array('id_cart' => $param['id_cart']);
         }
@@ -45,7 +45,7 @@ class Cart_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
@@ -63,7 +63,7 @@ class Cart_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['status']))
+        if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
         }
