@@ -35,7 +35,8 @@ class Member_transfer_model extends CI_Model {
         $this->db->select('id_member_transfer, '.$this->table.'.id_member, total, date,
 						  '.$this->table.'.photo, account_name, other_information, type, resi,
 						  '.$this->table.'.status, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, name');
+						  '.$this->table.'.updated_date, '.$this->table.'.name,
+						  member.name AS member_name');
         $this->db->from($this->table);
 		$this->db->join('member', $this->table.'.id_member = member.id_member', 'left');
         $this->db->where($where);
@@ -60,7 +61,7 @@ class Member_transfer_model extends CI_Model {
         }
         
         $this->db->select('id_member_transfer, id_member, total, date, photo, account_name,
-						  other_information, type, created_date, updated_date, resi, status');
+						  other_information, type, created_date, updated_date, resi, status, name');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);

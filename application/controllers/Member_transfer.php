@@ -20,6 +20,8 @@ class Member_transfer extends REST_Controller {
 		$total = filter(trim($this->post('total')));
 		$type = filter(trim($this->post('type')));
 		$status = filter(trim($this->post('status')));
+		$date = filter(trim($this->post('date')));
+		$name = filter(trim($this->post('name')));
 		
 		$data = array();
 		if ($id_member == FALSE)
@@ -50,6 +52,20 @@ class Member_transfer extends REST_Controller {
 			$code = 400;
 		}
 		
+		if ($date == FALSE)
+		{
+			$data['date'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($name == FALSE)
+		{
+			$data['name'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
 		if (in_array($type, $this->config->item('default_member_transfer_type')) == FALSE && $type == TRUE)
 		{
 			$data['type'] = 'wrong value';
@@ -68,9 +84,11 @@ class Member_transfer extends REST_Controller {
 		{
 			$param = array();
 			$param['id_member'] = $id_member;
+			$param['name'] = $name;
 			$param['total'] = $total;
 			$param['type'] = $type;
 			$param['status'] = $status;
+			$param['date'] = $date;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);
@@ -182,6 +200,7 @@ class Member_transfer extends REST_Controller {
 				
 				$data = array(
 					'id_member_transfer' => $row->id_member_transfer,
+					'name' => $row->name,
 					'total' => intval($row->total),
 					'date' => $row->date,
 					'photo' => $row->photo,
@@ -194,7 +213,7 @@ class Member_transfer extends REST_Controller {
 					'updated_date' => $row->updated_date,
 					'member' => array(
 						'id_member' => $row->id_member,
-						'name' => $row->name
+						'name' => $row->member_name
 					)
 				);
 				
@@ -309,6 +328,7 @@ class Member_transfer extends REST_Controller {
 				$data[] = array(
 					'id_member_transfer' => $row->id_member_transfer,
 					'id_member' => $row->id_member,
+					'name' => $row->name,
 					'total' => intval($row->total),
 					'date' => $row->date,
 					'photo' => $row->photo,

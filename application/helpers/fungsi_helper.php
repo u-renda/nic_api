@@ -411,9 +411,8 @@ if ( ! function_exists('get_member_card'))
 			$gender = $code_member_gender[$param->gender];
 			$initial = $query->row()->admin_initial;
 			$year = date('y');
-			$get_member_number = get_member_number();
 			
-			$data = $birth_date.$gender.'W'.$initial.$year.$get_member_number;
+			$data = $birth_date.$gender.'W'.$initial.$year.$param->get_member_number;
 			return $data;
 		}
 		else

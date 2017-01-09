@@ -82,6 +82,8 @@ class Member extends REST_Controller {
 		$member_card = filter(trim($this->post('member_card')));
 		$approved_date = filter(trim($this->post('approved_date')));
 		$notes = filter(trim($this->post('notes')));
+		$photo_transfer = filter(trim($this->post('photo_transfer')));
+		$other_information = filter(trim($this->post('other_information')));
 		
 		$data = array();
 		if ($id_kota == FALSE)
@@ -295,21 +297,21 @@ class Member extends REST_Controller {
 			
 			if ($status == 4) // approved
 			{
-				// isi username, password, member number, member card
+				// isi member number, member card
+				$get_member_number = get_member_number();
+				
 				$param2 = array();
-				$param2['name'] = $name;
 				$param2['birth_date'] = $birth_date;
 				$param2['gender'] = $gender;
+				$param2['get_member_number'] = $get_member_number;
 				
-				$generate_username = generate_username((object) $param2);
-				$get_member_number = get_member_number();
 				$get_member_card = get_member_card((object) $param2, $id_admin);
 				
 				if ($get_member_card != FALSE)
 				{
-					$param['username'] = $generate_username;
 					$param['member_number'] = $get_member_number;
 					$param['member_card'] = $get_member_card;
+					$param['short_code'] = md5($get_member_card.$email);
 					$param['approved_date'] = date('Y-m-d H:i:s');
 				}
 			}
@@ -318,11 +320,8 @@ class Member extends REST_Controller {
 			
 			if ($query != 0 || $query != '')
 			{
-				if ($status == 2) // awaiting transfer
+				if ($status == 4) // approved
 				{
-					// ambil unique code dan update valuenya (+1)
-					$unique_code = get_update_unique_code();
-					
 					// get price from id_kota
 					$query2 = $this->kota_model->info(array('id_kota' => $id_kota));
 					
@@ -331,12 +330,19 @@ class Member extends REST_Controller {
 						// create member transfer
 						$param3 = array();
 						$param3['id_member'] = $query;
-						$param3['total'] = $this->config->item('registration_fee') + $unique_code + $query2->row()->price;
+						$param3['name'] = $name;
+						$param3['total'] = $this->config->item('registration_fee') + $query2->row()->price;
+						$param3['date'] = date('Y-m-d');
+						$param3['photo'] = $photo_transfer;
+						$param3['account_name'] = 'Admin';
+						$param3['other_information'] = $other_information;
 						$param3['type'] = 1;
-						$param3['status'] = 1;
+						$param3['status'] = 2;
 						$param3['created_date'] = date('Y-m-d H:i:s');
 						$param3['updated_date'] = date('Y-m-d H:i:s');
 						$this->member_transfer_model->create($param3);
+						
+						// send email approved
 					}
 				}
 				else

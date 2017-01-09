@@ -9,6 +9,7 @@ class Post extends REST_Controller {
     {
         parent::__construct();
 		$this->load->helper('fungsi');
+		$this->load->model('events_model');
 		$this->load->model('post_archived_model');
 		$this->load->model('post_model', 'the_model');
     }
@@ -56,7 +57,7 @@ class Post extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ( ! isset($is_event))
+		if ($is_event == '')
 		{
 			$data['is_event'] = 'required';
 			$validation = 'error';
@@ -137,6 +138,19 @@ class Post extends REST_Controller {
 				$param2['created_date'] = date('Y-m-d H:i:s');
 				$param2['updated_date'] = date('Y-m-d H:i:s');
 				$query2 = $this->post_archived_model->create($param2);
+				
+				if ($is_event == 1)
+				{
+					// save to event
+					$param3 = array();
+					$param3['id_post'] = $query;
+					$param3['title'] = $title;
+					$param3['date'] = $created_date;
+					$param3['status'] = 1;
+					$param2['created_date'] = date('Y-m-d H:i:s');
+					$param2['updated_date'] = date('Y-m-d H:i:s');
+					$query3 = $this->events_model->create($param3);
+				}
 				
 				$data['id_post'] = $query;
 				$data['create'] = 'success';

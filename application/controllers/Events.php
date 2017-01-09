@@ -22,6 +22,12 @@ class Events extends REST_Controller {
 		$status = filter(trim($this->post('status')));
 		
 		$data = array();
+		if ($id_post == FALSE)
+		{
+			$data['id_post'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
 		if ($title == FALSE)
 		{
 			$data['title'] = 'required';
@@ -53,11 +59,7 @@ class Events extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
-			if ($id_post == TRUE)
-			{
-				$param['id_post'] = $id_post;
-			}
-			
+			$param['id_post'] = $id_post;
 			$param['title'] = $title;
 			$param['date'] = $date;
 			$param['status'] = intval($status);
