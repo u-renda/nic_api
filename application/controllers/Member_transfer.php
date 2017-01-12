@@ -17,11 +17,10 @@ class Member_transfer extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_member = filter($this->post('id_member'));
-		$total = filter(trim($this->post('total')));
-		$type = filter(trim($this->post('type')));
-		$status = filter(trim($this->post('status')));
-		$date = filter(trim($this->post('date')));
 		$name = filter(trim($this->post('name')));
+		$total = filter(trim($this->post('total')));
+		$status = filter(trim($this->post('status')));
+		$type = filter(trim($this->post('type')));
 		
 		$data = array();
 		if ($id_member == FALSE)
@@ -48,13 +47,6 @@ class Member_transfer extends REST_Controller {
 		if ($status == FALSE)
 		{
 			$data['status'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($date == FALSE)
-		{
-			$data['date'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -86,9 +78,8 @@ class Member_transfer extends REST_Controller {
 			$param['id_member'] = $id_member;
 			$param['name'] = $name;
 			$param['total'] = $total;
-			$param['type'] = $type;
 			$param['status'] = $status;
-			$param['date'] = $date;
+			$param['type'] = $type;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);

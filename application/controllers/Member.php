@@ -82,8 +82,6 @@ class Member extends REST_Controller {
 		$member_card = filter(trim($this->post('member_card')));
 		$approved_date = filter(trim($this->post('approved_date')));
 		$notes = filter(trim($this->post('notes')));
-		$photo_transfer = filter(trim($this->post('photo_transfer')));
-		$other_information = filter(trim($this->post('other_information')));
 		
 		$data = array();
 		if ($id_kota == FALSE)
@@ -320,47 +318,29 @@ class Member extends REST_Controller {
 			
 			if ($query != 0 || $query != '')
 			{
-				if ($status == 4) // approved
+				// send email
+				$content = array();
+				$content['member_name'] = ucwords($name);
+				$content['email'] = $email;
+				
+				if ($status == 4)
 				{
-					// get price from id_kota
-					$query2 = $this->kota_model->info(array('id_kota' => $id_kota));
-					
-					if ($query2->num_rows() > 0)
-					{
-						// create member transfer
-						$param3 = array();
-						$param3['id_member'] = $query;
-						$param3['name'] = $name;
-						$param3['total'] = $this->config->item('registration_fee') + $query2->row()->price;
-						$param3['date'] = date('Y-m-d');
-						$param3['photo'] = $photo_transfer;
-						$param3['account_name'] = 'Admin';
-						$param3['other_information'] = $other_information;
-						$param3['type'] = 1;
-						$param3['status'] = 2;
-						$param3['created_date'] = date('Y-m-d H:i:s');
-						$param3['updated_date'] = date('Y-m-d H:i:s');
-						$this->member_transfer_model->create($param3);
-						
-						// send email approved
-					}
+					$content['member_card'] = $param['member_card'];
+					$content['short_code'] = $param['short_code'];
+					$send_email = email_member_approved($content);
 				}
 				else
 				{
-					// send email
-					$content = array();
-					$content['member_name'] = ucwords($name);
-					$content['email'] = $email;
 					$send_email = email_member_create($content);
-					
-					if ($send_email)
-					{
-						$data['send_email'] = 'success';
-					}
-					else
-					{
-						$data['send_email'] = 'failed';
-					}
+				}
+				
+				if ($send_email)
+				{
+					$data['send_email'] = 'success';
+				}
+				else
+				{
+					$data['send_email'] = 'failed';
 				}
 				
 				$data['create'] = 'success';

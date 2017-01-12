@@ -270,6 +270,7 @@ class Product extends REST_Controller {
 					'price_member' => intval($row->price_member),
 					'description' => $row->description,
 					'quantity' => intval($row->quantity),
+					'type' => intval($row->type),
 					'status' => intval($row->status),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
@@ -429,6 +430,7 @@ class Product extends REST_Controller {
 					'price_member' => intval($row->price_member),
 					'description' => $row->description,
 					'quantity' => intval($row->quantity),
+					'type' => intval($row->type),
 					'status' => intval($row->status),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
