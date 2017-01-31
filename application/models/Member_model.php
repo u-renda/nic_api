@@ -128,6 +128,10 @@ class Member_model extends CI_Model {
         {
             $where += array('idcard_type' => $param['idcard_type']);
         }
+        if (isset($param['new_member']) == TRUE)
+        {
+            $where += array('new_member' => $param['new_member']);
+        }
         
         $this->db->select('id_member, id_kota, name, email, username, idcard_type, idcard_number,
 						  idcard_photo, idcard_address, shipment_address, postal_code, gender,
@@ -176,6 +180,10 @@ class Member_model extends CI_Model {
         if (isset($param['idcard_type']) == TRUE)
         {
             $where += array('idcard_type' => $param['idcard_type']);
+        }
+        if (isset($param['new_member']) == TRUE)
+        {
+            $where += array('new_member' => $param['new_member']);
         }
         
         $this->db->select($this->table_id);

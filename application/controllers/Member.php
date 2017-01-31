@@ -567,6 +567,7 @@ class Member extends REST_Controller {
 		$shirt_size = filter(trim($this->get('shirt_size')));
 		$status = filter(intval(trim($this->get('status'))));
 		$q = filter(trim($this->get('q')));
+		$new_member = filter($this->get('new_member'));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -674,6 +675,11 @@ class Member extends REST_Controller {
 		{
 			$param['shirt_size'] = $shirt_size;
 			$param2['shirt_size'] = $shirt_size;
+		}
+		if ($new_member != '')
+		{
+			$param['new_member'] = $new_member;
+			$param2['new_member'] = $new_member;
 		}
 		
 		$param['limit'] = $limit;
