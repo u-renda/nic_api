@@ -14,7 +14,7 @@ if ( ! function_exists('email_member_approved'))
 		$CI->load->model('preferences_model');;
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Selamat Bergabung';
+		$param['subject'] = 'NEZindaCLUB - Selamat Bergabung di NIC';
 		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?c='.$param['short_code'];
 		
 		// content email

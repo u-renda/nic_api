@@ -84,9 +84,10 @@ class Member_transfer extends REST_Controller {
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);
 			
-			if ($query > 0)
+			if ($query != 0 || $query != '')
 			{
 				$data['create'] = 'success';
+				$data['id_member_transfer'] = $query;
 				$validation = 'ok';
 				$code = 200;
 			}
@@ -361,6 +362,7 @@ class Member_transfer extends REST_Controller {
 		$other_information = filter(trim(strtolower($this->post('other_information'))));
 		$type = filter(trim($this->post('type')));
 		$status = filter(trim($this->post('status')));
+		$resi = filter(trim($this->post('resi')));
 		
 		$data = array();
 		if ($id_member_transfer == FALSE)
