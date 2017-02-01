@@ -780,9 +780,10 @@ class Member extends REST_Controller {
 				// send email
 				$content = array();
 				$content['member_name'] = ucwords($query->row()->name);
-				$content['email'] = $email;
+				$content['email'] = $query->row()->email;
 				$content['short_code'] = $short_code;
 				$content['email_content'] = $email_content;
+				
 				$send_email = email_member_invalid($content);
 				
 				if ($send_email)
