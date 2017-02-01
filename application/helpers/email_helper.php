@@ -94,6 +94,20 @@ if ( ! function_exists('email_recovery_password'))
 	}
 }
 
+if ( ! function_exists('email_member_request_transfer'))
+{
+	function email_member_request_transfer($param)
+	{
+		$CI =& get_instance();
+		$param += requirement();
+		
+		$param['subject'] = 'NEZindaCLUB - Membership Request Transfer';
+		
+		$send = send_email($param, $param['email_content']);
+		return $send;
+	}
+}
+
 if ( ! function_exists('email_reset_password'))
 {
 	function email_reset_password($param)
