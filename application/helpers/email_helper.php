@@ -63,7 +63,6 @@ if ( ! function_exists('email_member_invalid'))
 		$param += requirement();
 		
 		$param['subject'] = 'NEZindaCLUB - Membership Invalid';
-		$param['link_reg_invalid'] = $CI->config->item('link_reg_invalid').'?c='.$param['short_code'];
 		
 		$send = send_email($param, $param['email_content']);
 		return $send;

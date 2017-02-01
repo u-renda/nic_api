@@ -770,18 +770,10 @@ class Member extends REST_Controller {
 			
 			if ($query->num_rows() > 0)
 			{
-				// update short code
-				$short_code = md5($id.$query->row()->birth_place);
-				
-				$param = array();
-				$param['short_code'] = $short_code;
-				$query2 = $this->the_model->update($id, $param);
-				
 				// send email
 				$content = array();
 				$content['member_name'] = ucwords($query->row()->name);
 				$content['email'] = $query->row()->email;
-				$content['short_code'] = $short_code;
 				$content['email_content'] = $email_content;
 				
 				$send_email = email_member_invalid($content);
