@@ -11,7 +11,7 @@ if ( ! function_exists('email_member_approved'))
 	function email_member_approved($param)
 	{
 		$CI =& get_instance();
-		$CI->load->model('preferences_model');;
+		$CI->load->model('preferences_model');
 		$param += requirement();
 		
 		$param['subject'] = 'NEZindaCLUB - Selamat Bergabung di NIC';
@@ -36,7 +36,7 @@ if ( ! function_exists('email_member_create'))
 	function email_member_create($param)
 	{
 		$CI =& get_instance();
-		$CI->load->model('preferences_model');;
+		$CI->load->model('preferences_model');
 		$param += requirement();
 		
 		$param['subject'] = 'NEZindaCLUB - Registrasi Berhasil';
@@ -55,12 +55,27 @@ if ( ! function_exists('email_member_create'))
 	}
 }
 
+if ( ! function_exists('email_member_invalid'))
+{
+	function email_member_invalid($param)
+	{
+		$CI =& get_instance();
+		$param += requirement();
+		
+		$param['subject'] = 'NEZindaCLUB - Membership Invalid';
+		$param['link_reg_invalid'] = $CI->config->item('link_reg_invalid').'?c='.$param['short_code'];
+		
+		$send = send_email($param, $param['email_content']);
+		return $send;
+	}
+}
+
 if ( ! function_exists('email_recovery_password'))
 {
 	function email_recovery_password($param)
 	{
 		$CI =& get_instance();
-		$CI->load->model('preferences_model');;
+		$CI->load->model('preferences_model');
 		$param += requirement();
 		
 		$param['subject'] = 'NEZindaCLUB - Recovery Password';
@@ -85,7 +100,7 @@ if ( ! function_exists('email_reset_password'))
 	function email_reset_password($param)
 	{
 		$CI =& get_instance();
-		$CI->load->model('preferences_model');;
+		$CI->load->model('preferences_model');
 		$param += requirement();
 		
 		$param['subject'] = 'NEZindaCLUB - Reset Password';
@@ -139,7 +154,7 @@ if ( ! function_exists('send_email'))
 		$CI->email->from('admin@nezindaclub.com', 'NEZindaCLUB');
 		$CI->email->to($param['email']);
 		$CI->email->subject($param['subject']);
-		$CI->email->message($email_content);
+		$CI->email->message('<html><head></head><body style="font-family: Arial; margin: 0px;">'.$email_content.'</body></html>');
 		
 		$send = $CI->email->send();
 		return $send;
