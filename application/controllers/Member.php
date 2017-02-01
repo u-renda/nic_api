@@ -925,6 +925,7 @@ class Member extends REST_Controller {
 		$transfer_photo = filter(trim(strtolower($this->post('transfer_photo'))));
 		$account_name = filter(trim(strtolower($this->post('account_name'))));
 		$other_information = filter(trim($this->post('other_information')));
+		$short_code = filter(trim($this->post('short_code')));
 		
 		$data = array();
 		if ($id_member == FALSE)
@@ -1135,6 +1136,11 @@ class Member extends REST_Controller {
 				if ($notes == TRUE)
 				{
 					$param['notes'] = $notes;
+				}
+				
+				if ($short_code == TRUE)
+				{
+					$param['short_code'] = $short_code;
 				}
 				
 				if ($status == TRUE)
