@@ -108,6 +108,30 @@ if ( ! function_exists('email_member_request_transfer'))
 	}
 }
 
+if ( ! function_exists('email_member_transfer_confirmation'))
+{
+	function email_member_transfer_confirmation($param)
+	{
+		$CI =& get_instance();
+		$CI->load->model('preferences_model');
+		$param += requirement();
+		
+		$param['subject'] = 'NEZindaCLUB - Konfirmasi Pembayaran Berhasil';
+		
+		// content email
+		$query = $CI->preferences_model->info(array('key' => 'email_trf_confirmation_success'));
+		
+		$email_content = '';
+		if ($query->num_rows() > 0)
+		{
+			$email_content = $query->row()->value;
+		}
+		
+		$send = send_email($param, $email_content);
+		return $send;
+	}
+}
+
 if ( ! function_exists('email_reset_password'))
 {
 	function email_reset_password($param)

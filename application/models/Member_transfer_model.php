@@ -32,6 +32,10 @@ class Member_transfer_model extends CI_Model {
         {
             $where += array('id_member_transfer' => $param['id_member_transfer']);
         }
+        if (isset($param['total']) == TRUE)
+        {
+            $where += array('total' => $param['total']);
+        }
         
         $this->db->select('id_member_transfer, '.$this->table.'.id_member, total, date,
 						  '.$this->table.'.photo, account_name, other_information, type, resi,

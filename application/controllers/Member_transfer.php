@@ -167,9 +167,10 @@ class Member_transfer extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_member_transfer = filter($this->get('id_member_transfer'));
+		$total = filter(trim($this->get('total')));
 		
 		$data = array();
-		if ($id_member_transfer == FALSE)
+		if ($id_member_transfer == FALSE && $total == FALSE)
 		{
 			$data['id_member_transfer'] = 'required';
 			$validation = 'error';
@@ -182,6 +183,10 @@ class Member_transfer extends REST_Controller {
 			if ($id_member_transfer != '')
 			{
 				$param['id_member_transfer'] = $id_member_transfer;
+			}
+			else
+			{
+				$param['total'] = $total;
 			}
 			
 			$query = $this->the_model->info($param);
@@ -423,6 +428,27 @@ class Member_transfer extends REST_Controller {
 				
 				if ($status == TRUE)
 				{
+					if ($status == 2)
+					{
+						$query2 = $this->member_model->info(array('id_member' => $query->row()->member->id_member));
+						
+						// send email
+						$content = array();
+						$content['member_name'] = ucwords($query2->row()->name);
+						$content['email'] = $query2->row()->email;
+						
+						$send_email = email_member_transfer_confirmation($content);
+						
+						if ($send_email)
+						{
+							$data['send_email'] = 'success';
+						}
+						else
+						{
+							$data['send_email'] = 'failed';
+						}
+					}
+					
 					$param['status'] = $status;
 				}
 				

@@ -988,10 +988,6 @@ class Member extends REST_Controller {
 		$member_card = filter(trim(strtoupper($this->post('member_card'))));
 		$notes = filter(trim($this->post('notes')));
 		$approved_date = filter(trim($this->post('approved_date')));
-		$transfer_date = filter(trim($this->post('transfer_date')));
-		$transfer_photo = filter(trim(strtolower($this->post('transfer_photo'))));
-		$account_name = filter(trim(strtolower($this->post('account_name'))));
-		$other_information = filter(trim($this->post('other_information')));
 		$short_code = filter(trim($this->post('short_code')));
 		
 		$data = array();
@@ -1281,36 +1277,21 @@ class Member extends REST_Controller {
 						$param['member_card'] = '-';
 						$param['approved_date'] = '';
 						
-						if ($query2 != FALSE)
-						{
-							foreach ($query2 as $row)
-							{
-								$param4 = array();
-								$param4['date'] = $transfer_date;
-								$param4['photo'] = $transfer_photo;
-								$param4['account_name'] = $account_name;
-								$param4['other_information'] = $other_information;
-								$param4['status'] = 2;
-								$param4['updated_date'] = date('Y-m-d H:i:s');
-								$this->member_transfer_model->update($row->id_member_transfer, $param4);
-							}
-						}
-						else
+						if ($query2 == FALSE)
 						{
 							// ambil unique code dan update valuenya (+1)
 							$unique_code = get_update_unique_code();
 							
 							// create member transfer
-							$param3 = array();
-							$param3['id_member'] = $query->row()->id_member;
-							$param3['total'] = $this->config->item('registration_fee') + $unique_code + $query->row()->price;
-							$param3['type'] = 1;
-							$param3['status'] = 2;
+							$param4 = array();
+							$param4['id_member'] = $query->row()->id_member;
+							$param4['total'] = $this->config->item('registration_fee') + $unique_code + $query->row()->price;
+							$param4['type'] = 1;
+							$param4['status'] = 2;
 							$param4['created_date'] = date('Y-m-d H:i:s');
 							$param4['updated_date'] = date('Y-m-d H:i:s');
-							$this->member_transfer_model->create($param3);
+							$query3 = $this->member_transfer_model->create($param4);
 						}
-						
 					}
 					elseif ($status == 4) // approved
 					{
