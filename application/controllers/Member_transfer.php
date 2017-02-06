@@ -8,6 +8,7 @@ class Member_transfer extends REST_Controller {
     function __construct()
     {
         parent::__construct();
+		$this->load->model('member_model');
 		$this->load->model('member_transfer_model', 'the_model');
     }
 	
