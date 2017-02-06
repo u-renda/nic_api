@@ -431,7 +431,7 @@ class Member_transfer extends REST_Controller {
 				{
 					if ($status == 2)
 					{
-						$query2 = $this->member_model->info(array('id_member' => $query->row()->member->id_member));
+						$query2 = $this->member_model->info(array('id_member' => $query->row()->id_member));
 						
 						// send email
 						$content = array();
