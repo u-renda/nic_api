@@ -970,8 +970,8 @@ class Member extends REST_Controller {
 		$idcard_type = filter(trim(intval($this->post('idcard_type'))));
 		$idcard_number = filter(trim($this->post('idcard_number')));
 		$idcard_photo = filter(trim(strtolower($this->post('idcard_photo'))));
-		$idcard_address = filter(trim($this->post('idcard_address')));
-		$shipment_address = filter(trim($this->post('shipment_address')));
+		$idcard_address = $this->post('idcard_address');
+		$shipment_address = $this->post('shipment_address');
 		$postal_code = filter(trim($this->post('postal_code')));
 		$gender = filter(trim($this->post('gender')));
 		$phone_number = filter(trim($this->post('phone_number')));
@@ -986,8 +986,7 @@ class Member extends REST_Controller {
 		$status = filter(trim(intval($this->post('status'))));
 		$member_number = filter(trim($this->post('member_number')));
 		$member_card = filter(trim(strtoupper($this->post('member_card'))));
-		$notes = filter(trim($this->post('notes')));
-		$approved_date = filter(trim($this->post('approved_date')));
+		$notes = $this->post('notes');
 		$short_code = filter(trim($this->post('short_code')));
 		
 		$data = array();
@@ -1083,7 +1082,7 @@ class Member extends REST_Controller {
 					$param['password'] = md5($password);
 					
 					// update short code
-					$short_code = md5($password.$email);
+					$short_code = md5($password.date('Y-m-d H:i:s'));
 					
 					$param2 = array();
 					$param2['short_code'] = $short_code;
@@ -1295,23 +1294,14 @@ class Member extends REST_Controller {
 					}
 					elseif ($status == 4) // approved
 					{
-						// isi username, password, member number, member card
-						//$param2 = array();
-						//$param2['name'] = $name;
-						//$param2['birth_date'] = $birth_date;
-						//$param2['gender'] = $gender;
-						//
-						//$generate_username = generate_username((object) $param2);
-						//$get_member_number = get_member_number();
-						//$get_member_card = get_member_card((object) $param2, $id_admin);
-						//
-						//if ($get_member_card != FALSE)
-						//{
-							$param['username'] = $username;
-							$param['member_number'] = $member_number;
-							$param['member_card'] = $member_card;
+						$param['username'] = $username;
+						$param['member_number'] = $member_number;
+						$param['member_card'] = $member_card;
+						
+						if ($query->row()->approved_date == '')
+						{
 							$param['approved_date'] = date('Y-m-d H:i:s');
-						//}
+						}
 					}
 					
 					$param['status'] = $status;

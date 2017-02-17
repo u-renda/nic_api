@@ -427,6 +427,11 @@ class Member_transfer extends REST_Controller {
 					$param['type'] = $type;
 				}
 				
+				if ($resi == TRUE)
+				{
+					$param['resi'] = $resi;
+				}
+				
 				if ($status == TRUE)
 				{
 					if ($status == 2)
