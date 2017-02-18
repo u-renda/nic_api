@@ -1149,7 +1149,7 @@ class Member extends REST_Controller {
 					$param['password'] = md5($password);
 					
 					// update short code
-					$short_code = md5($password.date('Y-m-d H:i:s'));
+					$short_code = md5($password.$query->row()->name);
 					
 					$param2 = array();
 					$param2['short_code'] = $short_code;
