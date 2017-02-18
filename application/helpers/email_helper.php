@@ -11,22 +11,11 @@ if ( ! function_exists('email_member_approved'))
 	function email_member_approved($param)
 	{
 		$CI =& get_instance();
-		$CI->load->model('preferences_model');
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Selamat Bergabung di NIC';
-		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?c='.$param['short_code'];
+		$param['subject'] = 'NEZindaCLUB - Selamat Bergabung di NIC!';
 		
-		// content email
-		$query = $CI->preferences_model->info(array('key' => 'email_member_approved'));
-		
-		$email_content = '';
-		if ($query->num_rows() > 0)
-		{
-			$email_content = $query->row()->value;
-		}
-		
-		$send = send_email($param, $email_content);
+		$send = send_email($param, $param['email_content']);
 		return $send;
 	}
 }

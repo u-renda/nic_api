@@ -741,6 +741,73 @@ class Member extends REST_Controller {
 		$this->response($rv, $rv['code']);
 	}
 	
+	function send_approved_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$id = filter($this->post('id_member'));
+		$email_content = $this->post('email_content');
+		
+		$data = array();
+		if ($id == FALSE)
+		{
+			$data['id_member'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($email_content == FALSE)
+		{
+			$data['email_content'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$query = $this->the_model->info(array('id_member' => $id));
+			
+			if ($query->num_rows() > 0)
+			{
+				// send email
+				$content = array();
+				$content['member_name'] = ucwords($query->row()->name);
+				$content['email'] = $query->row()->email;
+				$content['email_content'] = $email_content;
+				
+				$send_email = email_member_approved($content);
+				
+				if ($send_email)
+				{
+					$data['send_email'] = 'success';
+					$validation = 'ok';
+					$code = 200;
+				}
+				else
+				{
+					$data['send_email'] = 'failed';
+					$validation = 'error';
+					$code = 400;
+				}
+			}
+			else
+			{
+				$data['id_member'] = 'not found';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
 	function send_invalid_post()
 	{
 		$this->benchmark->mark('code_start');
@@ -1294,11 +1361,10 @@ class Member extends REST_Controller {
 					}
 					elseif ($status == 4) // approved
 					{
-						$param['username'] = $username;
 						$param['member_number'] = $member_number;
 						$param['member_card'] = $member_card;
 						
-						if ($query->row()->approved_date == '')
+						if ($query->row()->approved_date == '' || $query->row()->approved_date == '0000-00-00 00:00:00')
 						{
 							$param['approved_date'] = date('Y-m-d H:i:s');
 						}
