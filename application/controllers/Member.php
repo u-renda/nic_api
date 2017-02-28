@@ -1146,29 +1146,34 @@ class Member extends REST_Controller {
 				
 				if ($password == TRUE)
 				{
-					$param['password'] = md5($password);
+					$new_pass = md5($password);
 					
-					// update short code
-					$short_code = md5($password.$query->row()->name);
-					
-					$param2 = array();
-					$param2['short_code'] = $short_code;
-					$this->the_model->update($query->row()->id_member, $param2);
-					
-					// send email
-					$content = array();
-					$content['member_name'] = ucwords($query->row()->name);
-					$content['email'] = $email;
-					$content['short_code'] = $short_code;
-					$send_email = email_reset_password($content);
-					
-					if ($send_email)
+					if ($query->row()->password != $new_pass)
 					{
-						$data['send_reset_password'] = 'success';
-					}
-					else
-					{
-						$data['send_reset_password'] = 'failed';
+						$param['password'] = $new_pass;
+						
+						// update short code
+						$short_code = md5($password.$query->row()->name);
+						
+						$param2 = array();
+						$param2['short_code'] = $short_code;
+						$this->the_model->update($query->row()->id_member, $param2);
+						
+						// send email
+						$content = array();
+						$content['member_name'] = ucwords($query->row()->name);
+						$content['email'] = $email;
+						$content['short_code'] = $short_code;
+						$send_email = email_reset_password($content);
+						
+						if ($send_email)
+						{
+							$data['send_reset_password'] = 'success';
+						}
+						else
+						{
+							$data['send_reset_password'] = 'failed';
+						}
 					}
 				}
 				
