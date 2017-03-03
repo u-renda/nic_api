@@ -58,31 +58,6 @@ if ( ! function_exists('email_member_invalid'))
 	}
 }
 
-if ( ! function_exists('email_recovery_password'))
-{
-	function email_recovery_password($param)
-	{
-		$CI =& get_instance();
-		$CI->load->model('preferences_model');
-		$param += requirement();
-		
-		$param['subject'] = 'NEZindaCLUB - Recovery Password';
-		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?c='.$param['short_code'];
-		
-		// content email
-		$query = $CI->preferences_model->info(array('key' => 'email_recovery_password'));
-		
-		$email_content = '';
-		if ($query->num_rows() > 0)
-		{
-			$email_content = $query->row()->value;
-		}
-		
-		$send = send_email($param, $email_content);
-		return $send;
-	}
-}
-
 if ( ! function_exists('email_member_request_transfer'))
 {
 	function email_member_request_transfer($param)
@@ -109,6 +84,31 @@ if ( ! function_exists('email_member_transfer_confirmation'))
 		
 		// content email
 		$query = $CI->preferences_model->info(array('key' => 'email_trf_confirmation_success'));
+		
+		$email_content = '';
+		if ($query->num_rows() > 0)
+		{
+			$email_content = $query->row()->value;
+		}
+		
+		$send = send_email($param, $email_content);
+		return $send;
+	}
+}
+
+if ( ! function_exists('email_recovery_password'))
+{
+	function email_recovery_password($param)
+	{
+		$CI =& get_instance();
+		$CI->load->model('preferences_model');
+		$param += requirement();
+		
+		$param['subject'] = 'NEZindaCLUB - Recovery Password';
+		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?c='.$param['short_code'];
+		
+		// content email
+		$query = $CI->preferences_model->info(array('key' => 'email_recovery_password'));
 		
 		$email_content = '';
 		if ($query->num_rows() > 0)
