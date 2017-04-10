@@ -25,6 +25,7 @@ class Product extends REST_Controller {
 		$description = filter(trim($this->post('description')));
 		$quantity = filter(trim($this->post('quantity')));
 		$status = filter(trim($this->post('status')));
+		$type = filter(trim($this->post('type')));
 		$other_photo = $this->post('other_photo');
 		$size = filter(trim($this->post('size')));
 		$colors = filter(trim($this->post('colors')));
@@ -80,6 +81,13 @@ class Product extends REST_Controller {
 			$code = 400;
 		}
 		
+		if ($type == '')
+		{
+			$data['type'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
 		if (check_product_name($name) == FALSE && $name == TRUE)
 		{
 			$data['name'] = 'already exist';
@@ -90,6 +98,13 @@ class Product extends REST_Controller {
 		if (in_array($status, $this->config->item('default_product_status')) == FALSE && $status == TRUE)
 		{
 			$data['status'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (in_array($type, $this->config->item('default_product_type')) == FALSE && $type == TRUE)
+		{
+			$data['type'] = 'wrong value';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -124,6 +139,7 @@ class Product extends REST_Controller {
 			$param['description'] = $description;
 			$param['quantity'] = intval($quantity);
 			$param['status'] = intval($status);
+			$param['type'] = intval($type);
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);

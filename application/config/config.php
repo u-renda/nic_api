@@ -576,6 +576,7 @@ $config['default_product_image_order'] = array("status", "created_date");
 $config['default_product_image_status'] = array("0", "1");
 $config['default_product_order'] = array("name", "quantity", "price_public", "price_member", "status", "created_date");
 $config['default_product_status'] = array("0", "1", "2", "3", "4");
+$config['default_product_type'] = array("0", "1");
 $config['default_provinsi_order'] = array("provinsi", "created_date");
 $config['default_secret_santa_order'] = array("name", "created_date");
 $config['default_secret_santa_status'] = array("0", "1");

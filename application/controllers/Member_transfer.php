@@ -246,6 +246,7 @@ class Member_transfer extends REST_Controller {
 		$id_member = filter($this->get('id_member'));
 		$type = filter(intval(trim($this->get('type'))));
 		$q = filter(trim($this->get('q')));
+		$status = filter(intval(trim($this->get('status'))));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -292,6 +293,11 @@ class Member_transfer extends REST_Controller {
 			$type = $type;
 		}
 		
+		if (in_array($status, $this->config->item('default_member_transfer_status')) && ($status == TRUE))
+		{
+			$status = $status;
+		}
+		
 		$param = array();
 		$param2 = array();
 		if ($q == TRUE)
@@ -308,6 +314,11 @@ class Member_transfer extends REST_Controller {
 		{
 			$param['type'] = $type;
 			$param2['type'] = $type;
+		}
+		if ($status == TRUE)
+		{
+			$param['status'] = $status;
+			$param2['status'] = $status;
 		}
 		
 		$param['limit'] = $limit;

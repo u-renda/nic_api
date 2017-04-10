@@ -60,6 +60,10 @@ class Member_transfer_model extends CI_Model {
         {
             $where += array('type' => $param['type']);
         }
+        if (isset($param['status']) == TRUE)
+        {
+            $where += array('status' => $param['status']);
+        }
         if (isset($param['id_member']) == TRUE)
         {
             $where += array($this->table.'.id_member' => $param['id_member']);
@@ -85,6 +89,10 @@ class Member_transfer_model extends CI_Model {
         if (isset($param['type']) == TRUE)
         {
             $where += array('type' => $param['type']);
+        }
+        if (isset($param['status']) == TRUE)
+        {
+            $where += array('status' => $param['status']);
         }
         if (isset($param['id_member']) == TRUE)
         {
