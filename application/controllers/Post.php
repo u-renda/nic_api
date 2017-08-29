@@ -543,9 +543,36 @@ class Post extends REST_Controller {
 					$param['created_date'] = $created_date;
 				}
 				
-				if (isset($is_event) && $is_event == TRUE)
+				if ($is_event != '')
 				{
 					$param['is_event'] = $is_event;
+					
+					// check event
+					$query2 = $this->events_model->info(array('id_post' => $id_post));
+					
+					if ($query2->num_rows() > 0)
+					{
+						if ($is_event == 0)
+						{
+							// delete event
+							$query3 = $this->events_model->delete($query2->row()->id_events);
+						}
+					}
+					else
+					{
+						if ($is_event == 1)
+						{
+							// create event
+							$param2 = array();
+							$param2['id_post'] = $id_post;
+							$param2['title'] = $query->row()->title;
+							$param2['date'] = $query->row()->created_date;
+							$param2['status'] = 1;
+							$param2['created_date'] = $query->row()->created_date;
+							$param2['updated_date'] = date('Y-m-d H:i:s');
+							$query4 = $this->events_model->create($param2);
+						}
+					}
 				}
 				
 				if ($param == TRUE)

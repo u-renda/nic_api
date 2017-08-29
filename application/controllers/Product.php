@@ -22,6 +22,7 @@ class Product extends REST_Controller {
 		$image = filter(trim($this->post('image')));
 		$price_public = filter(trim($this->post('price_public')));
 		$price_member = filter(trim($this->post('price_member')));
+		$price_sale = filter(trim($this->post('price_sale')));
 		$description = filter(trim($this->post('description')));
 		$quantity = filter(trim($this->post('quantity')));
 		$status = filter(trim($this->post('status')));
@@ -118,7 +119,7 @@ class Product extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
-			$url_title = url_title($name);
+			$url_title = url_title(strtolower($name));
 			
 			if (check_post_slug($url_title) == FALSE)
 			{
@@ -127,7 +128,7 @@ class Product extends REST_Controller {
 			}
 			else
 			{
-				$slug = url_title($name);
+				$slug = $url_title;
 			}
 			
 			$param = array();
@@ -136,6 +137,7 @@ class Product extends REST_Controller {
 			$param['image'] = $image;
 			$param['price_public'] = intval($price_public);
 			$param['price_member'] = intval($price_member);
+			$param['price_sale'] = intval($price_sale);
 			$param['description'] = $description;
 			$param['quantity'] = intval($quantity);
 			$param['status'] = intval($status);
@@ -254,9 +256,10 @@ class Product extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_product = filter($this->get('id_product'));
+		$slug = filter(trim($this->get('slug')));
 		
 		$data = array();
-		if ($id_product == FALSE)
+		if ($id_product == FALSE && $slug == FALSE)
 		{
 			$data['id_product'] = 'required';
 			$validation = 'error';
@@ -269,6 +272,10 @@ class Product extends REST_Controller {
 			if ($id_product != '')
 			{
 				$param['id_product'] = $id_product;
+			}
+			else
+			{
+				$param['slug'] = $slug;
 			}
 			
 			$query = $this->the_model->info($param);
@@ -284,6 +291,7 @@ class Product extends REST_Controller {
 					'image' => $row->image,
 					'price_public' => intval($row->price_public),
 					'price_member' => intval($row->price_member),
+					'price_sale' => intval($row->price_sale),
 					'description' => $row->description,
 					'quantity' => intval($row->quantity),
 					'type' => intval($row->type),
@@ -314,13 +322,13 @@ class Product extends REST_Controller {
 					);
 				}
 				
-				// Get images
+				// Get other images
 				$param2 = array();
 				$param2['order'] = 'created_date';
 				$param2['sort'] = 'desc';
-				$param2['limit'] = 20;
+				$param2['limit'] = 5;
 				$param2['offset'] = 0;
-				$param2['id_product'] = $id_product;
+				$param2['id_product'] = $row->id_product;
 				$query3 = $this->product_image_model->lists($param2);
 				
 				$data['other_image'] = array();
@@ -364,6 +372,7 @@ class Product extends REST_Controller {
 		$order = filter(trim(strtolower($this->get('order'))));
 		$sort = filter(trim(strtolower($this->get('sort'))));
 		$status = filter(trim($this->get('status')));
+		$status_not = filter(trim($this->get('status_not')));
 		$q = filter(trim($this->get('q')));
 		
 		if ($limit == TRUE && $limit < 20)
@@ -418,6 +427,11 @@ class Product extends REST_Controller {
 			$param['status'] = intval($status);
 			$param2['status'] = intval($status);
 		}
+		if ($status_not != '')
+		{
+			$param['status_not'] = intval($status_not);
+			$param2['status_not'] = intval($status_not);
+		}
 		if ($q == TRUE)
 		{
 			$param['q'] = $q;
@@ -444,6 +458,7 @@ class Product extends REST_Controller {
 					'image' => $row->image,
 					'price_public' => intval($row->price_public),
 					'price_member' => intval($row->price_member),
+					'price_sale' => intval($row->price_sale),
 					'description' => $row->description,
 					'quantity' => intval($row->quantity),
 					'type' => intval($row->type),

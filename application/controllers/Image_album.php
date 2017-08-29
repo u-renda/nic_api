@@ -52,8 +52,21 @@ class Image_album extends REST_Controller {
 		
 		if ($validation == 'ok')
 		{
+			$url_title = url_title(strtolower($name));
+			
+			if (check_post_slug($url_title) == FALSE)
+			{
+				$counter = random_string('numeric',5);
+				$slug = url_title(strtolower(''.$name.'-'.$counter.''));
+			}
+			else
+			{
+				$slug = url_title(strtolower($name));
+			}
+			
 			$param = array();
 			$param['name'] = $name;
+			$param['slug'] = $slug;
 			$param['date'] = $date;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
@@ -152,9 +165,10 @@ class Image_album extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_image_album = filter($this->get('id_image_album'));
+		$slug = filter($this->get('slug'));
 		
 		$data = array();
-		if ($id_image_album == FALSE)
+		if ($id_image_album == FALSE && $slug == FALSE)
 		{
 			$data['id_image_album'] = 'required';
 			$validation = 'error';
@@ -168,6 +182,10 @@ class Image_album extends REST_Controller {
 			{
 				$param['id_image_album'] = $id_image_album;
 			}
+			else
+			{
+				$param['slug'] = $slug;
+			}
 			
 			$query = $this->the_model->info($param);
 			
@@ -178,6 +196,7 @@ class Image_album extends REST_Controller {
 				$data = array(
 					'id_image_album' => $row->id_image_album,
 					'name' => $row->name,
+					'slug' => $row->slug,
 					'date' => $row->date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
@@ -277,6 +296,7 @@ class Image_album extends REST_Controller {
 				$data[] = array(
 					'id_image_album' => $row->id_image_album,
 					'name' => $row->name,
+					'slug' => $row->slug,
 					'date' => $row->date,
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date

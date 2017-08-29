@@ -36,9 +36,13 @@ class Product_model extends CI_Model {
         {
             $where += array('name' => $param['name']);
         }
+        if (isset($param['slug']) == TRUE)
+        {
+            $where += array('slug' => $param['slug']);
+        }
         
         $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
-						  status, created_date, updated_date, slug, type');
+						  status, created_date, updated_date, slug, type, price_sale');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->get();
@@ -56,9 +60,13 @@ class Product_model extends CI_Model {
         {
             $where += array('status' => $param['status']);
         }
+        if (isset($param['status_not']) == TRUE)
+        {
+            $where += array('status != ' => $param['status_not']);
+        }
         
         $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
-						  status, created_date, updated_date, slug, type');
+						  status, created_date, updated_date, slug, type, price_sale');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
@@ -77,6 +85,10 @@ class Product_model extends CI_Model {
         if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
+        }
+        if (isset($param['status_not']) == TRUE)
+        {
+            $where += array('status != ' => $param['status_not']);
         }
         
         $this->db->select($this->table_id);

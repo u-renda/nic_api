@@ -32,8 +32,12 @@ class Image_album_model extends CI_Model {
         {
             $where += array('id_image_album' => $param['id_image_album']);
         }
+        if (isset($param['slug']) == TRUE)
+        {
+            $where += array('slug' => $param['slug']);
+        }
         
-        $this->db->select('id_image_album, name, date, created_date, updated_date');
+        $this->db->select('id_image_album, name, slug, date, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->get();
@@ -48,7 +52,7 @@ class Image_album_model extends CI_Model {
             $where += array('name LIKE ' => '%'.$param['q'].'%');
         }
         
-        $this->db->select('id_image_album, name, date, created_date, updated_date');
+        $this->db->select('id_image_album, name, slug, date, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
