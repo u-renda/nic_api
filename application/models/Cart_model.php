@@ -49,9 +49,13 @@ class Cart_model extends CI_Model {
         {
             $where += array('status' => $param['status']);
         }
+        if (isset($param['id_member']) == TRUE)
+        {
+            $where += array('id_member' => $param['id_member']);
+        }
         
         $this->db->select('id_cart, id_product, quantity, unique_code, total, status, created_date,
-						  updated_date');
+						  updated_date, id_member');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
@@ -66,6 +70,10 @@ class Cart_model extends CI_Model {
         if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
+        }
+        if (isset($param['id_member']) == TRUE)
+        {
+            $where += array('id_member' => $param['id_member']);
         }
         
         $this->db->select($this->table_id);

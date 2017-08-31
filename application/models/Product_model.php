@@ -60,6 +60,10 @@ class Product_model extends CI_Model {
         {
             $where += array('status' => $param['status']);
         }
+        if (isset($param['type']) == TRUE)
+        {
+            $where += array('type' => $param['type']);
+        }
         if (isset($param['status_not']) == TRUE)
         {
             $where += array('status != ' => $param['status_not']);
@@ -85,6 +89,10 @@ class Product_model extends CI_Model {
         if (isset($param['status']) == TRUE)
         {
             $where += array('status' => $param['status']);
+        }
+        if (isset($param['type']) == TRUE)
+        {
+            $where += array('type' => $param['type']);
         }
         if (isset($param['status_not']) == TRUE)
         {

@@ -9,7 +9,145 @@ class Cart extends REST_Controller {
     {
         parent::__construct();
 		$this->load->model('cart_model', 'the_model');
+		$this->load->model('product_model');
     }
+	
+	function create_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$id_product = filter($this->post('id_product'));
+		$id_member = filter($this->post('id_member'));
+		$quantity = filter(trim($this->post('quantity')));
+		$unique_code = filter(trim($this->post('unique_code')));
+		$total = filter(trim($this->post('total')));
+		$status = filter($this->post('status'));
+		
+		$data = array();
+		if ($id_product == FALSE)
+		{
+			$data['id_product'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($unique_code == FALSE)
+		{
+			$data['unique_code'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($total == FALSE)
+		{
+			$data['total'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($status == FALSE)
+		{
+			$data['status'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (in_array($status, $this->config->item('default_cart_status')) == FALSE && $status == TRUE)
+		{
+			$data['status'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$param = array();
+			$param['id_product'] = $id_product;
+			$param['id_member'] = $id_member;
+			$param['quantity'] = $quantity;
+			$param['unique_code'] = $unique_code;
+			$param['total'] = $total;
+			$param['status'] = $status;
+			$param['created_date'] = date('Y-m-d H:i:s');
+			$param['updated_date'] = date('Y-m-d H:i:s');
+			$query = $this->the_model->create($param);
+			
+			if ($query > 0)
+			{
+				$data['create'] = 'success';
+				$validation = 'ok';
+				$code = 200;
+			}
+			else
+			{
+				$data['create'] = 'failed';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
+	function delete_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+        $id_cart = filter($this->post('id_cart'));
+        
+		$data = array();
+        if ($id_cart == FALSE)
+		{
+			$data['id_cart'] = 'required';
+			$validation = "error";
+			$code = 400;
+		}
+        
+        if ($validation == "ok")
+		{
+            $query = $this->the_model->info(array('id_cart' => $id_cart));
+			
+			if ($query->num_rows() > 0)
+			{
+                $delete = $this->the_model->delete($id_cart);
+				
+				if ($delete > 0)
+				{
+					$data['delete'] = 'success';
+					$validation = "ok";
+					$code = 200;
+				}
+				else
+				{
+					$data['delete'] = 'failed';
+					$validation = "error";
+					$code = 400;
+				}
+			}
+			else
+			{
+				$data['id_cart'] = 'not found';
+				$validation = "error";
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
 	
 	function info_get()
 	{
@@ -83,6 +221,7 @@ class Cart extends REST_Controller {
 		$order = filter(trim(strtolower($this->get('order'))));
 		$sort = filter(trim(strtolower($this->get('sort'))));
 		$status = filter(trim($this->get('status')));
+		$id_member = filter($this->get('id_member'));
 		
 		if ($limit == TRUE && $limit < 20)
 		{
@@ -136,6 +275,11 @@ class Cart extends REST_Controller {
 			$param['status'] = intval($status);
 			$param2['status'] = intval($status);
 		}
+		if ($id_member == TRUE)
+		{
+			$param['id_member'] = $id_member;
+			$param2['id_member'] = $id_member;
+		}
 		
 		$param['limit'] = $limit;
 		$param['offset'] = $offset;
@@ -150,15 +294,25 @@ class Cart extends REST_Controller {
 		{
 			foreach ($query->result() as $row)
 			{
+				$query2 = $this->product_model->info(array('id_product' => $row->id_product));
+				
 				$data[] = array(
 					'id_cart' => $row->id_cart,
-					'id_product' => $row->id_product,
+					'id_member' => $row->id_member,
 					'quantity' => intval($row->quantity),
 					'unique_code' => $row->unique_code,
 					'total' => intval($row->total),
 					'status' => intval($row->status),
 					'created_date' => $row->created_date,
-					'updated_date' => $row->updated_date
+					'updated_date' => $row->updated_date,
+					'product' => array(
+						'id_product' => $row->id_product,
+						'image' => $query2->row()->image,
+						'name' => $query2->row()->name,
+						'slug' => $query2->row()->slug,
+						'price_public' => $query2->row()->price_public,
+						'price_member' => $query2->row()->price_member
+					)
 				);
 			}
 		}

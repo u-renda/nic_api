@@ -11,15 +11,84 @@ class Cart_shipment extends REST_Controller {
 		$this->load->model('cart_shipment_model', 'the_model');
     }
 	
+	function create_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$id_kota = filter($this->post('id_kota'));
+		$shipment_address = filter(trim($this->post('shipment_address')));
+		$postal_code = filter(trim($this->post('postal_code')));
+		$unique_code = filter(trim($this->post('unique_code')));
+		$total = filter(trim($this->post('total')));
+		
+		$data = array();
+		if ($id_kota == FALSE)
+		{
+			$data['id_kota'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($total == FALSE)
+		{
+			$data['total'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($unique_code == FALSE)
+		{
+			$data['unique_code'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$param = array();
+			$param['id_kota'] = $id_kota;
+			$param['shipment_address'] = $shipment_address;
+			$param['postal_code'] = $postal_code;
+			$param['unique_code'] = $unique_code;
+			$param['total'] = $total;
+			$param['created_date'] = date('Y-m-d H:i:s');
+			$param['updated_date'] = date('Y-m-d H:i:s');
+			$query = $this->the_model->create($param);
+			
+			if ($query > 0)
+			{
+				$data['create'] = 'success';
+				$validation = 'ok';
+				$code = 200;
+			}
+			else
+			{
+				$data['create'] = 'failed';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
 	function info_get()
 	{
 		$this->benchmark->mark('code_start');
 		$validation = 'ok';
 		
 		$id_cart_shipment = filter($this->get('id_cart_shipment'));
+		$unique_code = filter($this->get('unique_code'));
 		
 		$data = array();
-		if ($id_cart_shipment == FALSE)
+		if ($id_cart_shipment == FALSE && $unique_code == FALSE)
 		{
 			$data['id_cart_shipment'] = 'required';
 			$validation = 'error';
@@ -32,6 +101,10 @@ class Cart_shipment extends REST_Controller {
 			if ($id_cart_shipment != '')
 			{
 				$param['id_cart_shipment'] = $id_cart_shipment;
+			}
+			else
+			{
+				$param['unique_code'] = $unique_code;
 			}
 			
 			$query = $this->the_model->info($param);

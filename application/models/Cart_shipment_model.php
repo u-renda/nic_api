@@ -31,6 +31,10 @@ class Cart_shipment_model extends CI_Model {
         {
             $where += array('id_cart_shipment' => $param['id_cart_shipment']);
         }
+        if (isset($param['unique_code']) == TRUE)
+        {
+            $where += array('unique_code' => $param['unique_code']);
+        }
         
         $this->db->select('id_cart_shipment, '.$this->table.'.id_kota, shipment_address, postal_code,
 						  unique_code, total, '.$this->table.'.created_date,

@@ -47,13 +47,6 @@ class Product extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ($price_public == FALSE)
-		{
-			$data['price_public'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
 		if ($price_member == FALSE)
 		{
 			$data['price_member'] = 'required';
@@ -300,7 +293,7 @@ class Product extends REST_Controller {
 					'updated_date' => $row->updated_date
 				);
 				
-				$query2 = $this->product_detail_model->info(array('id_product' => $id_product));
+				$query2 = $this->product_detail_model->info(array('id_product' => $row->id_product));
 				
 				if ($query2->num_rows() > 0)
 				{
@@ -372,6 +365,7 @@ class Product extends REST_Controller {
 		$order = filter(trim(strtolower($this->get('order'))));
 		$sort = filter(trim(strtolower($this->get('sort'))));
 		$status = filter(trim($this->get('status')));
+		$type = filter(trim($this->get('type')));
 		$status_not = filter(trim($this->get('status_not')));
 		$q = filter(trim($this->get('q')));
 		
@@ -420,12 +414,22 @@ class Product extends REST_Controller {
 			$status = $status;
 		}
 		
+		if (in_array($type, $this->config->item('default_product_type')) && ($type == TRUE))
+		{
+			$type = $type;
+		}
+		
 		$param = array();
 		$param2 = array();
 		if ($status != '')
 		{
 			$param['status'] = intval($status);
 			$param2['status'] = intval($status);
+		}
+		if ($type != '')
+		{
+			$param['type'] = intval($type);
+			$param2['type'] = intval($type);
 		}
 		if ($status_not != '')
 		{
