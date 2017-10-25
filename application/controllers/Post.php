@@ -103,7 +103,7 @@ class Post extends REST_Controller {
 			}
 			else
 			{
-				$slug = url_title(strtolower($title));
+				$slug = $url_title;
 			}
 
             if ($created_date != FALSE)
@@ -131,11 +131,13 @@ class Post extends REST_Controller {
 			if ($query > 0)
 			{
 				// save to archived
+				$explode = explode('-', $created_date);
+				
 				$param2 = array();
 				$param2['id_post'] = $query;
-				$param2['year'] = date('Y');
-				$param2['month'] = date('m');
-				$param2['created_date'] = date('Y-m-d H:i:s');
+				$param2['year'] = $explode[0];
+				$param2['month'] = $explode[1];
+				$param2['created_date'] = $created_date;
 				$param2['updated_date'] = date('Y-m-d H:i:s');
 				$query2 = $this->post_archived_model->create($param2);
 				
@@ -582,6 +584,17 @@ class Post extends REST_Controller {
 					
 					if ($update)
 					{
+						// update archived
+						$query5 = $this->post_archived_model->info(array('id_post' => $id_post));
+						$id_post_archived = $query5->row()->post->id_post_archived;
+						$explode = explode('-', $created_date);
+						
+						$param3 = array();
+						$param3['created_date'] = $created_date;
+						$param3['year'] = $explode[0];
+						$param3['month'] = $explode[1];
+						$query6 = $this->post_archived_model->update($id_post_archived, $param3);
+						
 						$data['update'] = 'success';
 						$validation = 'ok';
 						$code = 200;

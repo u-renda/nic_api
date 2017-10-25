@@ -31,6 +31,10 @@ class Post_archived_model extends CI_Model {
         {
             $where += array('id_post_archived' => $param['id_post_archived']);
         }
+        if (isset($param['id_post']) == TRUE)
+        {
+            $where += array($this->table.'.id_post' => $param['id_post']);
+        }
         
         $this->db->select('id_post_archived, '.$this->table.'.id_post, year, month,
 						  '.$this->table.'.created_date, '.$this->table.'.updated_date, title, slug');

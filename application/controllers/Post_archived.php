@@ -134,9 +134,10 @@ class Post_archived extends REST_Controller {
 		$validation = 'ok';
 		
 		$id_post_archived = filter($this->get('id_post_archived'));
+		$id_post = filter($this->get('id_post'));
 		
 		$data = array();
-		if ($id_post_archived == FALSE)
+		if ($id_post_archived == FALSE && $id_post == FALSE)
 		{
 			$data['id_post_archived'] = 'required';
 			$validation = 'error';
@@ -149,6 +150,10 @@ class Post_archived extends REST_Controller {
 			if ($id_post_archived != '')
 			{
 				$param['id_post_archived'] = $id_post_archived;
+			}
+			else
+			{
+				$param['id_post'] = $id_post;
 			}
 			
 			$query = $this->the_model->info($param);
