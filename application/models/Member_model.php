@@ -35,6 +35,21 @@ class Member_model extends CI_Model {
         $query = $this->db->delete($this->table);
         return $query;
     }
+	
+	function demographic($param)
+	{
+		$where = array();
+		if (isset($param['status']) == TRUE)
+		{
+			$where += array('status' => $param['status']);
+		}
+		
+		$this->db->select('*');
+        $this->db->from($this->table);
+        $this->db->where($where);
+        $query = $this->db->get();
+        return $query;
+	}
     
     function info($param)
     {

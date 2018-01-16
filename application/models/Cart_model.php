@@ -31,10 +31,15 @@ class Cart_model extends CI_Model {
         {
             $where += array('id_cart' => $param['id_cart']);
         }
+        if (isset($param['id_member']) == TRUE)
+        {
+            $where += array('id_member' => $param['id_member']);
+        }
         
         $this->db->select('id_cart, '.$this->table.'.id_product, '.$this->table.'.quantity,
 						  unique_code, total, '.$this->table.'.status, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, name');
+						  '.$this->table.'.updated_date, name, id_member, image, slug, price_public,
+						  price_member, size');
         $this->db->from($this->table);
         $this->db->join('product', $this->table.'.id_product = product.id_product', 'left');
         $this->db->where($where);
@@ -53,9 +58,13 @@ class Cart_model extends CI_Model {
         {
             $where += array('id_member' => $param['id_member']);
         }
+        if (isset($param['unique_code']) == TRUE)
+        {
+            $where += array('unique_code' => $param['unique_code']);
+        }
         
         $this->db->select('id_cart, id_product, quantity, unique_code, total, status, created_date,
-						  updated_date, id_member');
+						  updated_date, id_member, size');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
@@ -74,6 +83,10 @@ class Cart_model extends CI_Model {
         if (isset($param['id_member']) == TRUE)
         {
             $where += array('id_member' => $param['id_member']);
+        }
+        if (isset($param['unique_code']) == TRUE)
+        {
+            $where += array('unique_code' => $param['unique_code']);
         }
         
         $this->db->select($this->table_id);

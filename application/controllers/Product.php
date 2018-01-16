@@ -114,7 +114,7 @@ class Product extends REST_Controller {
 		{
 			$url_title = url_title(strtolower($name));
 			
-			if (check_post_slug($url_title) == FALSE)
+			if (check_product_slug($url_title) == FALSE)
 			{
 				$counter = random_string('numeric',5);
 				$slug = url_title(strtolower(''.$name.'-'.$counter.''));
@@ -128,13 +128,13 @@ class Product extends REST_Controller {
 			$param['name'] = $name;
 			$param['slug'] = $slug;
 			$param['image'] = $image;
-			$param['price_public'] = intval($price_public);
-			$param['price_member'] = intval($price_member);
-			$param['price_sale'] = intval($price_sale);
+			$param['price_public'] = $price_public;
+			$param['price_member'] = $price_member;
+			$param['price_sale'] = $price_sale;
 			$param['description'] = $description;
-			$param['quantity'] = intval($quantity);
-			$param['status'] = intval($status);
-			$param['type'] = intval($type);
+			$param['quantity'] = $quantity;
+			$param['status'] = $status;
+			$param['type'] = $type;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);
@@ -484,5 +484,191 @@ class Product extends REST_Controller {
 		$this->benchmark->mark('code_end');
 		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
 		$this->response($rv, $rv['code']);
+	}
+	
+	function update_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$id_product = filter($this->post('id_product'));
+		$name = filter(trim($this->post('name')));
+		$image = filter(trim($this->post('image')));
+		$price_public = filter(trim($this->post('price_public')));
+		$price_member = filter(trim($this->post('price_member')));
+		$price_sale = filter(trim($this->post('price_sale')));
+		$description = filter(trim($this->post('description')));
+		$quantity = filter(trim($this->post('quantity')));
+		$status = filter(trim($this->post('status')));
+		$type = filter(trim($this->post('type')));
+		$other_photo = $this->post('other_photo');
+		$size = filter(trim($this->post('size')));
+		$colors = filter(trim($this->post('colors')));
+		$material = filter(trim($this->post('material')));
+		
+		$data = array();
+		if ($id_product == FALSE)
+		{
+			$data['id_product'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (in_array($status, $this->config->item('default_product_status')) == FALSE && $status == TRUE)
+		{
+			$data['status'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if (in_array($type, $this->config->item('default_product_type')) == FALSE && $type == TRUE)
+		{
+			$data['type'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ( ! is_array($other_photo) && $other_photo != '')
+		{
+			$data['other_photo'] = 'use other_photo[]';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$query = $this->the_model->info(array('id_product' => $id_product));
+			
+			if ($query->num_rows() > 0)
+			{
+				$param = array();
+				if ($name == TRUE)
+				{
+					$param['name'] = $name;
+				}
+				
+				if ($image == TRUE)
+				{
+					$param['image'] = $image;
+				}
+				
+				if ($price_public == TRUE)
+				{
+					$param['price_public'] = $price_public;
+				}
+				
+				if ($price_member == TRUE)
+				{
+					$param['price_member'] = $price_member;
+				}
+				
+				if ($price_sale == TRUE)
+				{
+					$param['price_sale'] = $price_sale;
+				}
+				
+				if ($description == TRUE)
+				{
+					$param['description'] = $description;
+				}
+				
+				if ($quantity == TRUE)
+				{
+					$param['quantity'] = $quantity;
+				}
+				
+				if ($status == TRUE)
+				{
+					$param['status'] = $status;
+				}
+				
+				if ($type == TRUE)
+				{
+					$param['type'] = $type;
+				}
+				
+				if ($param == TRUE)
+				{
+					$param['updated_date'] = date('Y-m-d H:i:s');
+					$update = $this->the_model->update($id_product, $param);
+					
+					if ($update == TRUE)
+					{
+						if ($other_photo != '')
+						{
+							$query4 = $this->product_image_model->lists(array('id_product' => $id_product));
+							
+							if ($query4->num_rows() > 0)
+							{
+								// delete foto lama
+								foreach ($query4->result() as $row)
+								{
+									$delete = $this->product_image_model->delete($row->id_product_image);
+								}
+							}
+							
+							// insert baru
+							foreach ($other_photo as $key => $val)
+							{
+								// insert image ke product image
+								$param2 = array();
+								$param2['id_product'] = $id_product;
+								$param2['image'] = $val;
+								$param2['status'] = 1;
+								$param2['created_date'] = date('Y-m-d H:i:s');
+								$param2['updated_date'] = date('Y-m-d H:i:s');
+								$query2 = $this->product_image_model->create($param2);
+							}
+						}
+						
+						if ($size == TRUE || $colors == TRUE || $material == TRUE)
+						{
+							$query5 = $this->product_detail_model->info(array('id_product' => $id_product));
+							
+							if ($query5->num_rows() > 0)
+							{
+								// update detail ke product detail
+								$id_product_detail = $query5->row()->id_product_detail;
+								$param3 = array();
+								$param3['size'] = $size;
+								$param3['colors'] = $colors;
+								$param3['material'] = $material;
+								$param3['updated_date'] = date('Y-m-d H:i:s');
+								$query3 = $this->product_detail_model->update($id_product_detail, $param3);
+							}
+							else
+							{
+								$param3 = array();
+								$param3['id_product'] = $id_product;
+								$param3['size'] = $size;
+								$param3['colors'] = $colors;
+								$param3['material'] = $material;
+								$param3['created_date'] = date('Y-m-d H:i:s');
+								$param3['updated_date'] = date('Y-m-d H:i:s');
+								$query3 = $this->product_detail_model->create($param3);
+							}
+						}
+				
+						$data['update'] = 'success';
+						$validation = 'ok';
+						$code = 200;
+					}
+				}
+				else
+				{
+					$data['update'] = 'failed';
+					$validation = 'error';
+					$code = 400;
+				}
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
 	}
 }

@@ -79,6 +79,59 @@ class Cart_shipment extends REST_Controller {
 		$this->response($rv, $code);
 	}
 	
+	function delete_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+        $id_cart_shipment = filter($this->post('id_cart_shipment'));
+        
+		$data = array();
+        if ($id_cart_shipment == FALSE)
+		{
+			$data['id_cart_shipment'] = 'required';
+			$validation = "error";
+			$code = 400;
+		}
+        
+        if ($validation == "ok")
+		{
+            $query = $this->the_model->info(array('id_cart_shipment' => $id_cart_shipment));
+			
+			if ($query->num_rows() > 0)
+			{
+                $delete = $this->the_model->delete($id_cart_shipment);
+				
+				if ($delete > 0)
+				{
+					$data['delete'] = 'success';
+					$validation = "ok";
+					$code = 200;
+				}
+				else
+				{
+					$data['delete'] = 'failed';
+					$validation = "error";
+					$code = 400;
+				}
+			}
+			else
+			{
+				$data['id_cart_shipment'] = 'not found';
+				$validation = "error";
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
+	}
+	
 	function info_get()
 	{
 		$this->benchmark->mark('code_start');
@@ -116,7 +169,7 @@ class Cart_shipment extends REST_Controller {
 				$data = array(
 					'id_cart_shipment' => $row->id_cart_shipment,
 					'shipment_address' => $row->shipment_address,
-					'postal_code' => $row->postal_code,
+					'postal_code' => intval($row->postal_code),
 					'unique_code' => $row->unique_code,
 					'total' => intval($row->total),
 					'created_date' => $row->created_date,
@@ -125,6 +178,10 @@ class Cart_shipment extends REST_Controller {
 						'id_kota' => $row->id_kota,
 						'kota' => $row->kota,
 						'price' => intval($row->price)
+					),
+					'provinsi' => array(
+						'id_provinsi' => $row->id_provinsi,
+						'provinsi' => $row->provinsi
 					)
 				);
 				
@@ -217,7 +274,7 @@ class Cart_shipment extends REST_Controller {
 					'id_cart_shipment' => $row->id_cart_shipment,
 					'id_kota' => $row->id_kota,
 					'shipment_address' => $row->shipment_address,
-					'postal_code' => $row->postal_code,
+					'postal_code' => intval($row->postal_code),
 					'unique_code' => $row->unique_code,
 					'total' => intval($row->total),
 					'created_date' => $row->created_date,
@@ -237,5 +294,93 @@ class Cart_shipment extends REST_Controller {
 		$this->benchmark->mark('code_end');
 		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
 		$this->response($rv, $rv['code']);
+	}
+	
+	function update_post()
+	{
+		$this->benchmark->mark('code_start');
+		$validation = 'ok';
+		
+		$id_cart_shipment = filter($this->post('id_cart_shipment'));
+		$id_kota = filter($this->post('id_kota'));
+		$shipment_address = filter(trim($this->post('shipment_address')));
+		$postal_code = filter(trim($this->post('postal_code')));
+		$unique_code = filter(trim($this->post('unique_code')));
+		$total = filter(trim($this->post('total')));
+		
+		$data = array();
+		if ($id_cart_shipment == FALSE)
+		{
+			$data['id_cart_shipment'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($validation == 'ok')
+		{
+			$query = $this->the_model->info(array('id_cart_shipment' => $id_cart_shipment));
+			
+			if ($query->num_rows() > 0)
+			{
+				$param = array();
+				if ($id_kota == TRUE)
+				{
+					$param['id_kota'] = $id_kota;
+				}
+				
+				if ($shipment_address == TRUE)
+				{
+					$param['shipment_address'] = $shipment_address;
+				}
+				
+				if ($postal_code == TRUE)
+				{
+					$param['postal_code'] = $postal_code;
+				}
+				
+				if ($unique_code == TRUE)
+				{
+					$param['unique_code'] = $unique_code;
+				}
+				
+				if ($total == TRUE)
+				{
+					$param['total'] = $total;
+				}
+				
+				if ($param == TRUE)
+				{
+					$param['updated_date'] = date('Y-m-d H:i:s');
+					$update = $this->the_model->update($id_cart_shipment, $param);
+					
+					if ($update > 0)
+					{
+						$data['update'] = 'success';
+						$validation = 'ok';
+						$code = 200;
+					}
+				}
+				else
+				{
+					$data['update'] = 'failed';
+					$validation = 'error';
+					$code = 400;
+				}
+			}
+			else
+			{
+				$data['id_cart_shipment'] = 'not found';
+				$validation = 'error';
+				$code = 400;
+			}
+		}
+		
+		$rv = array();
+		$rv['message'] = $validation;
+		$rv['code'] = $code;
+		$rv['result'] = $data;
+		$this->benchmark->mark('code_end');
+		$rv['load'] = $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		$this->response($rv, $code);
 	}
 }

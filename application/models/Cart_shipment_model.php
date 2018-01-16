@@ -38,9 +38,10 @@ class Cart_shipment_model extends CI_Model {
         
         $this->db->select('id_cart_shipment, '.$this->table.'.id_kota, shipment_address, postal_code,
 						  unique_code, total, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, kota, price');
+						  '.$this->table.'.updated_date, kota, price, provinsi.id_provinsi, provinsi');
         $this->db->from($this->table);
         $this->db->join('kota', $this->table.'.id_kota = kota.id_kota', 'left');
+        $this->db->join('provinsi', 'kota.id_provinsi = provinsi.id_provinsi', 'left');
         $this->db->where($where);
         $query = $this->db->get();
         return $query;

@@ -31,8 +31,16 @@ class Cart_total_model extends CI_Model {
         {
             $where += array('id_cart_total' => $param['id_cart_total']);
         }
+        if (isset($param['unique_code']) == TRUE)
+        {
+            $where += array('unique_code' => $param['unique_code']);
+        }
+        if (isset($param['status']) == TRUE)
+        {
+            $where += array('status' => $param['status']);
+        }
         
-        $this->db->select('id_cart_total, unique_code, total, created_date, updated_date');
+        $this->db->select('id_cart_total, unique_code, total, created_date, updated_date, status');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->get();
@@ -42,8 +50,12 @@ class Cart_total_model extends CI_Model {
     function lists($param)
     {
         $where = array();
+        if (isset($param['status']) == TRUE)
+        {
+            $where += array('status' => $param['status']);
+        }
         
-        $this->db->select('id_cart_total, unique_code, total, created_date, updated_date');
+        $this->db->select('id_cart_total, unique_code, total, created_date, updated_date, status');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
@@ -55,6 +67,10 @@ class Cart_total_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
+        if (isset($param['status']) == TRUE)
+        {
+            $where += array('status' => $param['status']);
+        }
         
         $this->db->select($this->table_id);
         $this->db->from($this->table);

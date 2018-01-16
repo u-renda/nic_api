@@ -8,7 +8,11 @@ class Order extends REST_Controller {
     function __construct()
     {
         parent::__construct();
+		$this->load->model('cart_model');
+		$this->load->model('cart_shipment_model');
+		$this->load->model('cart_total_model');
 		$this->load->model('order_model', 'the_model');
+		$this->load->model('product_model');
     }
 	
 	function create_post()
@@ -20,7 +24,7 @@ class Order extends REST_Controller {
 		$id_member = filter($this->post('id_member'));
 		$name = filter(trim($this->post('name')));
 		$phone = filter(trim($this->post('phone')));
-		$email = filter(trim($this->post('email')));
+		$email = filter(trim(strtolower($this->post('email'))));
 		$status = filter(trim($this->post('status')));
 		
 		$data = array();
@@ -34,6 +38,13 @@ class Order extends REST_Controller {
 		if ($name == FALSE)
 		{
 			$data['name'] = 'required';
+			$validation = 'error';
+			$code = 400;
+		}
+		
+		if ($id_member == FALSE)
+		{
+			$data['id_member'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -59,6 +70,13 @@ class Order extends REST_Controller {
 			$code = 400;
 		}
 		
+		if (valid_email($email) == FALSE && $email == TRUE)
+		{
+			$data['email'] = 'wrong format';
+			$validation = 'error';
+			$code = 400;
+		}
+		
 		if (in_array($status, $this->config->item('default_order_status')) == FALSE && $status == TRUE)
 		{
 			$data['status'] = 'wrong value';
@@ -69,34 +87,93 @@ class Order extends REST_Controller {
 		if ($validation == 'ok')
 		{
 			$param = array();
+			$param['id_cart_total'] = $id_cart_total;
+			$param['id_member'] = $id_member;
 			$param['name'] = $name;
-			$param['image'] = $image;
-			$param['price_public'] = intval($price_public);
-			$param['price_member'] = intval($price_member);
-			$param['description'] = $description;
-			$param['quantity'] = intval($quantity);
+			$param['phone'] = $phone;
+			$param['email'] = $email;
 			$param['status'] = intval($status);
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);
 			
-			if ($query > 0)
+			if ($query != 0 || $query != '')
 			{
-				// insert image ke product image
-				$param2 = array();
-				$param2['id_product'] = $query;
-				$param2['image'] = $image;
-				$param2['status'] = 1;
-				$param2['created_date'] = date('Y-m-d H:i:s');
-				$param2['updated_date'] = date('Y-m-d H:i:s');
-				$query2 = $this->product_image_model->create($param2);
+				// update unique transfer ID
+				get_update_unique_code();
 				
-				if ($query2 > 0)
+				$query2 = $this->cart_total_model->info(array('id_cart_total' => $id_cart_total));
+				
+				if ($query2->num_rows() > 0)
 				{
-					$data['create'] = 'success';
-					$validation = 'ok';
-					$code = 200;
+					$unique_code = $query2->row()->unique_code;
+					$total_transfer = $query2->row()->total;
+					$delivery_cost = 0;
+					$total_product = 0;
+					
+					$param2 = array();
+					$param2['unique_code'] = $unique_code;
+					$param2['order'] = 'created_date';
+					$param2['sort'] = 'asc';
+					$param2['limit'] = 20;
+					$param2['offset'] = 0;
+					$query3 = $this->cart_model->lists($param2);
+					
+					if ($query3->num_rows() > 0)
+					{
+						$product = array();
+						foreach ($query3->result() as $row)
+						{
+							$query5 = $this->product_model->info(array('id_product' => $row->id_product));
+							
+							if ($query5->num_rows() > 0)
+							{
+								$result = $query5->row();
+						
+								$temp = array();
+								$temp['product_name'] = $result->name;
+								$temp['product_quantity'] = $row->quantity;
+								$temp['product_price'] = $result->price_member;
+								$temp['product_total'] = $temp['product_quantity'] * $temp['product_price'];
+								$product[] = $temp;
+								$total_product += $temp['product_total'];
+							}
+						}
+					}
+					
+					$query4 = $this->cart_shipment_model->info(array('unique_code' => $unique_code));
+					
+					if ($query4->num_rows() > 0)
+					{
+						$delivery_cost = $query4->row()->total;
+					}
+
+					// send email
+					$content = array();
+					$content['member_name'] = ucwords($name);
+					$content['email'] = $email;
+					$content['product'] = $product;
+					$content['delivery_cost'] = $delivery_cost;
+					$content['unique_code'] = $total_transfer - $delivery_cost - $total_product;
+					$content['total_transfer'] = $total_transfer;
+					$content['link_web_transfer'] = $this->config->item('link_web_transfer').'?o='.$query;
+					
+					//$send_email = email_order_create($content);
+					//
+					//if ($send_email)
+					//{
+					//	$data['send_email'] = 'success';
+					//}
+					//else
+					//{
+					//	$data['send_email'] = 'failed';
+					//}
 				}
+				
+				$data['create'] = 'success';
+				$data['id_order'] = $query;
+				$validation = 'ok';
+				$code = 200;
 			}
 			else
 			{

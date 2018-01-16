@@ -14,7 +14,8 @@ class Order_transfer_model extends CI_Model {
     {
         $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
-		return $query;
+		$id = $this->db->insert_id();
+		return $id;
     }
     
     function delete($id)
@@ -31,10 +32,14 @@ class Order_transfer_model extends CI_Model {
         {
             $where += array('id_order_transfer' => $param['id_order_transfer']);
         }
+        if (isset($param['id_order']) == TRUE)
+        {
+            $where += array($this->table.'.id_order' => $param['id_order']);
+        }
         
         $this->db->select('id_order_transfer, '.$this->table.'.id_order, total, date, photo,
 						  account_name, other_information, resi, '.$this->table.'.status,
-						  '.$this->table.'.created_date, '.$this->table.'.updated_date, name');
+						  '.$this->table.'.created_date, '.$this->table.'.updated_date, name, id_member');
         $this->db->from($this->table);
 		$this->db->join('order', $this->table.'.id_order = order.id_order', 'left');
         $this->db->where($where);

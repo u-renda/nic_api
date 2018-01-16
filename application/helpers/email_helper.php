@@ -96,6 +96,30 @@ if ( ! function_exists('email_member_transfer_confirmation'))
 	}
 }
 
+if ( ! function_exists('email_order_create'))
+{
+	function email_order_create($param)
+	{
+		$CI =& get_instance();
+		$CI->load->model('preferences_model');
+		$param += requirement();
+		
+		$param['subject'] = 'NEZindaCLUB - Order Merchandise Berhasil';
+		
+		// content email
+		$query = $CI->preferences_model->info(array('key' => 'email_merch_req_trf'));
+		
+		$email_content = '';
+		if ($query->num_rows() > 0)
+		{
+			$email_content = $query->row()->value;
+		}
+		
+		$send = send_email($param, $email_content);
+		return $send;
+	}
+}
+
 if ( ! function_exists('email_recovery_password'))
 {
 	function email_recovery_password($param)

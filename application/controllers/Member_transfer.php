@@ -396,6 +396,13 @@ class Member_transfer extends REST_Controller {
 			$code = 400;
 		}
 		
+		if (in_array($status, $this->config->item('default_member_transfer_status')) == FALSE && $status == TRUE)
+		{
+			$data['status'] = 'wrong value';
+			$validation = 'error';
+			$code = 400;
+		}
+		
 		if ($validation == 'ok')
 		{
 			$query = $this->the_model->info(array('id_member_transfer' => $id_member_transfer));

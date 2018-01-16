@@ -292,6 +292,7 @@ class Member extends REST_Controller {
 			$param['approved_date'] = $approved_date;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
+			$param['new_member'] = 1;
 			
 			if ($status == 4) // approved
 			{
