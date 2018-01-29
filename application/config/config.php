@@ -514,18 +514,18 @@ if(is_bool(LOCALHOST) || LOCALHOST == 'localhost')
 }
 else
 {
-    $config['link_member_photo'] = 'http://upload.nezindaclub.com/member/';
-    $config['link_post_photo'] = 'http://upload.nezindaclub.com/post/';
+    $config['link_member_photo'] = 'http://upload.theagnation.com/member/';
+    $config['link_post_photo'] = 'http://upload.theagnation.com/post/';
     
-    define('WEB_HOST', 'http://nezindaclub.com/');
+    define('WEB_HOST', 'http://theagnation.com/');
 }
 
-$config['email_admin'] = 'nezindaclub.official@gmail.com';
+$config['email_admin'] = 'officialagnation@gmail.com';
 $config['link_logo_nic'] = WEB_HOST.'assets/images/logo.png';
 $config['link_web_transfer'] = WEB_HOST.'transfer_confirmation';
 $config['link_reset_password'] = WEB_HOST.'reset_password';
 $config['registration_fee'] = 150000;
-$config['title'] = 'NEZindaCLUB';
+$config['title'] = 'AGnation';
 
 $config['code_member_gender'] = array(
     0 => 'M',
