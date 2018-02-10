@@ -336,7 +336,7 @@ if ( ! function_exists('email_req_transfer'))
 			$delivery_cost = $param['price'];
 			$email_content = $query->row()->value;
 			
-			$param['subject'] = 'Status Pendaftaran NIC';
+			$param['subject'] = 'Status Pendaftaran AGnation';
 			$param['member_name'] = ucwords($param['name']);
 			$param['registration_fee'] = number_format($registration_fee, 0, '', '.');
 			$param['delivery_cost'] = number_format($delivery_cost, 0, '', '.');
@@ -357,7 +357,7 @@ if ( ! function_exists('email_requirement'))
 		$CI =& get_instance();
 		$CI->load->library('email');
 		
-		$config['useragent'] = 'NEZindaCLUB';
+		$config['useragent'] = 'AGnation';
 		$config['wordwrap'] = FALSE;
 		$config['mailtype'] = 'html';
 		$config['protocol'] = 'sendmail';

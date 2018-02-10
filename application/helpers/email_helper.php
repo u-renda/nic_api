@@ -13,7 +13,7 @@ if ( ! function_exists('email_member_approved'))
 		$CI =& get_instance();
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Selamat Bergabung di NIC!';
+		$param['subject'] = 'AGnation - Selamat Bergabung di AGnation!';
 		
 		$send = send_email($param, $param['email_content']);
 		return $send;
@@ -28,7 +28,7 @@ if ( ! function_exists('email_member_create'))
 		$CI->load->model('preferences_model');
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Registrasi Berhasil';
+		$param['subject'] = 'AGnation - Registrasi Berhasil';
 		
 		// content email
 		$query = $CI->preferences_model->info(array('key' => 'email_register_success'));
@@ -51,7 +51,7 @@ if ( ! function_exists('email_member_invalid'))
 		$CI =& get_instance();
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Membership Invalid';
+		$param['subject'] = 'AGnation - Membership Invalid';
 		
 		$send = send_email($param, $param['email_content']);
 		return $send;
@@ -65,7 +65,7 @@ if ( ! function_exists('email_member_request_transfer'))
 		$CI =& get_instance();
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Membership Request Transfer';
+		$param['subject'] = 'AGnation - Membership Request Transfer';
 		
 		$send = send_email($param, $param['email_content']);
 		return $send;
@@ -80,7 +80,7 @@ if ( ! function_exists('email_member_transfer_confirmation'))
 		$CI->load->model('preferences_model');
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Konfirmasi Pembayaran Berhasil';
+		$param['subject'] = 'AGnation - Konfirmasi Pembayaran Berhasil';
 		
 		// content email
 		$query = $CI->preferences_model->info(array('key' => 'email_trf_confirmation_success'));
@@ -104,7 +104,7 @@ if ( ! function_exists('email_order_create'))
 		$CI->load->model('preferences_model');
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Order Merchandise Berhasil';
+		$param['subject'] = 'AGnation - Order Merchandise Berhasil';
 		
 		// content email
 		$query = $CI->preferences_model->info(array('key' => 'email_merch_req_trf'));
@@ -128,7 +128,7 @@ if ( ! function_exists('email_recovery_password'))
 		$CI->load->model('preferences_model');
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Recovery Password';
+		$param['subject'] = 'AGnation - Recovery Password';
 		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?c='.$param['short_code'];
 		
 		// content email
@@ -153,7 +153,7 @@ if ( ! function_exists('email_reset_password'))
 		$CI->load->model('preferences_model');
 		$param += requirement();
 		
-		$param['subject'] = 'NEZindaCLUB - Reset Password';
+		$param['subject'] = 'AGnation - Reset Password';
 		$param['link_reset_password'] = $CI->config->item('link_reset_password').'?c='.$param['short_code'];
 		
 		// content email
@@ -178,7 +178,7 @@ if( ! function_exists('requirement'))
 		$CI->load->library('email');
 		$CI->config->load('email_template');
 		
-		$config['useragent'] = 'nezindaclub.com';
+		$config['useragent'] = 'theagnation.com';
 		$config['wordwrap'] = FALSE;
 		$config['mailtype'] = 'html';
 		$CI->email->initialize($config);
@@ -201,7 +201,7 @@ if ( ! function_exists('send_email'))
 			$email_content = str_replace($k, $value, $email_content);
 		}
 		
-		$CI->email->from('admin@nezindaclub.com', 'NEZindaCLUB');
+		$CI->email->from('admin@theagnation.com', 'AGnation');
 		$CI->email->to($param['email']);
 		$CI->email->subject($param['subject']);
 		$CI->email->message('<html><head></head><body style="font-family: Arial; margin: 0px;">'.$email_content.'</body></html>');
