@@ -11,6 +11,7 @@ class Product extends REST_Controller {
 		$this->load->model('product_detail_model');
 		$this->load->model('product_image_model');
 		$this->load->model('product_model', 'the_model');
+		$this->load->model('product_size_model');
     }
 	
 	function create_post()
@@ -20,17 +21,12 @@ class Product extends REST_Controller {
 		
 		$name = filter(trim($this->post('name')));
 		$image = filter(trim($this->post('image')));
-		$price_public = filter(trim($this->post('price_public')));
-		$price_member = filter(trim($this->post('price_member')));
-		$price_sale = filter(trim($this->post('price_sale')));
+		$price = filter(trim($this->post('price')));
 		$description = filter(trim($this->post('description')));
-		$quantity = filter(trim($this->post('quantity')));
 		$status = filter(trim($this->post('status')));
 		$type = filter(trim($this->post('type')));
 		$other_photo = $this->post('other_photo');
-		$size = filter(trim($this->post('size')));
-		$colors = filter(trim($this->post('colors')));
-		$material = filter(trim($this->post('material')));
+		$sizable = filter(trim($this->post('sizable')));
 		
 		$data = array();
 		if ($name == FALSE)
@@ -47,9 +43,9 @@ class Product extends REST_Controller {
 			$code = 400;
 		}
 		
-		if ($price_member == FALSE)
+		if ($price == FALSE)
 		{
-			$data['price_member'] = 'required';
+			$data['price'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -57,13 +53,6 @@ class Product extends REST_Controller {
 		if ($description == FALSE)
 		{
 			$data['description'] = 'required';
-			$validation = 'error';
-			$code = 400;
-		}
-		
-		if ($quantity == FALSE)
-		{
-			$data['quantity'] = 'required';
 			$validation = 'error';
 			$code = 400;
 		}
@@ -128,13 +117,11 @@ class Product extends REST_Controller {
 			$param['name'] = $name;
 			$param['slug'] = $slug;
 			$param['image'] = $image;
-			$param['price_public'] = $price_public;
-			$param['price_member'] = $price_member;
-			$param['price_sale'] = $price_sale;
+			$param['price'] = $price;
 			$param['description'] = $description;
-			$param['quantity'] = $quantity;
 			$param['status'] = $status;
 			$param['type'] = $type;
+			$param['sizable'] = $sizable;
 			$param['created_date'] = date('Y-m-d H:i:s');
 			$param['updated_date'] = date('Y-m-d H:i:s');
 			$query = $this->the_model->create($param);
@@ -155,21 +142,9 @@ class Product extends REST_Controller {
 						$query2 = $this->product_image_model->create($param2);
 					}
 				}
-				
-				if ($size == TRUE || $colors == TRUE || $material == TRUE)
-				{
-					// insert detail ke product detail
-					$param3 = array();
-					$param3['id_product'] = $query;
-					$param3['size'] = $size;
-					$param3['colors'] = $colors;
-					$param3['material'] = $material;
-					$param3['created_date'] = date('Y-m-d H:i:s');
-					$param3['updated_date'] = date('Y-m-d H:i:s');
-					$query3 = $this->product_detail_model->create($param3);
-				}
 					
 				$data['create'] = 'success';
+				$data['id_product'] = $query;
 				$validation = 'ok';
 				$code = 200;
 			}
@@ -282,37 +257,36 @@ class Product extends REST_Controller {
 					'name' => $row->name,
 					'slug' => $row->slug,
 					'image' => $row->image,
-					'price_public' => intval($row->price_public),
-					'price_member' => intval($row->price_member),
-					'price_sale' => intval($row->price_sale),
+					'price' => intval($row->price),
 					'description' => $row->description,
 					'quantity' => intval($row->quantity),
 					'type' => intval($row->type),
 					'status' => intval($row->status),
+					'sizable' => intval($row->sizable),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
 				);
 				
-				$query2 = $this->product_detail_model->info(array('id_product' => $row->id_product));
+				// Get size
+				$param3 = array();
+				$param3['order'] = 'created_date';
+				$param3['sort'] = 'desc';
+				$param3['limit'] = 20;
+				$param3['offset'] = 0;
+				$param3['id_product'] = $row->id_product;
+				$query2 = $this->product_size_model->lists($param3);
 				
+				$data['size'] = array();
 				if ($query2->num_rows() > 0)
 				{
-					$row2 = $query2->row();
-					$data['detail'] = array(
-						'id_product_detail' => $row2->id_product_detail,
-						'size' => $row2->size,
-						'colors' => $row2->colors,
-						'material' => $row2->material
-					);
-				}
-				else
-				{
-					$data['detail'] = array(
-						'id_product_detail' => '-',
-						'size' => '-',
-						'colors' => '-',
-						'material' => '-'
-					);
+					foreach ($query2->result() as $row2)
+					{
+						$temp2 = array();
+						$temp2['id_product_size'] = $row2->id_product_size;
+						$temp2['size'] = $row2->size;
+						$temp2['quantity'] = intval($row2->quantity);
+						$data['size'][] = $temp2;
+					}
 				}
 				
 				// Get other images
@@ -341,7 +315,7 @@ class Product extends REST_Controller {
 			}
 			else
 			{
-				$data['id_preferences'] = 'not found (key)';
+				$data['id_prroduct'] = 'not found';
 				$validation = 'error';
 				$code = 400;
 			}
@@ -460,13 +434,12 @@ class Product extends REST_Controller {
 					'name' => $row->name,
 					'slug' => $row->slug,
 					'image' => $row->image,
-					'price_public' => intval($row->price_public),
-					'price_member' => intval($row->price_member),
-					'price_sale' => intval($row->price_sale),
+					'price' => intval($row->price),
 					'description' => $row->description,
 					'quantity' => intval($row->quantity),
 					'type' => intval($row->type),
 					'status' => intval($row->status),
+					'sizable' => intval($row->sizable),
 					'created_date' => $row->created_date,
 					'updated_date' => $row->updated_date
 				);

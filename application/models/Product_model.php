@@ -41,8 +41,8 @@ class Product_model extends CI_Model {
             $where += array('slug' => $param['slug']);
         }
         
-        $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
-						  status, created_date, updated_date, slug, type, price_sale');
+        $this->db->select('id_product, name, image, price, description, quantity,
+						  status, created_date, updated_date, slug, type, sizable');
         $this->db->from($this->table);
         $this->db->where($where);
         $query = $this->db->get();
@@ -69,8 +69,8 @@ class Product_model extends CI_Model {
             $where += array('status != ' => $param['status_not']);
         }
         
-        $this->db->select('id_product, name, image, price_public, price_member, description, quantity,
-						  status, created_date, updated_date, slug, type, price_sale');
+        $this->db->select('id_product, name, image, price, description, quantity,
+						  status, created_date, updated_date, slug, type, sizable');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);

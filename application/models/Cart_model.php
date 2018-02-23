@@ -38,8 +38,7 @@ class Cart_model extends CI_Model {
         
         $this->db->select('id_cart, '.$this->table.'.id_product, '.$this->table.'.quantity,
 						  unique_code, total, '.$this->table.'.status, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, name, id_member, image, slug, price_public,
-						  price_member, size');
+						  '.$this->table.'.updated_date, name, id_member, image, slug, price, size');
         $this->db->from($this->table);
         $this->db->join('product', $this->table.'.id_product = product.id_product', 'left');
         $this->db->where($where);

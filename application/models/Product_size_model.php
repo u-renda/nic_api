@@ -1,9 +1,9 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Product_image_model extends CI_Model {
+class Product_size_model extends CI_Model {
 
-    var $table = 'product_image';
-	var $table_id = 'id_product_image';
+    var $table = 'product_size';
+	var $table_id = 'id_product_size';
     
     public function __construct()
     {
@@ -14,7 +14,8 @@ class Product_image_model extends CI_Model {
     {
         $this->db->set($this->table_id, 'UUID_SHORT()', FALSE);
 		$query = $this->db->insert($this->table, $param);
-		return $query;
+		$id = $this->db->insert_id();
+		return $id;
     }
     
     function delete($id)
@@ -27,16 +28,13 @@ class Product_image_model extends CI_Model {
     function info($param)
     {
         $where = array();
-        if (isset($param['id_product_image']) == TRUE)
+        if (isset($param['id_product_size']) == TRUE)
         {
-            $where += array('id_product_image' => $param['id_product_image']);
+            $where += array($this->table_id => $param['id_product_size']);
         }
         
-        $this->db->select('id_product_image, '.$this->table.'.id_product, '.$this->table.'.image,
-						  '.$this->table.'.status, '.$this->table.'.created_date,
-						  '.$this->table.'.updated_date, name');
+        $this->db->select($this->table_id.', id_product, size, quantity, created_date, updated_date');
         $this->db->from($this->table);
-        $this->db->join('product', $this->table.'.id_product = product.id_product');
         $this->db->where($where);
         $query = $this->db->get();
         return $query;
@@ -45,16 +43,12 @@ class Product_image_model extends CI_Model {
     function lists($param)
     {
         $where = array();
-        if (isset($param['status']) == TRUE)
-        {
-            $where += array('status' => $param['status']);
-        }
         if (isset($param['id_product']) == TRUE)
         {
             $where += array('id_product' => $param['id_product']);
         }
         
-        $this->db->select('id_product_image, id_product, image, status, created_date, updated_date');
+        $this->db->select($this->table_id.', id_product, size, quantity, created_date, updated_date');
         $this->db->from($this->table);
         $this->db->where($where);
         $this->db->order_by($param['order'], $param['sort']);
@@ -66,10 +60,6 @@ class Product_image_model extends CI_Model {
     function lists_count($param)
     {
         $where = array();
-        if (isset($param['status']) == TRUE)
-        {
-            $where += array('status' => $param['status']);
-        }
         if (isset($param['id_product']) == TRUE)
         {
             $where += array('id_product' => $param['id_product']);

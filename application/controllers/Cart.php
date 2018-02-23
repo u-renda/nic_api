@@ -200,8 +200,7 @@ class Cart extends REST_Controller {
 						'image' => $row->image,
 						'name' => $row->name,
 						'slug' => $row->slug,
-						'price_public' => intval($row->price_public),
-						'price_member' => intval($row->price_member)
+						'price' => intval($row->price)
 					)
 				);
 				
@@ -330,8 +329,7 @@ class Cart extends REST_Controller {
 						'image' => $query2->row()->image,
 						'name' => $query2->row()->name,
 						'slug' => $query2->row()->slug,
-						'price_public' => intval($query2->row()->price_public),
-						'price_member' => intval($query2->row()->price_member)
+						'price' => intval($query2->row()->price)
 					)
 				);
 			}
